@@ -14,6 +14,7 @@ import { Progress } from "@/components/ui/progress"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { Badge } from "@/components/ui/badge"
 import { FileSpreadsheet, UploadCloud, FileCheck, AlertCircle, ChevronDown, CheckCircle2 } from "lucide-react"
+import { fetchWithAuth } from "@/lib/utils"
 enum ImportState {
     IDLE = "idle",
     UPLOADING = "uploading",

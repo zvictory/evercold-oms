@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, RefreshCw, Settings, Trash2, Edit, CheckCircle, XCircle } from 'lucide-react';
+import { fetchWithAuth } from '@/lib/utils';
 
 interface EdoIntegration {
   id: string;

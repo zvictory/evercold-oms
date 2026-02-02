@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Download, Upload, RefreshCw, Filter, Calendar, FileText } from 'lucide-react';
 import DatePicker from '@/components/DatePicker';
+import { fetchWithAuth } from '@/lib/utils';
 
 interface EdoIntegration {
   id: string;

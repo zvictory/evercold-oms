@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { UsersTable } from "@/components/settings/users/UsersTable"
 import { UserDialog } from "@/components/settings/users/UserDialog"
 import { useScopedI18n } from '@/locales/client'
+import { fetchWithAuth } from '@/lib/utils'
 
 export default function UsersPage() {
     const t = useScopedI18n('Common')

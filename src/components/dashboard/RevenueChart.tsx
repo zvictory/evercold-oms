@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from "recharts"
+import { fetchWithAuth } from "@/lib/utils"
 
 // Fallback data for error states
 const fallbackData = [
