@@ -25,7 +25,7 @@ interface Vehicle {
     id: string
     name: string
   } | null
-  _count: {
+  _count?: {
     deliveries: number
   }
   currentLoad?: {
@@ -254,7 +254,7 @@ export default function FleetPage() {
                   type={vehicle.type}
                   status={vehicle.status}
                   driverName={vehicle.driver?.name}
-                  deliveryCount={vehicle._count.deliveries}
+                  deliveryCount={vehicle._count?.deliveries ?? 0}
                   capacity={vehicle.capacity}
                   currentLoad={vehicle.currentLoad}
                   onEdit={handleEditVehicle}
