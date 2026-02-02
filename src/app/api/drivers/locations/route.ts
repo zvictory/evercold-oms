@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    // Only ADMIN/MANAGER can view GPS tracking
+    const user = await requireManagerOrAdmin(request)
+
     const drivers = await prisma.driver.findMany({
       where: {
         status: 'ACTIVE',
@@ -32,9 +36,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ locations, timestamp: new Date() })
   } catch (error: any) {
     console.error('Failed to fetch driver locations:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch driver locations' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }

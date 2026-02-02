@@ -32,6 +32,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Switch } from "@/components/ui/switch"
 import { Loader2 } from "lucide-react"
+import { fetchWithAuth } from "@/lib/utils"
 
 const formSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
@@ -104,7 +105,7 @@ export function UserDialog({ open, onOpenChange, user, onSuccess }: UserDialogPr
                 return
             }
 
-            const res = await fetch(url, {
+            const res = await fetchWithAuth(url, {
                 method,
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

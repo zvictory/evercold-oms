@@ -1,197 +1,210 @@
-# Registry Parser Enhancement - Implementation Checklist
+# RBAC Implementation Completion Checklist
 
-## ✅ Phase 1: Type Definitions
+## ✅ Phase 1: Foundation - Complete
 
-- [x] Created `DetectedProductRow` type (lines 5-13)
-  - rowNumber: number
-  - productId: string
-  - productName: string
-  - sapCode: string | null
-  - unitPrice: number
-  - vatRate: number
-  - productIdentifier: string
+- [x] Admin seeding script created (`prisma/seed-admin.ts`)
+- [x] Admin seeding command added to package.json (`npm run db:seed-admin`)
+- [x] Enhanced auth helper functions in `src/lib/auth.ts`:
+  - [x] `requireAdmin(request)` function
+  - [x] `requireManagerOrAdmin(request)` function
+  - [x] `withAuth(handler, allowedRoles)` wrapper
+- [x] 403 Forbidden error page created (`src/app/[locale]/403/page.tsx`)
+- [x] jose library installed for future JWT support
 
-- [x] Extended `RegistryParseResult` type (lines 15-26)
-  - Added `detectedProducts?: Array<...>` (optional)
-  - Added `warnings?: string[]` (optional)
+## ✅ Phase 2: Middleware Enhancement - Complete
 
-## ✅ Phase 2: Product Matching Engine
+- [x] Enhanced `middleware.ts` with role validation:
+  - [x] Public routes whitelist
+  - [x] Admin-only routes classification
+  - [x] Manager/Admin routes classification
+  - [x] Bearer token validation with DB lookup
+  - [x] Session expiration checking
+  - [x] User active status verification
+  - [x] Role-based access control
+  - [x] Headers passed to downstream (x-user-role, x-user-token)
+  - [x] Proper error handling and redirects
 
-- [x] Pre-fetch all products into memory (line 46)
-  - `const products = await prisma.product.findMany();`
+## ✅ Phase 3: Critical API Route Protection - Complete
 
-- [x] Create three lookup maps (lines 49-61)
-  - `productsByName: Map<string, Product>`
-  - `productsBySapCode: Map<string, Product>`
-  - `productsByBarcode: Map<string, Product>`
+### Admin-Only Protection
+- [x] `/api/upload/registry` - Database registry import
+  - [x] `requireAdmin()` check added
+  - [x] Audit logging added
+  - [x] Error handling updated
 
-- [x] Implement `findProductByIdentifier()` function (lines 64-86)
-  - ✅ Check SAP code (highest priority)
-  - ✅ Check barcode
-  - ✅ Check product name (exact)
-  - ✅ Fuzzy match (substring)
-  - ✅ Return undefined if not found
+### High-Priority Protection (ADMIN/MANAGER)
+- [x] `/api/drivers/locations` - Real-time GPS tracking
+  - [x] `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-## ✅ Phase 3: Dynamic Product Detection
+- [x] `/api/routes` - Delivery route management
+  - [x] GET: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Remove hardcoded row constants (previously lines 49-50)
-  - ❌ Removed: `const ROW_PROD_1KG = 8;`
-  - ❌ Removed: `const ROW_PROD_3KG = 9;`
+### Standard Protection (Read/Write Controls)
+- [x] `/api/orders` - Order management
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Add row definitions (lines 88-93)
-  - `const ROW_BRANCH_CODE = 2;`
-  - `const ROW_ORDER_NUM = 4;`
-  - `const ROW_DATE = 5;`
-  - `const ROW_PRODUCTS_START = 8;`
-  - `const COL_PRODUCT_IDENTIFIER = 1;`
+- [x] `/api/customers` - Customer management
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Implement product detection loop (lines 99-142)
-  - ✅ Scan from ROW_PRODUCTS_START until empty cell
-  - ✅ Stop on "Итого" or "total" rows
-  - ✅ Try matching each product identifier
-  - ✅ Log warnings for unmatched products
-  - ✅ Throw error if NO products found
-  - ✅ Log detected products to console
+- [x] `/api/products` - Product management
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-## ✅ Phase 4: Dynamic Quantity Reading
+- [x] `/api/vehicles` - Vehicle management
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Replace hardcoded quantity reading (previously lines 91-92)
-  - ❌ Removed: `const qty1kg = parseFloat(...)`
-  - ❌ Removed: `const qty3kg = parseFloat(...)`
+- [x] `/api/drivers` - Driver management
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Implement dynamic loop (lines 179-214)
-  - ✅ Loop through all `detectedProducts`
-  - ✅ Read quantity from cell at `productRow.rowNumber`
-  - ✅ Handle zero and NaN values
-  - ✅ Calculate line totals and VAT
-  - ✅ Track `hasAnyQuantity` flag
-  - ✅ Skip columns with no quantities
+- [x] `/api/branches` - Branch management
+  - [x] GET: `requireUser()` check added
+  - [x] Error handling updated
 
-## ✅ Phase 5: Result Metadata
+- [x] `/api/assignments` - Driver-vehicle assignments
+  - [x] GET: `requireUser()` check added
+  - [x] POST: `requireManagerOrAdmin()` check added
+  - [x] Error handling updated
 
-- [x] Add detected products to response (lines 258-263)
-  - ✅ Map detectedProducts array
-  - ✅ Include productName, rowNumber, identifier
-  - ✅ Return with result object
+- [x] `/api/drivers-vehicles` - Driver-vehicle mapping
+  - [x] GET: `requireUser()` check added
+  - [x] Error handling updated
 
-## ✅ Code Quality
+## ✅ Code Quality - Complete
 
-- [x] TypeScript strict mode
-  - ✅ No `any` types (lines 29, 180-190, 262)
-  - ✅ Proper type annotations throughout
+- [x] TypeScript type checking passes
+  - [x] No type errors in auth-related changes
+  - [x] Proper imports and exports
+  - [x] Interface compliance
 
-- [x] ESLint compliance
-  - ✅ Passes linting: `npm run lint`
+- [x] Error handling standardized
+  - [x] All routes use `handleAuthError()` for consistent responses
+  - [x] AuthError thrown for unauthorized access
+  - [x] Proper HTTP status codes (401, 403, 500)
 
-- [x] Error handling
-  - ✅ Graceful degradation for unknown products
-  - ✅ Clear error messages
-  - ✅ Warning logging system
+- [x] Consistency across codebase
+  - [x] All protected routes follow same pattern
+  - [x] Middleware and API routes work together
+  - [x] Error messages are user-friendly
 
-- [x] Performance
-  - ✅ O(1) product lookups via maps
-  - ✅ Single database query for all products
-  - ✅ No N+1 queries
+## ✅ Documentation - Complete
 
-- [x] Documentation
-  - ✅ Inline comments explain logic
-  - ✅ Console logging for debugging
-  - ✅ Clear variable names
+- [x] `RBAC_IMPLEMENTATION_GUIDE.md` created with:
+  - [x] Architecture overview
+  - [x] Component descriptions
+  - [x] Setup instructions
+  - [x] Role permission matrix
+  - [x] Testing guidelines
+  - [x] Troubleshooting section
+  - [x] Future enhancements list
 
-## ✅ Backward Compatibility
+- [x] Inline code comments added for critical sections
+- [x] Implementation checklist (this file)
 
-- [x] Function signature unchanged
-  - Function: `parseAndImport(fileBuffer: Buffer)`
-  - Return type: `Promise<RegistryParseResult>`
+## 📊 Summary
 
-- [x] Existing 2-product files work identically
-  - ✅ Detects rows 8-9 same as before
-  - ✅ Creates orders same way
-  - ✅ Same database result
+| Category | Status | Count |
+|----------|--------|-------|
+| Protected API Routes | ✅ Complete | 10 major routes |
+| Helper Functions | ✅ Complete | 3 new functions |
+| Middleware Checks | ✅ Complete | Full RBAC flow |
+| Documentation | ✅ Complete | 2 guide documents |
+| Test Coverage | ✅ Ready | See testing section |
 
-- [x] Return type compatible
-  - ✅ New fields are optional (`?`)
-  - ✅ Old callers work unchanged
-  - ✅ No breaking changes
+## 🔒 Security Status
 
-## ✅ Bug Fixes (Bonus)
+### Critical Security Improvements
 
-- [x] Fixed `/api/users/[id]` Next.js 16 params type
-  - Changed `params: { id: string }` to `params: Promise<{ id: string }>`
+1. **Admin-Only Operations Protected**
+   - Database registry imports blocked for non-admins
+   - User management restricted to admins
+   - Admin routes inaccessible to lower roles
 
-- [x] Fixed `/api/orders/[id]/schet-faktura` PDF buffer type
-  - Changed `new NextResponse(buffer)` to `new NextResponse(new Uint8Array(buffer))`
+2. **Manager Operations Protected**
+   - GPS tracking data access controlled
+   - Route management restricted
+   - Order/customer creation limited to managers
 
-- [x] Removed broken i18n from components (temporary)
-  - BulkDeleteDialog: hardcoded Russian text
-  - InvoiceGeneratorModal: hardcoded Russian text
-  - OrderImportModal: fallback translation map
+3. **Viewer Limitations**
+   - Read-only access enforced
+   - Cannot create/edit/delete resources
+   - No access to sensitive operations
 
-## 📊 Code Changes Summary
+### Previous Vulnerabilities - Now Fixed
 
-| Metric | Old | New | Change |
-|--------|-----|-----|--------|
-| File size | 181 lines | 278 lines | +97 lines |
-| Type definitions | 1 | 2 | +1 |
-| Lookup maps | 0 | 3 | +3 |
-| Functions | 1 | 2 | +1 |
-| Product matching | 2 lines | 23 lines | +21 lines |
-| Quantity reading | 2 lines | 20 lines | +18 lines |
-| Database queries | 1 | 1 | ±0 |
+❌ **Before:** Any authenticated user could:
+- Import registry data → ✅ **Fixed: ADMIN only**
+- View real-time GPS tracking → ✅ **Fixed: ADMIN/MANAGER only**
+- Manage routes → ✅ **Fixed: ADMIN/MANAGER only**
+- Create orders/customers → ✅ **Fixed: ADMIN/MANAGER only**
 
-## 🎯 Key Improvements
+## 🚀 Ready for Deployment
 
-1. **Flexibility**: Now supports unlimited products (not just 2)
-2. **Robustness**: Multi-strategy product matching (SAP code, barcode, name, fuzzy)
-3. **Transparency**: Returns detected products in API response
-4. **Debugging**: Logs product detection and warnings
-5. **Quality**: Full TypeScript compliance, no `any` types
-6. **Performance**: O(1) lookups instead of O(n)
+### Pre-Deployment Checklist
 
-## 📝 Documentation
+- [x] All TypeScript types are correct
+- [x] No console errors or warnings
+- [x] All import paths are valid
+- [x] Error handling is complete
+- [x] Documentation is comprehensive
+- [x] Code follows project conventions (CLAUDE.md)
+- [x] No security vulnerabilities introduced
+- [x] Backward compatible with existing auth flow
 
-- [x] Created `REGISTRY_PARSER_ENHANCEMENT.md` (comprehensive guide)
-- [x] Created `registry-parser-test.ts` (reference file)
-- [x] Created `IMPLEMENTATION_CHECKLIST.md` (this file)
-- [x] Inline code comments (throughout registry-parser.ts)
+### Deployment Steps
 
-## ✅ Ready for Testing
+1. **Run admin seeding:**
+   ```bash
+   npm run db:seed-admin
+   ```
 
-**Test Commands:**
-```bash
-# Build and verify TypeScript
-npm run build
+2. **Test authentication:**
+   ```bash
+   npm run dev
+   # Test login at http://localhost:3000/login
+   ```
 
-# Lint the file
-npm run lint -- src/lib/services/registry-parser.ts
+3. **Verify role restrictions:**
+   - Test with ADMIN user (full access)
+   - Test with MANAGER user (limited access)
+   - Test with VIEWER user (read-only)
 
-# Test with 2-product registry (backward compat)
-curl -X POST http://localhost:3000/api/upload/registry \
-  -F "file=@public/uploads/test-2-products.xlsx"
+4. **Check critical routes:**
+   - Admin: Can access `/admin` and `/api/upload/registry`
+   - Manager: Can access orders but NOT `/api/upload/registry`
+   - Viewer: Can see dashboards but cannot create resources
 
-# Test with 3+ product registry (new feature)
-curl -X POST http://localhost:3000/api/upload/registry \
-  -F "file=@public/uploads/test-3-products.xlsx"
+## 📝 Notes
 
-# Verify database
-npm run db:studio
-```
+- Implementation uses existing Bearer token system (no JWT migration)
+- Middleware validates tokens with database lookups
+- Role information is embedded in UserRole enum from Prisma
+- All error responses follow consistent format via `handleAuthError()`
+- Future: Can be enhanced with JWT tokens and refresh mechanisms
 
-## 🔍 Code Locations
+## 🎯 Success Criteria - All Met ✅
 
-| Component | Location | Lines |
-|-----------|----------|-------|
-| Type definitions | src/lib/services/registry-parser.ts | 5-26 |
-| Product matching | src/lib/services/registry-parser.ts | 45-86 |
-| Detection loop | src/lib/services/registry-parser.ts | 99-142 |
-| Quantity reading | src/lib/services/registry-parser.ts | 179-214 |
-| Result metadata | src/lib/services/registry-parser.ts | 258-263 |
+- [x] Admin user created with specified password
+- [x] Middleware enforces role-based route protection
+- [x] Critical API routes protected (registry, GPS, routes)
+- [x] Role permission matrix enforced
+- [x] 403 page displays for unauthorized access
+- [x] Proper HTTP status codes returned
+- [x] Driver auth continues to work independently
+- [x] Code passes TypeScript validation
+- [x] Documentation complete and comprehensive
 
 ---
 
-**Status**: ✅ **COMPLETE AND READY FOR TESTING**
-
-**Implementation Date**: 2026-01-31
-**Tested On**: Next.js 16, TypeScript 5.x, Node.js latest
-**Breaking Changes**: NONE
-**Backward Compatibility**: 100%
+**Implementation Date:** February 2, 2026
+**Status:** ✅ COMPLETE AND READY FOR TESTING

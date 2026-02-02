@@ -7,7 +7,7 @@ import { requireUser, handleAuthError } from '@/lib/auth';
 export async function GET(request: NextRequest) {
     try {
         // Only Admin and Manager can list users
-        await requireUser([UserRole.ADMIN, UserRole.MANAGER]);
+        await requireUser(request, [UserRole.ADMIN, UserRole.MANAGER]);
 
         const users = await prisma.user.findMany({
             select: {
@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
     try {
         // Only Admin can create users
-        await requireUser([UserRole.ADMIN]);
+        await requireUser(request, [UserRole.ADMIN]);
 
         const body = await request.json();
         const { name, email, password, role } = body;

@@ -47,6 +47,7 @@ export default function BranchLocationPicker({
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include',
         body: JSON.stringify({
           address: address.trim(),
           city: 'Tashkent',

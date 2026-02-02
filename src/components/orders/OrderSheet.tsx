@@ -60,7 +60,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, fetchWithAuth } from "@/lib/utils"
 import { useScopedI18n } from "@/locales/client"
 
 const orderSchema = z.object({
@@ -186,7 +186,8 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
     React.useEffect(() => {
         async function fetchCustomers() {
             try {
-                const res = await fetch('/api/customers')
+                const res = await fetchWithAuth('/api/customers', {
+                })
                 if (!res.ok) throw new Error('Failed to fetch customers')
                 const data = await res.json()
                 setCustomers(data)
@@ -209,7 +210,8 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
             async function fetchProducts() {
                 try {
                     setLoadingProducts(true)
-                    const res = await fetch(`/api/products?customerId=${customerId}`)
+                    const res = await fetchWithAuth(`/api/products?customerId=${customerId}`, {
+                    })
                     if (!res.ok) throw new Error('Failed to fetch products')
                     const data = await res.json()
                     setProducts(data)

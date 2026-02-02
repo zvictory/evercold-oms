@@ -36,14 +36,16 @@ export default function BranchesList() {
       setError(null);
 
       // Fetch branches
-      const branchRes = await fetch("/api/customer-branches");
+      const branchRes = await fetchWithAuth("/api/customer-branches", {
+      });
       if (branchRes.ok) {
         const branchData = await branchRes.json();
         setBranches(branchData);
       }
 
       // Fetch technicians
-      const techRes = await fetch("/api/technicians");
+      const techRes = await fetchWithAuth("/api/technicians", {
+      });
       if (techRes.ok) {
         const techData = await techRes.json();
         setTechnicians(techData);
@@ -58,7 +60,7 @@ export default function BranchesList() {
   async function handleAssignTechnician(branchId: string, technicianId: string) {
     setSaving(branchId);
     try {
-      const res = await fetch(`/api/branches/${branchId}/technicians`, {
+      const res = await fetchWithAuth(`/api/branches/${branchId}/technicians`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ technicianId }),

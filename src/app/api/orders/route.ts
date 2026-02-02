@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/prisma'
+import { requireUser, requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view orders
+    await requireUser(request)
     const searchParams = request.nextUrl.searchParams
 
     // Parse filters from query params
@@ -109,15 +112,15 @@ export async function GET(request: NextRequest) {
     })
   } catch (error: any) {
     console.error('Orders API error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch orders' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Only ADMIN and MANAGER can create orders
+    await requireManagerOrAdmin(request)
+
     const body = await request.json()
 
     // Validate required fields

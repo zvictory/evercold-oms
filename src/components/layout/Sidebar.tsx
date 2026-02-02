@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { useI18n, useCurrentLocale } from '@/locales/client'
-import { cn } from "@/lib/utils"
+import { cn, fetchWithAuth } from "@/lib/utils"
 import {
     LayoutDashboard,
     ShoppingCart,
@@ -13,7 +13,9 @@ import {
     Users,
     Settings,
     Menu,
-    ChevronLeft
+    ChevronLeft,
+    LogOut,
+    Lock
 } from "lucide-react"
 import { LocaleSwitcher } from "@/components/LocaleSwitcher"
 import { useQuery } from "@tanstack/react-query"
@@ -22,16 +24,18 @@ import { UserRole } from "@prisma/client"
 interface SidebarProps extends React.HTMLAttributes<HTMLElement> { }
 
 export function Sidebar({ className, ...props }: SidebarProps) {
+    const router = useRouter()
     const pathname = usePathname()
     const locale = useCurrentLocale()
     const t = useI18n()
     const [collapsed, setCollapsed] = React.useState(false)
+    const [userMenuOpen, setUserMenuOpen] = React.useState(false)
 
     // Fetch current user
     const { data: user } = useQuery({
         queryKey: ['currentUser'],
         queryFn: async () => {
-            const res = await fetch('/api/auth/me')
+            const res = await fetchWithAuth('/api/auth/me')
             if (!res.ok) return null
             return res.json()
         },
@@ -52,6 +56,23 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         }] : []),
         { name: t('Nav.settings'), href: `/${locale}/settings`, icon: Settings },
     ]
+
+    const handleLogout = async () => {
+        try {
+            const response = await fetchWithAuth('/api/auth/logout', {
+                method: 'POST',
+            });
+
+            if (response.ok) {
+                localStorage.removeItem('userInfo');
+                localStorage.removeItem('authToken');
+                router.push(`/${locale}/login`);
+                router.refresh();
+            }
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
 
     return (
         <aside
@@ -120,7 +141,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
             )}
 
             {/* Footer / User / Collapse Toggle (Mobile) */}
-            <div className="p-4 border-t border-slate-100">
+            <div className="p-4 border-t border-slate-100 relative">
                 {collapsed ? (
                     <button
                         onClick={() => setCollapsed(false)}
@@ -129,15 +150,58 @@ export function Sidebar({ className, ...props }: SidebarProps) {
                         <Menu className="h-5 w-5" />
                     </button>
                 ) : (
-                    <div className="flex items-center gap-3">
-                        <div className="h-9 w-9 bg-slate-100 rounded-full flex items-center justify-center border border-slate-200">
-                            <span className="text-xs font-semibold text-slate-600">JD</span>
-                        </div>
-                        <div className="flex flex-col overflow-hidden">
-                            <span className="text-sm font-medium text-slate-900 truncate">John Doe</span>
-                            <span className="text-xs text-slate-500 truncate">Manager</span>
-                        </div>
-                    </div>
+                    <>
+                        <button
+                            onClick={() => setUserMenuOpen(!userMenuOpen)}
+                            className="w-full flex items-center gap-3 p-2 rounded-md hover:bg-slate-50 transition-colors group"
+                        >
+                            <div className="h-9 w-9 bg-sky-100 rounded-full flex items-center justify-center border border-sky-200 shrink-0">
+                                <span className="text-xs font-semibold text-sky-700">
+                                    {user?.name?.split(' ').map(n => n[0]).join('').toUpperCase() || 'U'}
+                                </span>
+                            </div>
+                            <div className="flex flex-col overflow-hidden text-left">
+                                <span className="text-sm font-medium text-slate-900 truncate">
+                                    {user?.name || 'User'}
+                                </span>
+                                <span className="text-xs text-slate-500 truncate">
+                                    {user?.role || 'User'}
+                                </span>
+                            </div>
+                        </button>
+
+                        {/* User Dropdown Menu */}
+                        {userMenuOpen && (
+                            <>
+                                <div className="absolute bottom-16 left-4 right-4 bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
+                                    <Link
+                                        href={`/${locale}/change-password`}
+                                        className="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 hover:bg-slate-50 transition-colors w-full"
+                                        onClick={() => setUserMenuOpen(false)}
+                                    >
+                                        <Lock className="h-4 w-4" />
+                                        Change Password
+                                    </Link>
+
+                                    <button
+                                        onClick={() => {
+                                            setUserMenuOpen(false);
+                                            handleLogout();
+                                        }}
+                                        className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors"
+                                    >
+                                        <LogOut className="h-4 w-4" />
+                                        Logout
+                                    </button>
+                                </div>
+                                {/* Close menu when clicking outside */}
+                                <div
+                                    className="fixed inset-0 z-40"
+                                    onClick={() => setUserMenuOpen(false)}
+                                />
+                            </>
+                        )}
+                    </>
                 )}
             </div>
         </aside>

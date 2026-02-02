@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
+import { requireUser, requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 const pool = new Pool({
   connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
 })
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view customers
+    await requireUser(request)
     const result = await pool.query(
       `SELECT id, name, "customerCode", email, phone, "headquartersAddress", "contractNumber", "contractDate", "hasVat", notes, "createdAt", "updatedAt" FROM "Customer" ORDER BY name ASC`
     )
@@ -23,15 +26,15 @@ export async function GET() {
     return NextResponse.json(customers)
   } catch (error: any) {
     console.error('Fetch customers error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch customers' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Only ADMIN and MANAGER can create customers
+    await requireManagerOrAdmin(request)
+
     const body = await request.json()
 
     const result = await pool.query(

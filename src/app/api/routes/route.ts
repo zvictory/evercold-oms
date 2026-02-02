@@ -1,35 +1,39 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/lib/prisma';
+import { NextRequest, NextResponse } from 'next/server'
+import { prisma } from '@/lib/prisma'
+import { requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 /**
  * GET /api/routes
  * Fetch all delivery routes with optional filters
+ * Requires: ADMIN or MANAGER role
  */
 export async function GET(request: NextRequest) {
   try {
-    const searchParams = request.nextUrl.searchParams;
-    const status = searchParams.get('status');
-    const driverId = searchParams.get('driverId');
-    const startDate = searchParams.get('startDate');
-    const endDate = searchParams.get('endDate');
+    const user = await requireManagerOrAdmin(request)
 
-    const where: any = {};
+    const searchParams = request.nextUrl.searchParams
+    const status = searchParams.get('status')
+    const driverId = searchParams.get('driverId')
+    const startDate = searchParams.get('startDate')
+    const endDate = searchParams.get('endDate')
+
+    const where: any = {}
 
     if (status) {
-      where.status = status;
+      where.status = status
     }
 
     if (driverId) {
-      where.driverId = driverId;
+      where.driverId = driverId
     }
 
     if (startDate || endDate) {
-      where.scheduledDate = {};
+      where.scheduledDate = {}
       if (startDate) {
-        where.scheduledDate.gte = new Date(startDate);
+        where.scheduledDate.gte = new Date(startDate)
       }
       if (endDate) {
-        where.scheduledDate.lte = new Date(endDate);
+        where.scheduledDate.lte = new Date(endDate)
       }
     }
 
@@ -64,14 +68,11 @@ export async function GET(request: NextRequest) {
       orderBy: {
         scheduledDate: 'desc',
       },
-    });
+    })
 
-    return NextResponse.json({ routes });
-  } catch (error) {
-    console.error('Error fetching routes:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch routes' },
-      { status: 500 }
-    );
+    return NextResponse.json({ routes })
+  } catch (error: any) {
+    console.error('Error fetching routes:', error)
+    return handleAuthError(error)
   }
 }

@@ -19,7 +19,7 @@ import {
     Download,
     AlertCircle
 } from "lucide-react"
-import { cn } from "@/lib/utils"
+import { cn, fetchWithAuth } from "@/lib/utils"
 import { formatDate } from "@/lib/date-utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -120,7 +120,8 @@ export function OrderTable({
         try {
             setDownloadingId(orderId)
 
-            const response = await fetch(`/api/orders/${orderId}/schet-faktura`)
+            const response = await fetchWithAuth(`/api/orders/${orderId}/schet-faktura`, {
+            })
 
             if (!response.ok) {
                 const error = await response.json()

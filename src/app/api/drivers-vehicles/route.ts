@@ -1,12 +1,15 @@
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
+import { requireUser, handleAuthError } from '@/lib/auth'
 
 const pool = new Pool({
   connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
 })
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view driver-vehicle mappings
+    await requireUser(request)
     // Get all drivers
     const driversResult = await pool.query(
       `SELECT id, name, phone, "licenseNumber", status, "createdAt" FROM "Driver" ORDER BY name`
@@ -59,9 +62,6 @@ export async function GET() {
     })
   } catch (error: any) {
     console.error('Error fetching drivers and vehicles:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch drivers and vehicles' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }

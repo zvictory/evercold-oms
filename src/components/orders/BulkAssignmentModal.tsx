@@ -22,7 +22,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
-import { cn } from "@/lib/utils"
+import { cn, fetchWithAuth } from "@/lib/utils"
 
 interface Driver {
   id: string
@@ -108,7 +108,8 @@ export function BulkAssignmentModal({
   const fetchDrivers = async () => {
     try {
       setLoadingDrivers(true)
-      const response = await fetch('/api/drivers?status=ACTIVE')
+      const response = await fetchWithAuth('/api/drivers?status=ACTIVE', {
+      })
       if (!response.ok) throw new Error('Failed to fetch drivers')
       const data = await response.json()
       setDrivers(data.drivers || [])
@@ -123,7 +124,8 @@ export function BulkAssignmentModal({
   const fetchVehicles = async () => {
     try {
       setLoadingVehicles(true)
-      const response = await fetch('/api/vehicles')
+      const response = await fetchWithAuth('/api/vehicles', {
+      })
       if (!response.ok) throw new Error('Failed to fetch vehicles')
       const data = await response.json()
       setVehicles(data.vehicles || [])
@@ -148,7 +150,7 @@ export function BulkAssignmentModal({
       setIsSubmitting(true)
       setErrorMessage(null)
 
-      const response = await fetch('/api/dispatch/bulk-assign', {
+      const response = await fetchWithAuth('/api/dispatch/bulk-assign', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

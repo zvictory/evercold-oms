@@ -46,7 +46,8 @@ export function RevenueChart() {
         try {
             setLoading(true)
             setError(null)
-            const res = await fetch('/api/dashboard/revenue-chart')
+            const res = await fetchWithAuth('/api/dashboard/revenue-chart', {
+            })
             if (!res.ok) throw new Error('Failed to fetch')
             const result = await res.json()
             setData(result.data)

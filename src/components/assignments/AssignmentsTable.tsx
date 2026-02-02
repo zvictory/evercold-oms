@@ -16,7 +16,7 @@ import { Loader2, Truck } from 'lucide-react'
 import { AssignVehicleModal } from './AssignVehicleModal'
 import { UnassignConfirmDialog } from './UnassignConfirmDialog'
 import { DriverWithAssignment, VehicleWithDriver } from '@/types/assignment'
-import { cn } from '@/lib/utils'
+import { cn, fetchWithAuth } from '@/lib/utils'
 import { toast } from 'sonner'
 
 interface AssignmentsTableProps {
@@ -54,7 +54,7 @@ export function AssignmentsTable({
 
       setLoading(true)
       try {
-        const response = await fetch('/api/assignments', {
+        const response = await fetchWithAuth('/api/assignments', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -86,7 +86,7 @@ export function AssignmentsTable({
 
     setLoading(true)
     try {
-      const response = await fetch(`/api/assignments/${activeDriverId}`, {
+      const response = await fetchWithAuth(`/api/assignments/${activeDriverId}`, {
         method: 'DELETE',
       })
 
@@ -109,7 +109,6 @@ export function AssignmentsTable({
     setLoading(true)
     try {
       const promises = Array.from(selectedDrivers).map(driverId =>
-        fetch(`/api/assignments/${driverId}`, { method: 'DELETE' })
       )
 
       const results = await Promise.all(promises)

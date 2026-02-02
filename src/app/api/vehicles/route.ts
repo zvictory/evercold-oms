@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { Pool } from 'pg'
+import { requireUser, requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 const pool = new Pool({
   connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
@@ -7,6 +8,8 @@ const pool = new Pool({
 
 export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view vehicles
+    await requireUser(request)
     const { searchParams } = new URL(request.url)
     const status = searchParams.get('status')
 
@@ -43,15 +46,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ vehicles })
   } catch (error: any) {
     console.error('Fetch vehicles error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch vehicles' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Only ADMIN and MANAGER can create vehicles
+    await requireManagerOrAdmin(request)
+
     const body = await request.json()
 
     const result = await pool.query(

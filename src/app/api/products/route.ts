@@ -2,9 +2,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { Prisma } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { productSchema } from '@/lib/validations/product'
+import { requireUser, requireManagerOrAdmin, handleAuthError } from '@/lib/auth'
 
 export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view products
+    await requireUser(request)
     const { searchParams } = new URL(request.url)
     const customerId = searchParams.get('customerId')
 
@@ -43,15 +46,15 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(productsWithPrices)
   } catch (error: any) {
     console.error('Fetch products error:', error)
-    return NextResponse.json(
-      { error: error.message || 'Failed to fetch products' },
-      { status: 500 }
-    )
+    return handleAuthError(error)
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
+    // Only ADMIN and MANAGER can create products
+    await requireManagerOrAdmin(request)
+
     const body = await request.json()
 
     // Validate with Zod

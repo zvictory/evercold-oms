@@ -2,24 +2,32 @@ import { PrismaClient } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
-// Get DATABASE_URL from environment, with fallback
-// DATABASE_URL should be: postgresql://user@host:port/database
-const getDatabaseUrl = (): string => {
-  const url = process.env.DATABASE_URL
-  if (!url) {
-    console.warn('[Prisma] DATABASE_URL not set, using default: postgresql://zafar@localhost:5432/evercold_crm')
-    return 'postgresql://zafar@localhost:5432/evercold_crm'
-  }
-  console.log('[Prisma] Using DATABASE_URL:', url.replace(/password[^@]*@/, 'password:***@'))
-  return url
+const prismaClientSingleton = () => {
+  const pool = new Pool({
+    connectionString: process.env.DATABASE_URL || 'postgresql://zafar@localhost:5432/evercold_crm',
+    max: 10, // Maximum number of connections in pool
+    idleTimeoutMillis: 30000, // How long a client sits idle before being closed
+    connectionTimeoutMillis: 2000, // How long to wait for a new connection from the pool
+  })
+
+  return new PrismaClient({
+    adapter: new PrismaPg(pool),
+    log:
+      process.env.NODE_ENV === 'development'
+        ? ['query', 'error', 'warn']
+        : ['error'],
+  })
 }
 
-// Create Pool using DATABASE_URL
-const pool = new Pool({
-  connectionString: getDatabaseUrl(),
-})
+type PrismaClientSingleton = ReturnType<typeof prismaClientSingleton>
 
-export const prisma = new PrismaClient({
-  adapter: new PrismaPg(pool),
-  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-})
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClientSingleton | undefined
+}
+
+export const prisma =
+  globalForPrisma.prisma ?? prismaClientSingleton()
+
+if (process.env.NODE_ENV !== 'production') {
+  globalForPrisma.prisma = prisma
+}

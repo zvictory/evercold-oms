@@ -95,7 +95,7 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
                 setProgress(prev => Math.min(prev + 5, 90))
             }, 200)
 
-            const response = await fetch('/api/upload', {
+            const response = await fetchWithAuth('/api/upload', {
                 method: 'POST',
                 body: formData,
             })

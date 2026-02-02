@@ -10,7 +10,7 @@ export async function PUT(
 ) {
     try {
         // Only Admin can update users
-        await requireUser([UserRole.ADMIN]);
+        await requireUser(request, [UserRole.ADMIN]);
 
         const { id } = await params;
         const body = await request.json();
@@ -68,7 +68,7 @@ export async function DELETE(
 ) {
     try {
         // Only Admin can delete/deactivate users
-        await requireUser([UserRole.ADMIN]);
+        await requireUser(request, [UserRole.ADMIN]);
 
         const { id } = await params;
 

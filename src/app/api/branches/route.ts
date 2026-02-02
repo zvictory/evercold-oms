@@ -1,8 +1,11 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { requireUser, requireManagerOrAdmin, handleAuthError } from "@/lib/auth";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // All authenticated users can view branches
+    await requireUser(request)
     const branches = await prisma.customerBranch.findMany({
       include: {
         customer: {
@@ -26,9 +29,6 @@ export async function GET() {
 
     return NextResponse.json(formattedBranches);
   } catch (error: any) {
-    return NextResponse.json(
-      { error: error.message },
-      { status: 500 }
-    );
+    return handleAuthError(error);
   }
 }
