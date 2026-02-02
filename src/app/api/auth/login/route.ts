@@ -52,8 +52,8 @@ export async function POST(request: NextRequest) {
     // Create session (24 hours)
     const token = await createUserSession(user.id, 24);
 
-    // Return user info (excluding passwordHash) and token
-    return NextResponse.json({
+    // Create response with token
+    const response = NextResponse.json({
       success: true,
       user: {
         id: user.id,
@@ -63,6 +63,17 @@ export async function POST(request: NextRequest) {
       },
       token,
     });
+
+    // Set token as cookie for middleware (24 hours = 86400 seconds)
+    response.cookies.set('authToken', token, {
+      httpOnly: false, // Allow JavaScript access for fetchWithAuth
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60,
+      path: '/',
+    });
+
+    return response;
   } catch (error) {
     console.error('Login error:', error);
     return handleAuthError(error);
