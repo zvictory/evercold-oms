@@ -1,6 +1,9 @@
 import type { PrismaClient } from '@prisma/client'
 import { prisma } from '@/lib/prisma'
 import { OrderRepository } from './OrderRepository'
+import { CustomerRepository } from './CustomerRepository'
+import { CustomerBranchRepository } from './CustomerBranchRepository'
+import { CustomerProductPriceRepository } from './CustomerProductPriceRepository'
 
 // Re-export base classes and types
 export { BaseRepository, RepositoryError } from './BaseRepository'
@@ -19,6 +22,26 @@ export type {
   OrderFilters,
   CreateOrderInput,
 } from './OrderRepository'
+
+export { CustomerRepository } from './CustomerRepository'
+export type {
+  CustomerWithBranches,
+  CustomerStats,
+  CustomerSearchResult,
+} from './CustomerRepository'
+
+export { CustomerBranchRepository } from './CustomerBranchRepository'
+export type {
+  BranchWithRelations,
+  BranchLocation,
+  BranchServiceHistory,
+} from './CustomerBranchRepository'
+
+export { CustomerProductPriceRepository } from './CustomerProductPriceRepository'
+export type {
+  CustomPriceWithProduct,
+  PriceAdjustment,
+} from './CustomerProductPriceRepository'
 
 /**
  * Centralized repository registry
@@ -65,6 +88,42 @@ export class RepositoryRegistry {
       this.repositories.set('order', new OrderRepository(this.prismaClient))
     }
     return this.repositories.get('order')!
+  }
+
+  /**
+   * Get CustomerRepository instance
+   *
+   * @returns CustomerRepository singleton
+   */
+  getCustomerRepository(): CustomerRepository {
+    if (!this.repositories.has('customer')) {
+      this.repositories.set('customer', new CustomerRepository(this.prismaClient))
+    }
+    return this.repositories.get('customer')!
+  }
+
+  /**
+   * Get CustomerBranchRepository instance
+   *
+   * @returns CustomerBranchRepository singleton
+   */
+  getCustomerBranchRepository(): CustomerBranchRepository {
+    if (!this.repositories.has('customerBranch')) {
+      this.repositories.set('customerBranch', new CustomerBranchRepository(this.prismaClient))
+    }
+    return this.repositories.get('customerBranch')!
+  }
+
+  /**
+   * Get CustomerProductPriceRepository instance
+   *
+   * @returns CustomerProductPriceRepository singleton
+   */
+  getCustomerProductPriceRepository(): CustomerProductPriceRepository {
+    if (!this.repositories.has('customerProductPrice')) {
+      this.repositories.set('customerProductPrice', new CustomerProductPriceRepository(this.prismaClient))
+    }
+    return this.repositories.get('customerProductPrice')!
   }
 
   /**
@@ -116,6 +175,33 @@ const defaultRegistry = RepositoryRegistry.getInstance()
  */
 export const getOrderRepository = (): OrderRepository => {
   return defaultRegistry.getOrderRepository()
+}
+
+/**
+ * Get default CustomerRepository instance
+ *
+ * @returns CustomerRepository singleton
+ */
+export const getCustomerRepository = (): CustomerRepository => {
+  return defaultRegistry.getCustomerRepository()
+}
+
+/**
+ * Get default CustomerBranchRepository instance
+ *
+ * @returns CustomerBranchRepository singleton
+ */
+export const getCustomerBranchRepository = (): CustomerBranchRepository => {
+  return defaultRegistry.getCustomerBranchRepository()
+}
+
+/**
+ * Get default CustomerProductPriceRepository instance
+ *
+ * @returns CustomerProductPriceRepository singleton
+ */
+export const getCustomerProductPriceRepository = (): CustomerProductPriceRepository => {
+  return defaultRegistry.getCustomerProductPriceRepository()
 }
 
 /**
