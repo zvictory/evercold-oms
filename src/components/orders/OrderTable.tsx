@@ -156,9 +156,15 @@ export function OrderTable({
     const StatusBadge = ({ id, status }: { id: string, status: string }) => {
         const variants: Record<string, { label: string, color: string, dot: string }> = {
             "NEW": { label: t('Orders.status.new'), color: "bg-blue-50 text-blue-700 border-blue-100", dot: "bg-blue-500" },
-            "CONFIRMED": { label: t('Orders.status.confirmed'), color: "bg-purple-50 text-purple-700 border-purple-100", dot: "bg-purple-500" },
+            "CONFIRMED": { label: "Подтверждён", color: "bg-purple-50 text-purple-700 border-purple-100", dot: "bg-purple-500" },
+            "PICKING": { label: "Сборка", color: "bg-amber-50 text-amber-700 border-amber-100", dot: "bg-amber-500" },
+            "PACKING": { label: "Упаковка", color: "bg-orange-50 text-orange-700 border-orange-100", dot: "bg-orange-500" },
+            "READY": { label: "Готов", color: "bg-cyan-50 text-cyan-700 border-cyan-100", dot: "bg-cyan-500" },
             "SHIPPED": { label: t('Orders.status.shipped'), color: "bg-indigo-50 text-indigo-700 border-indigo-100", dot: "bg-indigo-500" },
-            "DELIVERED": { label: t('Orders.status.delivered'), color: "bg-emerald-50 text-emerald-700 border-emerald-100", dot: "bg-emerald-500" },
+            "PARTIAL": { label: "Частичный", color: "bg-yellow-50 text-yellow-700 border-yellow-100", dot: "bg-yellow-500" },
+            "COMPLETED": { label: "Завершён", color: "bg-emerald-50 text-emerald-700 border-emerald-100", dot: "bg-emerald-500" },
+            "INVOICED": { label: "Счёт выставлен", color: "bg-teal-50 text-teal-700 border-teal-100", dot: "bg-teal-500" },
+            "PAID": { label: "Оплачен", color: "bg-green-50 text-green-700 border-green-100", dot: "bg-green-500" },
             "CANCELLED": { label: t('Orders.status.cancelled'), color: "bg-red-50 text-red-700 border-red-100", dot: "bg-red-500" },
         }
 

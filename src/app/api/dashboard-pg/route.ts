@@ -58,12 +58,6 @@ export async function GET() {
       [today, tomorrow]
     )
 
-    // Query critical tickets
-    const criticalTicketsResult = await pool.query(
-      `SELECT COUNT(*) as critical_count FROM "ServiceTicket"
-       WHERE priority = 'CRITICAL' AND status NOT IN ('COMPLETED', 'CLOSED')`
-    )
-
     const todaysVolume = parseInt(todaysOrdersResult.rows[0].total_volume)
     const yesterdaysVolume = parseInt(yesterdaysOrdersResult.rows[0].total_volume)
     const volumeChange = yesterdaysVolume > 0
@@ -77,8 +71,6 @@ export async function GET() {
     const totalBranches = parseInt(branchesResult.rows[0].total_branches)
     const servedBranches = parseInt(servedBranchesResult.rows[0].served_branches)
     const coveragePercentage = totalBranches > 0 ? (servedBranches / totalBranches) * 100 : 0
-
-    const criticalCount = parseInt(criticalTicketsResult.rows[0].critical_count)
 
     return NextResponse.json({
       todaysVolume: {
@@ -95,10 +87,6 @@ export async function GET() {
         served: servedBranches,
         total: totalBranches,
         percentage: coveragePercentage,
-      },
-      serviceHealth: {
-        critical: criticalCount,
-        tickets: [],
       },
       recentActivity: [],
     })

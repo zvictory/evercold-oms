@@ -36,10 +36,6 @@ interface DashboardData {
     total: number
     percentage: number
   }
-  serviceHealth: {
-    critical: number
-    tickets: Array<any>
-  }
   recentActivity: Array<any>
 }
 
@@ -161,35 +157,6 @@ export default function DashboardPage() {
         </DashboardCard>
 
         {/* Metric 4: Service Health */}
-        <DashboardCard className={cn(
-          "col-span-1",
-          data.serviceHealth.critical > 0 && "border-red-100 bg-red-50/10"
-        )}>
-          <div className="flex items-center justify-between mb-4">
-            <span className="text-sm font-medium text-slate-500">{t('Dashboard.metrics.serviceHealth.title')}</span>
-            {data.serviceHealth.critical > 0 && (
-              <Badge variant="destructive" className="animate-pulse">{t('Dashboard.metrics.serviceHealth.actionRequired')}</Badge>
-            )}
-          </div>
-          <div className="flex items-baseline gap-2">
-            <span className={cn(
-              "text-3xl font-bold",
-              data.serviceHealth.critical > 0 ? "text-red-600" : "text-emerald-600"
-            )}>
-              {data.serviceHealth.critical}
-            </span>
-            <span className="text-sm font-medium text-slate-500">{t('Dashboard.metrics.serviceHealth.critical')}</span>
-          </div>
-          <p className={cn(
-            "text-xs mt-1",
-            data.serviceHealth.critical > 0 ? "text-red-400" : "text-emerald-400"
-          )}>
-            {data.serviceHealth.critical > 0
-              ? t('Dashboard.metrics.serviceHealth.openTicketsPastSLA')
-              : t('Dashboard.metrics.serviceHealth.allTicketsWithinSLA')}
-          </p>
-        </DashboardCard>
-
         {/* Widget 1: Live Route Map (Placeholder) */}
         <DashboardCard title={t('Dashboard.widgets.liveRouteMap.title')} action={<Badge variant="outline" className="gap-1"><div className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></div> {t('Dashboard.widgets.liveRouteMap.live')}</Badge>} className="col-span-1 md:col-span-2 lg:col-span-3 min-h-[400px]">
           <div className="h-full w-full bg-slate-100/50 rounded-md flex flex-col items-center justify-center border border-dashed border-slate-200 relative overflow-hidden group">

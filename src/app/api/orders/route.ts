@@ -1,9 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { Pool } from 'pg'
-
-const pool = new Pool({
-  connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
-})
+import { prisma } from '@/lib/prisma'
 
 export async function GET(request: NextRequest) {
   try {
@@ -16,94 +12,96 @@ export async function GET(request: NextRequest) {
     const dateFrom = searchParams.get('dateFrom')
     const dateTo = searchParams.get('dateTo')
 
-    // Build SQL query with dynamic filters
-    let query = `
-      SELECT
-        o.id,
-        o."orderNumber",
-        o.status,
-        o."totalAmount",
-        o."orderDate",
-        o."sourceType",
-        c.name as "customerName",
-        COUNT(oi.id) as "itemCount",
-        COALESCE(SUM(oi.quantity), 0) as "totalQuantity",
-        COALESCE(SUM(CASE WHEN oi."sapCode" = '107000001-00001' THEN oi.quantity ELSE 0 END), 0) as "ice3kg",
-        COALESCE(SUM(CASE WHEN oi."sapCode" = '107000001-00006' THEN oi.quantity ELSE 0 END), 0) as "ice1kg",
-        COALESCE(cb."branchCode", 'Multiple') as "branchCode",
-        COALESCE(cb."branchName", 'Multiple Branches') as "branchName"
-      FROM "Order" o
-      LEFT JOIN "Customer" c ON o."customerId" = c.id
-      LEFT JOIN "OrderItem" oi ON o.id = oi."orderId"
-      LEFT JOIN "CustomerBranch" cb ON oi."branchId" = cb.id
-      WHERE 1=1
-    `
-
-    const params: any[] = []
-    let paramIndex = 1
+    // Build where clause for Prisma
+    const where: any = {}
 
     // Filter by status
     if (status && status !== 'ALL') {
-      query += ` AND o.status = $${paramIndex}`
-      params.push(status)
-      paramIndex++
-    }
-
-    // Filter by branch
-    if (branch) {
-      query += ` AND (cb."branchCode" ILIKE $${paramIndex} OR cb."branchName" ILIKE $${paramIndex})`
-      params.push(`%${branch}%`)
-      paramIndex++
+      where.status = status
     }
 
     // Filter by search (order number or customer name)
     if (search) {
-      query += ` AND (o."orderNumber" ILIKE $${paramIndex} OR c.name ILIKE $${paramIndex})`
-      params.push(`%${search}%`)
-      paramIndex++
+      where.OR = [
+        { orderNumber: { contains: search, mode: 'insensitive' } },
+        { customer: { name: { contains: search, mode: 'insensitive' } } }
+      ]
     }
 
     // Filter by date range
-    if (dateFrom) {
-      query += ` AND o."orderDate" >= $${paramIndex}`
-      params.push(new Date(dateFrom))
-      paramIndex++
+    if (dateFrom || dateTo) {
+      where.orderDate = {}
+      if (dateFrom) {
+        where.orderDate.gte = new Date(dateFrom)
+      }
+      if (dateTo) {
+        const endDate = new Date(dateTo)
+        endDate.setHours(23, 59, 59, 999)
+        where.orderDate.lte = endDate
+      }
     }
 
-    if (dateTo) {
-      const endDate = new Date(dateTo)
-      endDate.setHours(23, 59, 59, 999)
-      query += ` AND o."orderDate" <= $${paramIndex}`
-      params.push(endDate)
-      paramIndex++
-    }
+    // Fetch orders with related data
+    const orders = await prisma.order.findMany({
+      where,
+      include: {
+        customer: {
+          select: { name: true }
+        },
+        orderItems: {
+          include: {
+            branch: {
+              select: { branchCode: true, branchName: true }
+            }
+          }
+        }
+      },
+      orderBy: { orderDate: 'desc' }
+    })
 
-    // Group by and order
-    query += `
-      GROUP BY o.id, c.name, cb."branchCode", cb."branchName"
-      ORDER BY o."orderDate" DESC
-    `
-
-    const result = await pool.query(query, params)
+    // Filter by branch in application (after data fetching)
+    const filteredOrders = branch
+      ? orders.filter(order => {
+        const branchNames = order.orderItems.map(item => item.branch?.branchName || '').join(' ')
+        const branchCodes = order.orderItems.map(item => item.branch?.branchCode || '').join(' ')
+        return branchNames.toLowerCase().includes(branch.toLowerCase()) ||
+          branchCodes.toLowerCase().includes(branch.toLowerCase())
+      })
+      : orders
 
     // Transform data for frontend
-    const transformedOrders = result.rows.map((row: any) => ({
-      id: row.id,
-      orderNumber: row.orderNumber,
-      branch: row.branchName,
-      branchCode: row.branchCode,
-      customer: row.customerName,
-      weight: Math.round(row.totalQuantity),
-      amount: row.totalAmount,
-      status: row.status,
-      date: new Date(row.orderDate).toISOString().split('T')[0],
-      sourceType: row.sourceType,
-      itemCount: parseInt(row.itemCount),
-      products: {
-        ice3kg: parseInt(row.ice3kg),
-        ice1kg: parseInt(row.ice1kg),
-      },
-    }))
+    const transformedOrders = filteredOrders.map((order) => {
+      const ice3kgCount = order.orderItems
+        .filter(item => item.sapCode === '107000001-00001')
+        .reduce((sum, item) => sum + item.quantity, 0)
+
+      const ice1kgCount = order.orderItems
+        .filter(item => item.sapCode === '107000001-00006')
+        .reduce((sum, item) => sum + item.quantity, 0)
+
+      const totalQuantity = order.orderItems.reduce((sum, item) => sum + item.quantity, 0)
+
+      const branchName = order.orderItems[0]?.branch?.branchName || 'Несколько филиалов'
+      const branchCode = order.orderItems[0]?.branch?.branchCode || 'Multiple'
+
+      return {
+        id: order.id,
+        orderNumber: order.orderNumber,
+        branch: branchName,
+        branchCode: branchCode,
+        customer: order.customer?.name || 'N/A',
+        weight: Math.round(totalQuantity),
+        amount: order.totalAmount,
+        status: order.status,
+        date: order.orderDate.toISOString().split('T')[0],
+        sourceType: order.sourceType,
+        itemCount: order.orderItems.length,
+        products: {
+          ice3kg: ice3kgCount,
+          ice1kg: ice1kgCount,
+        },
+      }
+    })
 
     return NextResponse.json({
       orders: transformedOrders,
@@ -123,33 +121,35 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
 
     // Validate required fields
-    if (!body.customerId || !body.branchId || !body.items?.length) {
+    if (!body.customerId || !body.items?.length) {
       return NextResponse.json(
-        { error: 'Customer, branch, and items are required' },
+        { error: 'Customer and items are required' },
         { status: 400 }
       )
     }
 
     // Get the last order number to generate the next one
-    const lastOrderResult = await pool.query(
-      `SELECT "orderNumber" FROM "Order" ORDER BY "createdAt" DESC LIMIT 1`
-    )
-    const orderNumber = generateOrderNumber(lastOrderResult.rows[0]?.orderNumber)
+    const lastOrder = await prisma.order.findFirst({
+      orderBy: { createdAt: 'desc' },
+      select: { orderNumber: true }
+    })
+
+    const orderNumber = generateOrderNumber(lastOrder?.orderNumber)
 
     // Calculate totals for each item
     const items = body.items.map((item: any) => {
       const subtotal = item.quantity * item.price
-      const vatAmount = subtotal * (item.vatRate / 100)
+      const vatAmount = subtotal * ((item.vatRate || 0) / 100)
       const totalAmount = subtotal + vatAmount
 
       return {
-        branchId: body.branchId,
+        branchId: item.branchId,
         productId: item.productId,
         productName: item.productName || '',
         quantity: item.quantity,
         unitPrice: item.price,
         subtotal,
-        vatRate: item.vatRate,
+        vatRate: item.vatRate || 0,
         vatAmount,
         totalAmount,
         sapCode: item.sapCode || '',
@@ -162,30 +162,36 @@ export async function POST(request: NextRequest) {
     const vatAmount = items.reduce((sum: number, i: any) => sum + i.vatAmount, 0)
     const totalAmount = items.reduce((sum: number, i: any) => sum + i.totalAmount, 0)
 
-    // Create order with items (simple implementation - note: real implementation should use transactions)
-    const orderResult = await pool.query(
-      `INSERT INTO "Order" (id, "orderNumber", "customerId", "orderDate", "sourceType", status, subtotal, "vatAmount", "totalAmount", notes, "createdAt", "updatedAt")
-       VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, NOW(), NOW())
-       RETURNING id, "orderNumber", status, "totalAmount", "orderDate", "sourceType"`,
-      [orderNumber, body.customerId, new Date(body.orderDate), 'DETAILED', 'NEW', subtotal, vatAmount, totalAmount, body.notes || '']
-    )
+    // Create order with items using transaction
+    const order = await prisma.$transaction(async (tx) => {
+      const newOrder = await tx.order.create({
+        data: {
+          orderNumber,
+          customerId: body.customerId,
+          orderDate: new Date(body.orderDate),
+          sourceType: 'DETAILED',
+          status: 'NEW',
+          subtotal,
+          vatAmount,
+          totalAmount,
+          notes: body.notes || '',
+          orderItems: {
+            create: items
+          }
+        },
+        include: {
+          orderItems: true
+        }
+      })
 
-    const orderId = orderResult.rows[0].id
-
-    // Insert order items
-    for (const item of items) {
-      await pool.query(
-        `INSERT INTO "OrderItem" (id, "orderId", "branchId", "productId", "productName", quantity, "unitPrice", subtotal, "vatRate", "vatAmount", "totalAmount", "sapCode", barcode, "createdAt", "updatedAt")
-         VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, NOW(), NOW())`,
-        [orderId, item.branchId, item.productId, item.productName, item.quantity, item.unitPrice, item.subtotal, item.vatRate, item.vatAmount, item.totalAmount, item.sapCode, item.barcode]
-      )
-    }
+      return newOrder
+    })
 
     return NextResponse.json({
-      id: orderId,
-      orderNumber: orderNumber,
-      status: 'NEW',
-      totalAmount: totalAmount,
+      id: order.id,
+      orderNumber: order.orderNumber,
+      status: order.status,
+      totalAmount: order.totalAmount,
     }, { status: 201 })
   } catch (error: any) {
     console.error('Create order error:', error)

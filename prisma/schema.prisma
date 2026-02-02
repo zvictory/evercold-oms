@@ -54,8 +54,6 @@ model CustomerBranch {
   updatedAt             DateTime                     @updatedAt
   customer              Customer                     @relation(fields: [customerId], references: [id], onDelete: Cascade)
   orderItems            OrderItem[]
-  serviceTickets        ServiceTicket[]
-  technicianAssignments TechnicianBranchAssignment[]
 
   @@index([customerId])
   @@index([branchCode])
@@ -179,24 +177,6 @@ model User {
   isActive     Boolean  @default(true)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
-}
-
-model Technician {
-  id                 String                       @id @default(cuid())
-  name               String
-  phone              String
-  email              String?
-  status             TechnicianStatus             @default(ACTIVE)
-  latitude           Float?
-  longitude          Float?
-  lastLocationUpdate DateTime?
-  createdAt          DateTime                     @default(now())
-  updatedAt          DateTime                     @updatedAt
-  completedServices  ServiceCompletion[]
-  assignedTickets    ServiceTicket[]
-  branchAssignments  TechnicianBranchAssignment[]
-
-  @@index([status])
 }
 
 model Driver {
@@ -391,123 +371,6 @@ model DeliveryItem {
   @@index([orderItemId])
 }
 
-model TechnicianBranchAssignment {
-  id               String         @id @default(cuid())
-  technicianId     String
-  branchId         String
-  isPrimary        Boolean        @default(true)
-  serviceTerritory String?
-  assignedDate     DateTime       @default(now())
-  startDate        DateTime?
-  endDate          DateTime?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  branch           CustomerBranch @relation(fields: [branchId], references: [id], onDelete: Cascade)
-  technician       Technician     @relation(fields: [technicianId], references: [id], onDelete: Cascade)
-
-  @@unique([technicianId, branchId, isPrimary])
-  @@index([technicianId])
-  @@index([branchId])
-  @@index([isPrimary])
-}
-
-model IssueCategory {
-  id            String             @id @default(cuid())
-  name          String             @unique
-  description   String?
-  createdAt     DateTime           @default(now())
-  updatedAt     DateTime           @updatedAt
-  subcategories IssueSubcategory[]
-  tickets       ServiceTicket[]
-
-  @@index([name])
-}
-
-model IssueSubcategory {
-  id                    String          @id @default(cuid())
-  categoryId            String
-  name                  String
-  description           String?
-  slaResponseCritical   Int             @default(60)
-  slaResponseHigh       Int             @default(240)
-  slaResponseNormal     Int             @default(1440)
-  slaResponseLow        Int             @default(2880)
-  slaResolutionCritical Int             @default(240)
-  slaResolutionHigh     Int             @default(1440)
-  slaResolutionNormal   Int             @default(2880)
-  slaResolutionLow      Int             @default(4320)
-  createdAt             DateTime        @default(now())
-  updatedAt             DateTime        @updatedAt
-  category              IssueCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  tickets               ServiceTicket[]
-
-  @@unique([categoryId, name])
-  @@index([categoryId])
-}
-
-model ServiceTicket {
-  id                   String             @id @default(cuid())
-  ticketNumber         String             @unique
-  externalId           String?
-  branchId             String
-  contactName          String?
-  contactRole          String?
-  contactPhone         String?
-  categoryId           String
-  subcategoryId        String
-  description          String
-  assignedTechnicianId String?
-  dispatcherId         String?
-  status               TicketStatus       @default(NEW)
-  priority             TicketPriority     @default(NORMAL)
-  createdAt            DateTime           @default(now())
-  firstResponseAt      DateTime?
-  completedAt          DateTime?
-  closedAt             DateTime?
-  internalNotes        String?
-  storeNotes           String?
-  updatedAt            DateTime           @updatedAt
-  completion           ServiceCompletion?
-  assignedTechnician   Technician?        @relation(fields: [assignedTechnicianId], references: [id])
-  branch               CustomerBranch     @relation(fields: [branchId], references: [id])
-  category             IssueCategory      @relation(fields: [categoryId], references: [id])
-  subcategory          IssueSubcategory   @relation(fields: [subcategoryId], references: [id])
-
-  @@index([status])
-  @@index([priority])
-  @@index([branchId])
-  @@index([assignedTechnicianId])
-  @@index([createdAt])
-}
-
-model ServiceCompletion {
-  id               String         @id @default(cuid())
-  ticketId         String         @unique
-  completedBy      String
-  completedAt      DateTime
-  workDescription  String
-  laborHours       Float
-  laborCostPerHour Float
-  partsJson        String?
-  partsCost        Float
-  laborCost        Float
-  totalCost        Float
-  photosJson       String?
-  signatureUrl     String?
-  signedBy         String?
-  signedAt         DateTime?
-  approvalStatus   ApprovalStatus @default(PENDING)
-  approvalNotes    String?
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
-  technicianId     String?
-  technician       Technician?    @relation(fields: [technicianId], references: [id])
-  ticket           ServiceTicket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
-
-  @@index([ticketId])
-  @@index([approvalStatus])
-}
-
 model EdoIntegration {
   id             String            @id @default(cuid())
   name           String
@@ -598,12 +461,6 @@ enum UserRole {
   VIEWER
 }
 
-enum TechnicianStatus {
-  ACTIVE
-  INACTIVE
-  ON_LEAVE
-}
-
 enum RouteStatus {
   PLANNED
   IN_PROGRESS
@@ -646,23 +503,3 @@ enum VehicleType {
   REFRIGERATED_TRUCK
 }
 
-enum TicketStatus {
-  NEW
-  ASSIGNED
-  IN_PROGRESS
-  COMPLETED
-  CLOSED
-}
-
-enum TicketPriority {
-  CRITICAL
-  HIGH
-  NORMAL
-  LOW
-}
-
-enum ApprovalStatus {
-  PENDING
-  APPROVED
-  REJECTED
-}

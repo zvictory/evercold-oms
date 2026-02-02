@@ -13,10 +13,6 @@ export type BranchWithRelations = CustomerBranch & {
     id: string
     name: string
   }
-  technicianAssignments: Array<{
-    id: string
-    technicianId: string
-  }>
 }
 
 /**
@@ -29,17 +25,6 @@ export interface BranchLocation {
   latitude: number | null
   longitude: number | null
   deliveryAddress: string | null
-}
-
-/**
- * Branch service history
- */
-export interface BranchServiceHistory {
-  branchId: string
-  branchName: string
-  totalTickets: number
-  openTickets: number
-  resolvedTickets: number
 }
 
 /**
@@ -202,63 +187,6 @@ export class CustomerBranchRepository extends BaseRepository<
       })
     } catch (error) {
       throw this.handleError('findByCoordinates', error)
-    }
-  }
-
-  /**
-   * Get branch with technician assignments
-   *
-   * @param branchId - Branch ID
-   * @returns Branch with technicians or null
-   */
-  async findWithTechnicians(branchId: string): Promise<BranchWithRelations | null> {
-    try {
-      const branch = await this.prisma.customerBranch.findUnique({
-        where: { id: branchId },
-        include: {
-          customer: {
-            select: {
-              id: true,
-              name: true,
-            },
-          },
-          technicianAssignments: {
-            select: {
-              id: true,
-              technicianId: true,
-            },
-          },
-        },
-      })
-
-      return branch as BranchWithRelations | null
-    } catch (error) {
-      throw this.handleError('findWithTechnicians', error)
-    }
-  }
-
-  /**
-   * Get all service tickets for branch
-   *
-   * @param branchId - Branch ID
-   * @returns Array of service tickets
-   */
-  async getServiceTickets(branchId: string): Promise<any[]> {
-    try {
-      return await this.prisma.serviceTicket.findMany({
-        where: { branchId },
-        select: {
-          id: true,
-          ticketNumber: true,
-          status: true,
-          priority: true,
-          description: true,
-          createdAt: true,
-        },
-        orderBy: { createdAt: 'desc' },
-      })
-    } catch (error) {
-      throw this.handleError('getServiceTickets', error)
     }
   }
 

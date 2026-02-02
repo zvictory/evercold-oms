@@ -22,14 +22,6 @@ export default function AppNavigation() {
     if (path === '/products') {
       return pathname.startsWith('/products') || pathname === '/admin/customer-prices'
     }
-    // Dispatcher menu should be active for /dispatcher and /tickets pages
-    if (path === '/dispatcher') {
-      return pathname.startsWith('/dispatcher') || pathname.startsWith('/tickets')
-    }
-    // Technician menu should be active for /tech pages
-    if (path === '/tech') {
-      return pathname.startsWith('/tech')
-    }
     // Admin menu should be active for /admin pages
     if (path === '/admin') {
       return pathname.startsWith('/admin')
@@ -74,12 +66,6 @@ export default function AppNavigation() {
             </Link>
             <Link href="/fleet" className={navLinkClass('/fleet')}>
               🚛 Автопарк
-            </Link>
-            <Link href="/dispatcher/tickets" className={navLinkClass('/dispatcher')}>
-              🔧 Диспетчер
-            </Link>
-            <Link href="/tech/tickets" className={navLinkClass('/tech')}>
-              👨‍🔧 Техник
             </Link>
             <Link href="/admin/branches" className={navLinkClass('/admin')}>
               🏢 Филиалы

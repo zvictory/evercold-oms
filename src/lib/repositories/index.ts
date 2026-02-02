@@ -9,8 +9,6 @@ import { DeliveryRepository } from './DeliveryRepository'
 import { DeliveryRouteRepository } from './DeliveryRouteRepository'
 import { DriverRepository } from './DriverRepository'
 import { VehicleRepository } from './VehicleRepository'
-import { TechnicianRepository } from './TechnicianRepository'
-import { ServiceTicketRepository } from './ServiceTicketRepository'
 import { UserRepository } from './UserRepository'
 
 // Re-export base classes and types
@@ -42,7 +40,6 @@ export { CustomerBranchRepository } from './CustomerBranchRepository'
 export type {
   BranchWithRelations,
   BranchLocation,
-  BranchServiceHistory,
 } from './CustomerBranchRepository'
 
 export { CustomerProductPriceRepository } from './CustomerProductPriceRepository'
@@ -80,18 +77,6 @@ export type {
   VehicleWithRelations,
   VehicleStats,
 } from './VehicleRepository'
-
-export { TechnicianRepository } from './TechnicianRepository'
-export type {
-  TechnicianWithRelations,
-  TechnicianStats,
-} from './TechnicianRepository'
-
-export { ServiceTicketRepository } from './ServiceTicketRepository'
-export type {
-  ServiceTicketWithRelations,
-  ServiceTicketStats,
-} from './ServiceTicketRepository'
 
 export { UserRepository } from './UserRepository'
 export type {
@@ -244,30 +229,6 @@ export class RepositoryRegistry {
   }
 
   /**
-   * Get TechnicianRepository instance
-   *
-   * @returns TechnicianRepository singleton
-   */
-  getTechnicianRepository(): TechnicianRepository {
-    if (!this.repositories.has('technician')) {
-      this.repositories.set('technician', new TechnicianRepository(this.prismaClient))
-    }
-    return this.repositories.get('technician')!
-  }
-
-  /**
-   * Get ServiceTicketRepository instance
-   *
-   * @returns ServiceTicketRepository singleton
-   */
-  getServiceTicketRepository(): ServiceTicketRepository {
-    if (!this.repositories.has('serviceTicket')) {
-      this.repositories.set('serviceTicket', new ServiceTicketRepository(this.prismaClient))
-    }
-    return this.repositories.get('serviceTicket')!
-  }
-
-  /**
    * Get UserRepository instance
    *
    * @returns UserRepository singleton
@@ -400,24 +361,6 @@ export const getDriverRepository = (): DriverRepository => {
  */
 export const getVehicleRepository = (): VehicleRepository => {
   return defaultRegistry.getVehicleRepository()
-}
-
-/**
- * Get default TechnicianRepository instance
- *
- * @returns TechnicianRepository singleton
- */
-export const getTechnicianRepository = (): TechnicianRepository => {
-  return defaultRegistry.getTechnicianRepository()
-}
-
-/**
- * Get default ServiceTicketRepository instance
- *
- * @returns ServiceTicketRepository singleton
- */
-export const getServiceTicketRepository = (): ServiceTicketRepository => {
-  return defaultRegistry.getServiceTicketRepository()
 }
 
 /**

@@ -24,9 +24,14 @@ export default function OrdersPage() {
     { value: "ALL", label: t('Orders.filters.statusAll'), color: "bg-slate-400" },
     { value: "NEW", label: t('Orders.filters.statusNew'), color: "bg-blue-500" },
     { value: "CONFIRMED", label: t('Orders.filters.statusConfirmed'), color: "bg-purple-500" },
-    { value: "IN_PRODUCTION", label: t('Orders.filters.statusInProduction'), color: "bg-amber-500" },
+    { value: "PICKING", label: t('Orders.filters.statusPicking'), color: "bg-amber-500" },
+    { value: "PACKING", label: t('Orders.filters.statusPacking'), color: "bg-orange-500" },
+    { value: "READY", label: t('Orders.filters.statusReady'), color: "bg-cyan-500" },
     { value: "SHIPPED", label: t('Orders.filters.statusShipped'), color: "bg-indigo-500" },
-    { value: "DELIVERED", label: t('Orders.filters.statusDelivered'), color: "bg-emerald-500" },
+    { value: "PARTIAL", label: t('Orders.filters.statusPartial'), color: "bg-yellow-500" },
+    { value: "COMPLETED", label: t('Orders.filters.statusCompleted'), color: "bg-emerald-500" },
+    { value: "INVOICED", label: t('Orders.filters.statusInvoiced'), color: "bg-teal-500" },
+    { value: "PAID", label: t('Orders.filters.statusPaid'), color: "bg-green-500" },
     { value: "CANCELLED", label: t('Orders.filters.statusCancelled'), color: "bg-red-500" },
   ]
 

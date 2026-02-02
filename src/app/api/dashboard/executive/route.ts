@@ -28,10 +28,8 @@ export async function GET() {
       deliveriesResult,
       branchesResult,
       servedBranchesResult,
-      criticalTicketsResult,
       newOrdersResult,
       completedDeliveriesResult,
-      newCriticalTicketsResult,
       activeRoutesResult,
     ] = await Promise.all([
       // Today's orders volume
@@ -74,14 +72,6 @@ export async function GET() {
         [today, tomorrow]
       ),
 
-      // Critical tickets
-      pool.query(
-        `SELECT * FROM "ServiceTicket"
-         WHERE priority = 'CRITICAL' AND status NOT IN ('COMPLETED', 'CLOSED')
-         ORDER BY "createdAt" ASC
-         LIMIT 10`
-      ),
-
       // Recent orders
       pool.query(
         `SELECT o.*, c."name" as customer_name FROM "Order" o
@@ -101,16 +91,6 @@ export async function GET() {
          WHERE d.status = 'DELIVERED' AND d."deliveryTime" >= $1
          ORDER BY d."deliveryTime" DESC
          LIMIT 3`,
-        [twoHoursAgo]
-      ),
-
-      // Recent critical tickets
-      pool.query(
-        `SELECT st.*, cb."branchName", cb."branchCode" FROM "ServiceTicket" st
-         LEFT JOIN "CustomerBranch" cb ON st."branchId" = cb.id
-         WHERE st.priority = 'CRITICAL' AND st."createdAt" >= $1
-         ORDER BY st."createdAt" DESC
-         LIMIT 2`,
         [twoHoursAgo]
       ),
 
@@ -141,8 +121,6 @@ export async function GET() {
     const servedBranches = parseInt(servedBranchesResult.rows[0].served_branches)
     const coveragePercentage = totalBranches > 0 ? (servedBranches / totalBranches) * 100 : 0
 
-    const criticalCount = criticalTicketsResult.rows.length
-
     // Build activity feed
     const activities: any[] = []
 
@@ -172,19 +150,6 @@ export async function GET() {
       })
     })
 
-    // Add tickets
-    newCriticalTicketsResult.rows.forEach((ticket: any) => {
-      activities.push({
-        id: `ticket-${ticket.id}`,
-        type: 'alert',
-        message: `Critical Ticket ${ticket.ticketNumber} at ${ticket.branchCode || 'Unknown'}`,
-        timestamp: ticket.createdAt,
-        icon: 'AlertCircle',
-        color: 'text-red-500 bg-red-50',
-        border: 'border-red-100',
-      })
-    })
-
     // Add routes
     activeRoutesResult.rows.forEach((route: any) => {
       activities.push({
@@ -207,15 +172,6 @@ export async function GET() {
         time: formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true }),
       }))
 
-    // Process critical tickets with overdue info
-    const ticketsWithOverdue = criticalTicketsResult.rows.map((ticket: any) => ({
-      ticketNumber: ticket.ticketNumber,
-      branchName: ticket.branchName || 'Unknown',
-      branchCode: ticket.branchCode || '',
-      createdAt: ticket.createdAt,
-      hoursOverdue: Math.max(0, (now.getTime() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60)),
-    }))
-
     return NextResponse.json({
       todaysVolume: {
         total: todaysVolume,
@@ -231,10 +187,6 @@ export async function GET() {
         served: servedBranches,
         total: totalBranches,
         percentage: coveragePercentage,
-      },
-      serviceHealth: {
-        critical: criticalCount,
-        tickets: ticketsWithOverdue,
       },
       recentActivity,
     })

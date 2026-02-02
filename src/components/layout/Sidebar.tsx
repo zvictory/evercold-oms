@@ -10,8 +10,6 @@ import {
     ShoppingCart,
     Package,
     Truck,
-    Ticket,
-    BarChart3,
     Users,
     Settings,
     Menu,
@@ -45,7 +43,6 @@ export function Sidebar({ className, ...props }: SidebarProps) {
         { name: t('Nav.orders'), href: `/${locale}/orders`, icon: ShoppingCart },
         { name: t('Nav.products'), href: `/${locale}/products`, icon: Package },
         { name: t('Nav.fleet'), href: `/${locale}/fleet`, icon: Truck },
-        { name: t('Nav.analytics'), href: `/${locale}/analytics`, icon: BarChart3 },
         { name: t('Nav.customers'), href: `/${locale}/customers`, icon: Users },
         // Only show Users link to Admins and Managers
         ...(user?.role === UserRole.ADMIN || user?.role === UserRole.MANAGER ? [{
