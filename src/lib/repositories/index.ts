@@ -7,6 +7,11 @@ import { CustomerProductPriceRepository } from './CustomerProductPriceRepository
 import { ProductRepository } from './ProductRepository'
 import { DeliveryRepository } from './DeliveryRepository'
 import { DeliveryRouteRepository } from './DeliveryRouteRepository'
+import { DriverRepository } from './DriverRepository'
+import { VehicleRepository } from './VehicleRepository'
+import { TechnicianRepository } from './TechnicianRepository'
+import { ServiceTicketRepository } from './ServiceTicketRepository'
+import { UserRepository } from './UserRepository'
 
 // Re-export base classes and types
 export { BaseRepository, RepositoryError } from './BaseRepository'
@@ -63,6 +68,37 @@ export type {
   RouteWithStops,
   RouteStats,
 } from './DeliveryRouteRepository'
+
+export { DriverRepository } from './DriverRepository'
+export type {
+  DriverWithRelations,
+  DriverStats,
+} from './DriverRepository'
+
+export { VehicleRepository } from './VehicleRepository'
+export type {
+  VehicleWithRelations,
+  VehicleStats,
+} from './VehicleRepository'
+
+export { TechnicianRepository } from './TechnicianRepository'
+export type {
+  TechnicianWithRelations,
+  TechnicianStats,
+} from './TechnicianRepository'
+
+export { ServiceTicketRepository } from './ServiceTicketRepository'
+export type {
+  ServiceTicketWithRelations,
+  ServiceTicketStats,
+} from './ServiceTicketRepository'
+
+export { UserRepository } from './UserRepository'
+export type {
+  UserSafe,
+  UserSearchResult,
+  UserStats,
+} from './UserRepository'
 
 /**
  * Centralized repository registry
@@ -184,6 +220,66 @@ export class RepositoryRegistry {
   }
 
   /**
+   * Get DriverRepository instance
+   *
+   * @returns DriverRepository singleton
+   */
+  getDriverRepository(): DriverRepository {
+    if (!this.repositories.has('driver')) {
+      this.repositories.set('driver', new DriverRepository(this.prismaClient))
+    }
+    return this.repositories.get('driver')!
+  }
+
+  /**
+   * Get VehicleRepository instance
+   *
+   * @returns VehicleRepository singleton
+   */
+  getVehicleRepository(): VehicleRepository {
+    if (!this.repositories.has('vehicle')) {
+      this.repositories.set('vehicle', new VehicleRepository(this.prismaClient))
+    }
+    return this.repositories.get('vehicle')!
+  }
+
+  /**
+   * Get TechnicianRepository instance
+   *
+   * @returns TechnicianRepository singleton
+   */
+  getTechnicianRepository(): TechnicianRepository {
+    if (!this.repositories.has('technician')) {
+      this.repositories.set('technician', new TechnicianRepository(this.prismaClient))
+    }
+    return this.repositories.get('technician')!
+  }
+
+  /**
+   * Get ServiceTicketRepository instance
+   *
+   * @returns ServiceTicketRepository singleton
+   */
+  getServiceTicketRepository(): ServiceTicketRepository {
+    if (!this.repositories.has('serviceTicket')) {
+      this.repositories.set('serviceTicket', new ServiceTicketRepository(this.prismaClient))
+    }
+    return this.repositories.get('serviceTicket')!
+  }
+
+  /**
+   * Get UserRepository instance
+   *
+   * @returns UserRepository singleton
+   */
+  getUserRepository(): UserRepository {
+    if (!this.repositories.has('user')) {
+      this.repositories.set('user', new UserRepository(this.prismaClient))
+    }
+    return this.repositories.get('user')!
+  }
+
+  /**
    * Get Prisma client instance
    *
    * @returns PrismaClient instance
@@ -286,6 +382,51 @@ export const getDeliveryRepository = (): DeliveryRepository => {
  */
 export const getDeliveryRouteRepository = (): DeliveryRouteRepository => {
   return defaultRegistry.getDeliveryRouteRepository()
+}
+
+/**
+ * Get default DriverRepository instance
+ *
+ * @returns DriverRepository singleton
+ */
+export const getDriverRepository = (): DriverRepository => {
+  return defaultRegistry.getDriverRepository()
+}
+
+/**
+ * Get default VehicleRepository instance
+ *
+ * @returns VehicleRepository singleton
+ */
+export const getVehicleRepository = (): VehicleRepository => {
+  return defaultRegistry.getVehicleRepository()
+}
+
+/**
+ * Get default TechnicianRepository instance
+ *
+ * @returns TechnicianRepository singleton
+ */
+export const getTechnicianRepository = (): TechnicianRepository => {
+  return defaultRegistry.getTechnicianRepository()
+}
+
+/**
+ * Get default ServiceTicketRepository instance
+ *
+ * @returns ServiceTicketRepository singleton
+ */
+export const getServiceTicketRepository = (): ServiceTicketRepository => {
+  return defaultRegistry.getServiceTicketRepository()
+}
+
+/**
+ * Get default UserRepository instance
+ *
+ * @returns UserRepository singleton
+ */
+export const getUserRepository = (): UserRepository => {
+  return defaultRegistry.getUserRepository()
 }
 
 /**
