@@ -53,10 +53,10 @@ export class Customer {
   @UpdateDateColumn()
   updatedAt: Date
 
-  @OneToMany(() => CustomerBranch, branch => branch.customer, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => CustomerBranch, branch => branch.customer, { cascade: true })
   branches: CustomerBranch[]
 
-  @OneToMany(() => Order, order => order.customer, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Order, order => order.customer, { cascade: true })
   orders: Order[]
 }
 

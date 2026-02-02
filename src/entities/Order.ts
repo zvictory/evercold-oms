@@ -85,13 +85,13 @@ export class Order {
   @JoinColumn({ name: 'customerId' })
   customer: Customer
 
-  @OneToMany(() => OrderItem, item => item.order, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => OrderItem, item => item.order, { cascade: true })
   orderItems: OrderItem[]
 
-  @OneToMany(() => Delivery, delivery => delivery.order, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => Delivery, delivery => delivery.order, { cascade: true })
   deliveries: Delivery[]
 
-  @OneToMany(() => EdoDocumentSync, sync => sync.order, { cascade: true, onDelete: 'CASCADE' })
+  @OneToMany(() => EdoDocumentSync, sync => sync.order, { cascade: true })
   edoSync: EdoDocumentSync[]
 }
 

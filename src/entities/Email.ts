@@ -23,3 +23,5 @@ export class Email {
 }
 
 registerEntity(Email)
+
+registerEntity(Email)
