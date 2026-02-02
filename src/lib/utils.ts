@@ -21,6 +21,9 @@ export async function fetchWithAuth(
 
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
+    console.log('[fetchWithAuth] Using token:', token.substring(0, 8) + '...');
+  } else {
+    console.warn('[fetchWithAuth] No token found in localStorage');
   }
 
   return fetch(url, {

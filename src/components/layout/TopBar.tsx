@@ -20,9 +20,10 @@ export function TopBar() {
       });
 
       if (response.ok) {
-        // Clear localStorage
+        // Clear localStorage and cookie
         localStorage.removeItem('userInfo');
         localStorage.removeItem('authToken');
+        document.cookie = 'authToken=; path=/; max-age=0';
 
         // Redirect to login
         router.push(`/${locale}/login`);

@@ -43,9 +43,12 @@ export default function LoginPage() {
         return;
       }
 
-      // Store token in localStorage for API Authorization header
+      // Store token in localStorage for API Authorization header (client-side)
       localStorage.setItem('authToken', data.token);
       localStorage.setItem('userInfo', JSON.stringify(data.user));
+
+      // Also set cookie for middleware to see (server-side)
+      document.cookie = `authToken=${data.token}; path=/; max-age=${24 * 60 * 60}; SameSite=Lax`;
 
       // Redirect to dashboard with locale
       router.push(`/${locale}`);

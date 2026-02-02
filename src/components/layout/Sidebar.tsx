@@ -66,6 +66,7 @@ export function Sidebar({ className, ...props }: SidebarProps) {
             if (response.ok) {
                 localStorage.removeItem('userInfo');
                 localStorage.removeItem('authToken');
+                document.cookie = 'authToken=; path=/; max-age=0';
                 router.push(`/${locale}/login`);
                 router.refresh();
             }
