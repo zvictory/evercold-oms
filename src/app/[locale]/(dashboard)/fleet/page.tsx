@@ -11,6 +11,7 @@ import { VehicleEditor } from '@/components/fleet/VehicleEditor'
 import { DriverTable, Driver } from '@/components/fleet/DriverTable'
 import { DriverEditor } from '@/components/fleet/DriverEditor'
 import { useI18n } from '@/locales/client'
+import { fetchWithAuth } from '@/lib/utils'
 
 interface Vehicle {
   id: string
@@ -135,9 +136,8 @@ export default function FleetPage() {
   const fetchData = async () => {
     try {
       const [driversRes, vehiclesRes] = await Promise.all([
-        fetch('/api/drivers', { credentials: 'include' })
-
-        fetch('/api/vehicles')
+        fetchWithAuth('/api/drivers'),
+        fetchWithAuth('/api/vehicles')
       ])
 
       const driversData = await driversRes.json()
