@@ -60,7 +60,7 @@ export class RouteStop {
   @JoinColumn({ name: 'routeId' })
   route: DeliveryRoute
 
-  @ManyToOne(() => Delivery, delivery => delivery.deliveryItems, { onDelete: 'SET NULL', nullable: true })
+  @ManyToOne(() => Delivery, delivery => delivery.routeStops, { onDelete: 'SET NULL', nullable: true })
   @JoinColumn({ name: 'deliveryId' })
   delivery?: Delivery
 }

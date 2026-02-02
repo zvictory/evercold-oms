@@ -1,0 +1,668 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Customer {
+  id                  String                 @id @default(cuid())
+  name                String
+  customerCode        String?                @unique
+  contactPerson       String?
+  email               String?
+  phone               String?
+  headquartersAddress String?
+  contractNumber      String?
+  contractDate        String?
+  inn                 String?
+  vatRegistrationCode String?
+  hasVat              Boolean                @default(false)
+  bankAccount         String?
+  mfo                 String?
+  tg                  String?
+  isActive            Boolean                @default(true)
+  notes               String?
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  branches            CustomerBranch[]
+  productPrices       CustomerProductPrice[]
+  orders              Order[]
+}
+
+model CustomerBranch {
+  id                    String                       @id @default(cuid())
+  customerId            String
+  branchName            String
+  branchCode            String                       @unique
+  oldBranchCode         String?                      @unique
+  oldBranchName         String?
+  fullName              String
+  deliveryAddress       String?
+  contactPerson         String?
+  phone                 String?
+  email                 String?
+  latitude              Float?
+  longitude             Float?
+  region                String?
+  city                  String?
+  operatingHours        String?
+  isActive              Boolean                      @default(true)
+  notes                 String?
+  createdAt             DateTime                     @default(now())
+  updatedAt             DateTime                     @updatedAt
+  customer              Customer                     @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  orderItems            OrderItem[]
+  serviceTickets        ServiceTicket[]
+  technicianAssignments TechnicianBranchAssignment[]
+
+  @@index([customerId])
+  @@index([branchCode])
+}
+
+model Product {
+  id             String                 @id @default(cuid())
+  name           String
+  sku            String?                @unique
+  barcode        String?                @unique
+  sapCode        String?                @unique
+  unitPrice      Float
+  unit           String                 @default("ШТ")
+  vatRate        Float                  @default(12.0)
+  description    String?
+  isActive       Boolean                @default(true)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  customerPrices CustomerProductPrice[]
+  orderItems     OrderItem[]
+  deliveryItems  DeliveryItem[]
+
+  @@index([barcode])
+  @@index([sapCode])
+}
+
+model CustomerProductPrice {
+  id         String   @id @default(cuid())
+  customerId String
+  productId  String
+  unitPrice  Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, productId])
+  @@index([customerId])
+  @@index([productId])
+}
+
+model Order {
+  id            String            @id @default(cuid())
+  orderNumber   String            @unique
+  invoiceNumber Int?              @unique
+  orderDate     DateTime
+  customerId    String
+  contractInfo  String?
+  status        OrderStatus       @default(NEW)
+  subtotal      Float             @default(0)
+  vatAmount     Float             @default(0)
+  totalAmount   Float             @default(0)
+  notes         String?
+  emailId       String?
+  batchId       String?
+  sourceType    SourceType        @default(DETAILED)
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+  delivery      Delivery?
+  edoSync       EdoDocumentSync[]
+  customer      Customer          @relation(fields: [customerId], references: [id])
+  email         Email?            @relation(fields: [emailId], references: [id])
+  orderItems    OrderItem[]
+
+  @@index([orderNumber])
+  @@index([customerId])
+  @@index([orderDate])
+  @@index([status])
+  @@index([batchId])
+}
+
+model OrderItem {
+  id             String          @id @default(cuid())
+  orderId        String
+  branchId       String?
+  productId      String
+  productName    String
+  barcode        String?
+  sapCode        String?
+  quantity       Float
+  unitPrice      Float
+  subtotal       Float
+  vatRate        Float
+  vatAmount      Float
+  totalAmount    Float
+  deliveryStatus DeliveryStatus  @default(PENDING)
+  deliveryDate   DateTime?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  branch         CustomerBranch? @relation(fields: [branchId], references: [id])
+  order          Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product        Product         @relation(fields: [productId], references: [id])
+  deliveryItems  DeliveryItem[]
+
+  @@index([orderId])
+  @@index([branchId])
+  @@index([productId])
+}
+
+model Email {
+  id                 String    @id @default(cuid())
+  gmailMessageId     String?   @unique
+  subject            String?
+  fromEmail          String?
+  receivedDate       DateTime
+  attachmentFilename String?
+  processed          Boolean   @default(false)
+  processedAt        DateTime?
+  errorMessage       String?
+  rawContent         String?
+  createdAt          DateTime  @default(now())
+  orders             Order[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(VIEWER)
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Technician {
+  id                 String                       @id @default(cuid())
+  name               String
+  phone              String
+  email              String?
+  status             TechnicianStatus             @default(ACTIVE)
+  latitude           Float?
+  longitude          Float?
+  lastLocationUpdate DateTime?
+  createdAt          DateTime                     @default(now())
+  updatedAt          DateTime                     @updatedAt
+  completedServices  ServiceCompletion[]
+  assignedTickets    ServiceTicket[]
+  branchAssignments  TechnicianBranchAssignment[]
+
+  @@index([status])
+}
+
+model Driver {
+  id                  String          @id @default(cuid())
+  name                String
+  phone               String          @unique
+  email               String?
+  phonePin            String?
+  lastLoginAt         DateTime?
+  licenseNumber       String          @unique
+  licenseExpiry       DateTime?
+  status              DriverStatus    @default(ACTIVE)
+  latitude            Float?
+  longitude           Float?
+  lastLocationUpdate  DateTime?
+  locationStatus      DriverLocationStatus @default(IDLE)
+  notes               String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  deliveries          Delivery[]
+  routes              DeliveryRoute[]
+  vehicles            Vehicle[]
+  sessions            DriverSession[]
+
+  @@index([status])
+  @@index([phone])
+  @@index([locationStatus])
+}
+
+model DriverSession {
+  id        String   @id @default(cuid())
+  driverId  String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  driver    Driver   @relation(fields: [driverId], references: [id], onDelete: Cascade)
+
+  @@index([driverId])
+  @@index([token])
+}
+
+model Vehicle {
+  id          String          @id @default(cuid())
+  plateNumber String          @unique
+  model       String
+  type        VehicleType     @default(VAN)
+  capacity    Float?
+  status      VehicleStatus   @default(AVAILABLE)
+  driverId    String?
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  deliveries  Delivery[]
+  routes      DeliveryRoute[]
+  driver      Driver?         @relation(fields: [driverId], references: [id])
+
+  @@index([status])
+  @@index([driverId])
+}
+
+model Delivery {
+  id            String             @id @default(cuid())
+  orderId       String             @unique
+  driverId      String?
+  vehicleId     String?
+  status        DeliveryStatus     @default(PENDING)
+  scheduledDate DateTime?
+  pickupTime    DateTime?
+  deliveryTime  DateTime?
+  notes         String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  driver        Driver?            @relation(fields: [driverId], references: [id])
+  order         Order              @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  vehicle       Vehicle?           @relation(fields: [vehicleId], references: [id])
+  checklist     DeliveryChecklist?
+  routeStop     RouteStop?
+  deliveryItems DeliveryItem[]
+
+  @@index([status])
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([scheduledDate])
+}
+
+model DeliveryRoute {
+  id                           String      @id @default(cuid())
+  routeName                    String
+  driverId                     String
+  vehicleId                    String
+  scheduledDate                DateTime
+  status                       RouteStatus @default(PLANNED)
+  totalDistance                Float?
+  estimatedDuration            Int?
+  estimatedDurationWithTraffic Int?
+  actualStartTime              DateTime?
+  actualEndTime                DateTime?
+  notes                        String?
+  optimizationMethod           String      @default("haversine")
+  trafficDataTimestamp         DateTime?
+  routeGeometry                String?
+  trafficLevel                 String?
+  createdAt                    DateTime    @default(now())
+  updatedAt                    DateTime    @updatedAt
+  driver                       Driver      @relation(fields: [driverId], references: [id], onDelete: Cascade)
+  vehicle                      Vehicle     @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  stops                        RouteStop[]
+
+  @@index([driverId])
+  @@index([vehicleId])
+  @@index([scheduledDate])
+  @@index([status])
+}
+
+model RouteStop {
+  id                           String          @id @default(cuid())
+  routeId                      String
+  deliveryId                   String          @unique
+  stopNumber                   Int
+  distanceFromPrev             Float?
+  estimatedArrival             DateTime?
+  actualArrival                DateTime?
+  completedAt                  DateTime?
+  status                       RouteStopStatus @default(PENDING)
+  notes                        String?
+  estimatedDurationWithTraffic Int?
+  turnByTurnInstructions       String?
+  liveETA                      DateTime?
+  originalETA                  DateTime?
+  alternativeRoutes            String?
+  createdAt                    DateTime        @default(now())
+  updatedAt                    DateTime        @updatedAt
+  delivery                     Delivery        @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  route                        DeliveryRoute   @relation(fields: [routeId], references: [id], onDelete: Cascade)
+
+  @@index([routeId])
+  @@index([deliveryId])
+  @@index([status])
+}
+
+model DeliveryChecklist {
+  id            String          @id @default(cuid())
+  deliveryId    String          @unique
+  itemsVerified Boolean         @default(false)
+  verifiedItems String?
+  signatureUrl  String?
+  signedBy      String?
+  signedAt      DateTime?
+  photos        String?
+  notes         String?
+  issueCategory String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  delivery      Delivery        @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  photos_rel    DeliveryPhoto[] @relation("photos_rel")
+
+  @@index([deliveryId])
+}
+
+model DeliveryPhoto {
+  id          String            @id @default(cuid())
+  checklistId String
+  photoUrl    String
+  photoType   String?
+  caption     String?
+  uploadedAt  DateTime          @default(now())
+  checklist   DeliveryChecklist @relation("photos_rel", fields: [checklistId], references: [id], onDelete: Cascade)
+
+  @@index([checklistId])
+}
+
+model DeliveryItem {
+  id                String           @id @default(cuid())
+  deliveryId        String
+  orderItemId       String
+  productId         String
+  productName       String
+  orderedQuantity   Float
+  deliveredQuantity Float
+  rejectedQuantity  Float
+  rejectionReason   RejectionReason?
+  rejectionNotes    String?
+  unit              String
+  verified          Boolean          @default(false)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  delivery          Delivery         @relation(fields: [deliveryId], references: [id], onDelete: Cascade)
+  orderItem         OrderItem        @relation(fields: [orderItemId], references: [id])
+  product           Product          @relation(fields: [productId], references: [id])
+
+  @@index([deliveryId])
+  @@index([orderItemId])
+}
+
+model TechnicianBranchAssignment {
+  id               String         @id @default(cuid())
+  technicianId     String
+  branchId         String
+  isPrimary        Boolean        @default(true)
+  serviceTerritory String?
+  assignedDate     DateTime       @default(now())
+  startDate        DateTime?
+  endDate          DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  branch           CustomerBranch @relation(fields: [branchId], references: [id], onDelete: Cascade)
+  technician       Technician     @relation(fields: [technicianId], references: [id], onDelete: Cascade)
+
+  @@unique([technicianId, branchId, isPrimary])
+  @@index([technicianId])
+  @@index([branchId])
+  @@index([isPrimary])
+}
+
+model IssueCategory {
+  id            String             @id @default(cuid())
+  name          String             @unique
+  description   String?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+  subcategories IssueSubcategory[]
+  tickets       ServiceTicket[]
+
+  @@index([name])
+}
+
+model IssueSubcategory {
+  id                    String          @id @default(cuid())
+  categoryId            String
+  name                  String
+  description           String?
+  slaResponseCritical   Int             @default(60)
+  slaResponseHigh       Int             @default(240)
+  slaResponseNormal     Int             @default(1440)
+  slaResponseLow        Int             @default(2880)
+  slaResolutionCritical Int             @default(240)
+  slaResolutionHigh     Int             @default(1440)
+  slaResolutionNormal   Int             @default(2880)
+  slaResolutionLow      Int             @default(4320)
+  createdAt             DateTime        @default(now())
+  updatedAt             DateTime        @updatedAt
+  category              IssueCategory   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  tickets               ServiceTicket[]
+
+  @@unique([categoryId, name])
+  @@index([categoryId])
+}
+
+model ServiceTicket {
+  id                   String             @id @default(cuid())
+  ticketNumber         String             @unique
+  externalId           String?
+  branchId             String
+  contactName          String?
+  contactRole          String?
+  contactPhone         String?
+  categoryId           String
+  subcategoryId        String
+  description          String
+  assignedTechnicianId String?
+  dispatcherId         String?
+  status               TicketStatus       @default(NEW)
+  priority             TicketPriority     @default(NORMAL)
+  createdAt            DateTime           @default(now())
+  firstResponseAt      DateTime?
+  completedAt          DateTime?
+  closedAt             DateTime?
+  internalNotes        String?
+  storeNotes           String?
+  updatedAt            DateTime           @updatedAt
+  completion           ServiceCompletion?
+  assignedTechnician   Technician?        @relation(fields: [assignedTechnicianId], references: [id])
+  branch               CustomerBranch     @relation(fields: [branchId], references: [id])
+  category             IssueCategory      @relation(fields: [categoryId], references: [id])
+  subcategory          IssueSubcategory   @relation(fields: [subcategoryId], references: [id])
+
+  @@index([status])
+  @@index([priority])
+  @@index([branchId])
+  @@index([assignedTechnicianId])
+  @@index([createdAt])
+}
+
+model ServiceCompletion {
+  id               String         @id @default(cuid())
+  ticketId         String         @unique
+  completedBy      String
+  completedAt      DateTime
+  workDescription  String
+  laborHours       Float
+  laborCostPerHour Float
+  partsJson        String?
+  partsCost        Float
+  laborCost        Float
+  totalCost        Float
+  photosJson       String?
+  signatureUrl     String?
+  signedBy         String?
+  signedAt         DateTime?
+  approvalStatus   ApprovalStatus @default(PENDING)
+  approvalNotes    String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  technicianId     String?
+  technician       Technician?    @relation(fields: [technicianId], references: [id])
+  ticket           ServiceTicket  @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+
+  @@index([ticketId])
+  @@index([approvalStatus])
+}
+
+model EdoIntegration {
+  id             String            @id @default(cuid())
+  name           String
+  provider       String
+  apiUrl         String
+  apiKey         String?
+  apiSecret      String?
+  username       String?
+  password       String?
+  organizationId String?
+  isActive       Boolean           @default(true)
+  lastSyncAt     DateTime?
+  syncInterval   Int               @default(3600)
+  autoSync       Boolean           @default(false)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+  documents      EdoDocumentSync[]
+
+  @@index([provider])
+  @@index([isActive])
+}
+
+model EdoDocumentSync {
+  id             String         @id @default(cuid())
+  integrationId  String
+  orderId        String?
+  documentType   String
+  documentNumber String?
+  externalId     String?
+  status         String         @default("pending")
+  direction      String
+  documentData   Json?
+  errorMessage   String?
+  syncedAt       DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  integration    EdoIntegration @relation(fields: [integrationId], references: [id], onDelete: Cascade)
+  order          Order?         @relation(fields: [orderId], references: [id])
+
+  @@unique([integrationId, externalId])
+  @@index([integrationId])
+  @@index([orderId])
+  @@index([status])
+  @@index([externalId])
+}
+
+enum OrderStatus {
+  NEW
+  CONFIRMED
+  PICKING
+  PACKING
+  READY
+  SHIPPED
+  PARTIAL
+  COMPLETED
+  INVOICED
+  PAID
+  CANCELLED
+}
+
+enum DeliveryStatus {
+  PENDING
+  IN_TRANSIT
+  DELIVERED
+  PARTIALLY_DELIVERED
+  FAILED
+  CANCELLED
+}
+
+enum RejectionReason {
+  MELTED
+  PACKAGING_DAMAGED
+  EXPIRED
+  WRONG_PRODUCT
+  INSUFFICIENT_STOCK
+  CUSTOMER_REFUSED
+  OTHER
+}
+
+enum SourceType {
+  DETAILED
+  REGISTRY
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  VIEWER
+}
+
+enum TechnicianStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+}
+
+enum RouteStatus {
+  PLANNED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum RouteStopStatus {
+  PENDING
+  EN_ROUTE
+  ARRIVED
+  COMPLETED
+  SKIPPED
+  FAILED
+}
+
+enum DriverStatus {
+  ACTIVE
+  INACTIVE
+  ON_LEAVE
+}
+
+enum DriverLocationStatus {
+  IDLE
+  MOVING
+  STOPPED
+}
+
+enum VehicleStatus {
+  AVAILABLE
+  IN_USE
+  MAINTENANCE
+  RETIRED
+}
+
+enum VehicleType {
+  VAN
+  TRUCK
+  REFRIGERATED_VAN
+  REFRIGERATED_TRUCK
+}
+
+enum TicketStatus {
+  NEW
+  ASSIGNED
+  IN_PROGRESS
+  COMPLETED
+  CLOSED
+}
+
+enum TicketPriority {
+  CRITICAL
+  HIGH
+  NORMAL
+  LOW
+}
+
+enum ApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}

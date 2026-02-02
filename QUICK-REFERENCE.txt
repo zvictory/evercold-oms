@@ -1,0 +1,150 @@
+╔═══════════════════════════════════════════════════════════════════════════╗
+║                 EVERCOLD CRM DEPLOYMENT QUICK REFERENCE                   ║
+║                       ice.erpstable.com (173.212.195.32)                  ║
+╚═══════════════════════════════════════════════════════════════════════════╝
+
+📋 THREE-STEP DEPLOYMENT PROCESS
+═══════════════════════════════════════════════════════════════════════════
+
+STEP 1: Setup Server (First Time Only - ~10 minutes)
+┌─────────────────────────────────────────────────────────────────────────┐
+│ $ scp server-setup.sh ice-production:/tmp/                              │
+│ $ ssh ice-production 'sudo bash /tmp/server-setup.sh'                   │
+└─────────────────────────────────────────────────────────────────────────┘
+  Installs: Node.js, PM2, Nginx, PostgreSQL, Certbot, Firewall
+
+STEP 2: Configure Web Server (~5 minutes)
+┌─────────────────────────────────────────────────────────────────────────┐
+│ $ scp nginx-evercold.conf ice-production:/tmp/evercold.conf             │
+│ $ ssh ice-production << 'END'                                            │
+│     sudo cp /tmp/evercold.conf /etc/nginx/sites-available/evercold      │
+│     sudo ln -sf /etc/nginx/sites-available/evercold \                   │
+│                 /etc/nginx/sites-enabled/evercold                       │
+│     sudo rm -f /etc/nginx/sites-enabled/default                         │
+│     sudo nginx -t && sudo systemctl reload nginx                        │
+│     sudo certbot certonly --standalone \                                │
+│       -d ice.erpstable.com \                                            │
+│       --email admin@erpstable.com \                                     │
+│       --agree-tos --non-interactive                                     │
+│ END                                                                      │
+└─────────────────────────────────────────────────────────────────────────┘
+  Configures: Nginx reverse proxy, SSL certificate
+
+STEP 3: Deploy Application (~3-5 minutes)
+┌─────────────────────────────────────────────────────────────────────────┐
+│ $ npm run deploy                                                         │
+└─────────────────────────────────────────────────────────────────────────┘
+  Builds, packages, uploads, and starts application
+
+🎯 VERIFY DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════════
+
+✓ Check SSH connection:
+  $ ssh ice-production 'echo ✅'
+
+✓ Check application status:
+  $ ssh ice-production 'pm2 status'
+
+✓ Check website:
+  $ curl -I https://ice.erpstable.com
+  Expected: HTTP/2 200
+
+✓ Check logs:
+  $ ssh ice-production 'pm2 logs evercold-crm --lines 20'
+
+🔄 COMMON COMMANDS
+═══════════════════════════════════════════════════════════════════════════
+
+Deploy application:
+  npm run deploy
+
+Build for production:
+  npm run build:production
+
+View application logs:
+  ssh ice-production 'pm2 logs evercold-crm'
+
+Restart application:
+  ssh ice-production 'pm2 restart evercold-crm'
+
+Monitor resources:
+  ssh ice-production 'pm2 monit'
+
+SSH into server:
+  ssh ice-production
+
+View Nginx errors:
+  ssh ice-production 'sudo tail -f /var/log/nginx/evercold-error.log'
+
+Check database:
+  ssh ice-production 'sudo -u postgres psql evercold_production'
+
+🔐 KEY INFORMATION
+═══════════════════════════════════════════════════════════════════════════
+
+Server IP:        173.212.195.32
+Domain:           ice.erpstable.com
+SSH Host:         ice-production
+SSH User:         root
+SSH Key:          ~/.ssh/id_ed25519
+App Directory:    /var/www/evercold
+Database:         PostgreSQL (evercold_production)
+DB User:          evercold_user
+Port:             3000 (internal), 443 (Nginx SSL)
+Process Manager:  PM2
+Web Server:       Nginx
+
+🚨 TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════
+
+502 Bad Gateway?
+  → Restart: ssh ice-production 'pm2 restart evercold-crm'
+
+Can't connect to database?
+  → Check: ssh ice-production 'sudo systemctl status postgresql'
+
+SSL certificate error?
+  → Renew: ssh ice-production 'sudo certbot renew --force-renewal'
+
+Port 3000 in use?
+  → Kill: ssh ice-production 'sudo lsof -i :3000 && sudo kill -9 PID'
+
+📂 FILES CREATED
+═══════════════════════════════════════════════════════════════════════════
+
+Local Files:
+  ~/Documents/evercold/deploy.sh                 (Main deployment script)
+  ~/Documents/evercold/server-setup.sh           (Server initialization)
+  ~/Documents/evercold/ecosystem.config.js       (PM2 configuration)
+  ~/Documents/evercold/nginx-evercold.conf       (Nginx config)
+  ~/Documents/evercold/.env.production           (Environment vars)
+  ~/.ssh/config                                   (SSH configuration)
+
+Documentation:
+  ~/Documents/evercold/DEPLOYMENT.md              (Complete guide)
+  ~/Documents/evercold/DEPLOYMENT-CHECKLIST.md    (Step-by-step)
+  ~/Documents/evercold/DEPLOYMENT-README.md       (Quick start)
+  ~/Documents/evercold/QUICK-REFERENCE.txt        (This file)
+
+📚 DOCUMENTATION
+═══════════════════════════════════════════════════════════════════════════
+
+For detailed information, see:
+  • DEPLOYMENT.md                 (12KB - Complete guide)
+  • DEPLOYMENT-CHECKLIST.md       (8KB - Verification steps)
+  • DEPLOYMENT-README.md          (Quick reference)
+
+✨ EVERYTHING IS READY
+═══════════════════════════════════════════════════════════════════════════
+
+SSH connection verified ✓
+All deployment files created ✓
+Database password generated ✓
+Environment configured ✓
+
+Next step: npm run deploy
+
+═══════════════════════════════════════════════════════════════════════════
+Created: 2026-01-31
+Status: Ready for Production
+═══════════════════════════════════════════════════════════════════════════

@@ -4,6 +4,9 @@ import { OrderRepository } from './OrderRepository'
 import { CustomerRepository } from './CustomerRepository'
 import { CustomerBranchRepository } from './CustomerBranchRepository'
 import { CustomerProductPriceRepository } from './CustomerProductPriceRepository'
+import { ProductRepository } from './ProductRepository'
+import { DeliveryRepository } from './DeliveryRepository'
+import { DeliveryRouteRepository } from './DeliveryRouteRepository'
 
 // Re-export base classes and types
 export { BaseRepository, RepositoryError } from './BaseRepository'
@@ -42,6 +45,24 @@ export type {
   CustomPriceWithProduct,
   PriceAdjustment,
 } from './CustomerProductPriceRepository'
+
+export { ProductRepository } from './ProductRepository'
+export type {
+  ProductWithPricing,
+  ProductStats,
+} from './ProductRepository'
+
+export { DeliveryRepository } from './DeliveryRepository'
+export type {
+  DeliveryWithRelations,
+  DeliveryStats,
+} from './DeliveryRepository'
+
+export { DeliveryRouteRepository } from './DeliveryRouteRepository'
+export type {
+  RouteWithStops,
+  RouteStats,
+} from './DeliveryRouteRepository'
 
 /**
  * Centralized repository registry
@@ -127,6 +148,42 @@ export class RepositoryRegistry {
   }
 
   /**
+   * Get ProductRepository instance
+   *
+   * @returns ProductRepository singleton
+   */
+  getProductRepository(): ProductRepository {
+    if (!this.repositories.has('product')) {
+      this.repositories.set('product', new ProductRepository(this.prismaClient))
+    }
+    return this.repositories.get('product')!
+  }
+
+  /**
+   * Get DeliveryRepository instance
+   *
+   * @returns DeliveryRepository singleton
+   */
+  getDeliveryRepository(): DeliveryRepository {
+    if (!this.repositories.has('delivery')) {
+      this.repositories.set('delivery', new DeliveryRepository(this.prismaClient))
+    }
+    return this.repositories.get('delivery')!
+  }
+
+  /**
+   * Get DeliveryRouteRepository instance
+   *
+   * @returns DeliveryRouteRepository singleton
+   */
+  getDeliveryRouteRepository(): DeliveryRouteRepository {
+    if (!this.repositories.has('deliveryRoute')) {
+      this.repositories.set('deliveryRoute', new DeliveryRouteRepository(this.prismaClient))
+    }
+    return this.repositories.get('deliveryRoute')!
+  }
+
+  /**
    * Get Prisma client instance
    *
    * @returns PrismaClient instance
@@ -202,6 +259,33 @@ export const getCustomerBranchRepository = (): CustomerBranchRepository => {
  */
 export const getCustomerProductPriceRepository = (): CustomerProductPriceRepository => {
   return defaultRegistry.getCustomerProductPriceRepository()
+}
+
+/**
+ * Get default ProductRepository instance
+ *
+ * @returns ProductRepository singleton
+ */
+export const getProductRepository = (): ProductRepository => {
+  return defaultRegistry.getProductRepository()
+}
+
+/**
+ * Get default DeliveryRepository instance
+ *
+ * @returns DeliveryRepository singleton
+ */
+export const getDeliveryRepository = (): DeliveryRepository => {
+  return defaultRegistry.getDeliveryRepository()
+}
+
+/**
+ * Get default DeliveryRouteRepository instance
+ *
+ * @returns DeliveryRouteRepository singleton
+ */
+export const getDeliveryRouteRepository = (): DeliveryRouteRepository => {
+  return defaultRegistry.getDeliveryRouteRepository()
 }
 
 /**

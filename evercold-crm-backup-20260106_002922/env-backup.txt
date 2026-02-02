@@ -1,0 +1,26 @@
+# Environment variables declared in this file are NOT automatically loaded by Prisma.
+# Please add `import "dotenv/config";` to your `prisma.config.ts` file, or use the Prisma CLI with Bun
+# to load environment variables from .env files: https://pris.ly/prisma-config-env-vars.
+
+# Prisma supports the native connection string format for PostgreSQL, MySQL, SQLite, SQL Server, MongoDB and CockroachDB.
+# See the documentation for all the connection string options: https://pris.ly/d/connection-strings
+
+# The following `prisma+postgres` URL is similar to the URL produced by running a local Prisma Postgres
+# server with the `prisma dev` CLI command, when not choosing any non-default ports or settings. The API key, unlike the
+# one found in a remote Prisma Postgres URL, does not contain any sensitive information.
+
+DATABASE_URL="postgresql://user@localhost:5432/evercold_crm"
+YANDEX_MAPS_API_KEY=675d48f0-5676-4486-bfe3-ff30747999ae
+NEXT_PUBLIC_YANDEX_MAPS_API_KEY=675d48f0-5676-4486-bfe3-ff30747999ae
+NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=658456965614-qrm60dhkkrasj1ilq5kjmd59je31nqke.apps.googleusercontent.com
+
+# Telegram Bot
+TELEGRAM_BOT_TOKEN=8278817835:AAHAMW7BIYBmpPJagODSuwZovZjMgGb_EN8
+
+# Telegram Chat IDs for Notifications
+TELEGRAM_DISPATCHER_CHAT_ID=
+TELEGRAM_ADMIN_CHAT_ID=
+TELEGRAM_TECHNICIAN_CHAT_ID=
+
+# Cron Jobs
+CRON_SECRET=evercold-ticket-escalation-secret-key-2024

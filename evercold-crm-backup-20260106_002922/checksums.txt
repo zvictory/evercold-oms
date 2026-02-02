@@ -1,0 +1,337 @@
+c307e9ff17e30e17f3bf74c772908b46e7ae345be60d64deb208de7343eb0f0c  ./evercold_crm_database.sql
+18a3b731d579fc3d35236f94ebaae2cf8b47c44cfca227c48296ad3fb4baa20d  ./RESTORE_INSTRUCTIONS.md
+a3dc2ea86ca3d3466c0894d6712d8b9db56e072341bf6f7ff96707bfb1b20bee  ./restore.sh
+4c52f17c79933d8d373c836347dc34c81e7b5e7737724fb909628507f975f626  ./postgresql-version.txt
+1bc07abcc8c8064ae3d6ec9a1f843e866e272fc58d908e4fab11fe865614fe82  ./project/EDO_IMPLEMENTATION_COMPLETE.md
+1fc4d790a5894d44b5bee14f589f4fbfc5c600a617f7e0bd30ff258f84e75e84  ./project/analyze_signature_structure.mjs
+492c610a5e656660b0851fcc622f894c60d56230b1cc502d20b9c2f7b54aba89  ./project/backup_for_transfer.sh
+bec19602031c01867edbf5c7a0761e2e5dfe484b74c19b047c417ff9aea3af76  ./project/vercel.json
+05cdf05e2e329848651a50a0d443d4fa5a7153e33e6a0d0cf54db5f42ffc79ac  ./project/jest.setup.js
+a539c54691fd1f30c5664f7d910e9dbc30a5fed7bf5b54bd432ec1aa97a1229d  ./project/verify_heights.mjs
+dfac7ac2d86d326a0e5adb024e7943c181393ed17a5fcb8f0315b24c7da6ddde  ./project/postcss.config.mjs
+99579cb0e4cd5c2f6cd973467091f8a1548021e2f676f56e1afb81a87d24d190  ./project/test-bot-simple.ts
+5bdab79f752168fcf05c64e4f4eed2a235d32487053314e32a7b8260d85b7d84  ./project/korzinka_branches.json
+7d88d97a292a3026a4642060ebc512caf47bd337a87710cbec71505ef7b8893c  ./project/telegram-bot.ts
+48fdb571f34ed2c970ce4287de122affeedcee230d794950996611063b84c2b4  ./project/evercold_crm_database_backup.sql
+60fffc8b3ae5922df9a7d6a04501dc5ba3cafd143a1bd14a2af53cfd3ae2aaa4  ./project/COMPLETION_API_INTEGRATION.md
+8666c3f34edadbab00d16ca27fa33a3a810b28de2139df23ec992c55ffcc0afc  ./project/tsconfig.tsbuildinfo
+9c8a482ccaf332248d983b7e510033692d98b63c4605e2e59a753044a0a8a9c5  ./project/jest.config.js
+40b60eae88199bd6b115d83e8c794ac8811e42e2bf0ef3b445322bda93240312  ./project/prisma/migrations/20251230175745_init/migration.sql
+99836963713b4f5b269ad49af0ed3d7b0b2e336115c2f92dc9ac683d139d0900  ./project/prisma/migrations/migration_lock.toml
+002617cada51170acc7b8e8ab37c38cba1debc9755a94684e56fd0d4cad7fe94  ./project/prisma/migrations/20251230230725_add_issue_category_constraints/migration.sql
+35d50f2478b92d503c3f5632798b47bc3fbcd3f2844ef373b33aae0175b9ffcd  ./project/prisma/migrations/20251230180322_fix_technician_relationships/migration.sql
+4f0690bdfcf8af6703178e93616cc6cf5a3161e7c8949d3db74ebec715d07e6e  ./project/prisma/schema.prisma
+416aa6776cfca47679d58613c73f7ba70999f5fcc8825a395bbe429a3f239ea1  ./project/prisma/seed.ts
+376620d1434f8d3cfea0b1e90fc7b4ffc4ab08a1b960c09b71613b930b74428f  ./project/COMPLETION_API_QUICK_REFERENCE.md
+1a4f4301411c719a93e06a9547bca74b1f83b28f53720c6d4ea374ef4880d051  ./project/TELEGRAM_NOTIFICATIONS_IMPLEMENTATION.md
+8dcc721c1e9500f32d26f2552a3468db18cecbbaec6cdfd9676ed80c06faed22  ./project/YANDEX_MAPS_SETUP.md
+f4cc0ef844e72c3fa69f23f111b6da75fd545402b0c97c9c6b0b112251648bf9  ./project/debug-excel.ts
+3a06a13fb1eb978f3a5d800094ef30bb5ebb6e50bbc449555269ff52cb771b78  ./project/test-purchase-order.xlsx
+25e3925f8db98ad61c09403f22fc34f90c1628a3e5cacc62c7073b0343fb7e75  ./project/prisma.config.ts
+c0fc963661f3586ad99ed68e38eca803e7ecc3ae80d6a780ec6e1e65b13d8139  ./project/docs/plans/2025-12-31-dayn-note-phase-2.md
+60d5e3a1370fd2833088ec3412aa6129e047c799098905f1db8bd17f290db267  ./project/docs/plans/2025-12-30-ticket-system-implementation.md
+156efd5fe530004c5671cf2c072ddbea346e356f66de407b293aa74ca76d2d5d  ./project/docs/plans/2025-12-30-ticket-system-design.md
+f019b3a20995abe307d6b542a141ced54054bfa0550abf76eac0c30fca430108  ./project/TASK_9_COMPLETION_SUMMARY.md
+7ad303e40d4fddf44f156129e397511953a71481c5cfd86b1862649aaaf240cc  ./project/next-env.d.ts
+deb2244bf07761e29bc53f5cabcbadb4f604168e285f48ce1730b0570d7dfc9a  ./project/README.md
+ef4a204bf8d84854881711f52ca7e89266be3290abb869152ecb4a9409746303  ./project/check-products.ts
+f5c6247469f1f350c58d6785861fda7d11c10486de57a59d06847266b19b01ff  ./project/analyze_template.mjs
+a0fba81920b8f273d3005dec2e67a4078f4bcc81ef7983113f418c359089ce9e  ./project/TASK_9_FINAL_REPORT.md
+2b67812c325c199a02536cdbeea0c593a72f707d323b72ee3e08dbab06753bd4  ./project/public/file.svg
+f214d7f2dc932afe055e5a1e4bc6f1ff7acf87a014f847d525e11d8373b16667  ./project/public/uploads/1765906902742_2025-12-16 21.58.32.jpg.processed.png
+ec197c760a23380ece4140ec2e41fc112bab9225f8386005a3e3ad4c744328d2  ./project/public/uploads/1765906631633_2025-12-16 21.58.32.jpg
+f214d7f2dc932afe055e5a1e4bc6f1ff7acf87a014f847d525e11d8373b16667  ./project/public/uploads/1765906765729_2025-12-16 21.58.32.jpg.processed.png
+3c251a1cedbd3e8ec7f7dc6b5604ce69ff33eb0b831045bd67d08007c3c8cb5a  ./project/public/uploads/1765648773495_Реестр заказов (4).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765615827328_Реестр заказов (3).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765624888061_Реестр заказов (1).xls
+b2bae300c2418be8a6ae577e1f5735cc8314e5e06482b3a70efe855b66a43e4e  ./project/public/uploads/1765648781254_Реестр заказов (5).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765622656286_Реестр заказов (3).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830735068_Реестр заказов (7).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765623747192_Реестр заказов (3).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765623117220_Реестр заказов (1).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1767469564737_Реестр заказов (7).xls
+ec197c760a23380ece4140ec2e41fc112bab9225f8386005a3e3ad4c744328d2  ./project/public/uploads/1765905133067_2025-12-16 21.58.32.jpg
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830226070_Реестр заказов (7).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765625815970_Реестр заказов (2).xls
+b2bae300c2418be8a6ae577e1f5735cc8314e5e06482b3a70efe855b66a43e4e  ./project/public/uploads/1765649966886_Реестр заказов (5).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1765903979189_Реестр заказов (7).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766313139930_Реестр заказов (6).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765622845192_Реестр заказов (1).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1766819990314_Реестр заказов (2).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765617653909_Реестр заказов (2).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1767514275327_Реестр заказов (3).xls
+ec197c760a23380ece4140ec2e41fc112bab9225f8386005a3e3ad4c744328d2  ./project/public/uploads/1765906902742_2025-12-16 21.58.32.jpg
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765616010654_Реестр заказов (2).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830677489_Реестр заказов (7).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765622632898_Реестр заказов (1).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765649436193_Реестр заказов (1).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765620188619_Реестр заказов (2).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1766817006209_Реестр заказов (3).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765649942990_Реестр заказов (1).xls
+b2bae300c2418be8a6ae577e1f5735cc8314e5e06482b3a70efe855b66a43e4e  ./project/public/uploads/1765634944110_Реестр заказов (5).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766074384952_Реестр заказов (6).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765648741155_Реестр заказов (1).xls
+ec197c760a23380ece4140ec2e41fc112bab9225f8386005a3e3ad4c744328d2  ./project/public/uploads/1765906765729_2025-12-16 21.58.32.jpg
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766817167424_Реестр заказов (1).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766817623791_Реестр заказов (6).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765622513571_Реестр заказов (1).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765620143941_Реестр заказов (1).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766816972869_Реестр заказов (7).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765713665051_Реестр заказов (2).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765620205808_Реестр заказов (3).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830661286_Реестр заказов (7).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765615927800_Реестр заказов (3).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1765648788885_Реестр заказов (6).xls
+f214d7f2dc932afe055e5a1e4bc6f1ff7acf87a014f847d525e11d8373b16667  ./project/public/uploads/1765906631633_2025-12-16 21.58.32.jpg.processed.png
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765615934396_Реестр заказов (3).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1767514258612_Реестр заказов (2).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766817058510_Реестр заказов (1).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765622575811_Реестр заказов (2).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766313381722_Реестр заказов (6).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765650908434_Реестр заказов (1).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1766819996142_Реестр заказов (3).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1765905243936_Реестр заказов (7).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830754673_Реестр заказов (7).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765624212245_Реестр заказов (1).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766829984224_Реестр заказов (1).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765622600665_Реестр заказов (3).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766820010100_Реестр заказов (6).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766829971230_Реестр заказов (7).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765622732125_Реестр заказов.xls
+3a06a13fb1eb978f3a5d800094ef30bb5ebb6e50bbc449555269ff52cb771b78  ./project/public/uploads/1765907589349_100011478  ООО EGGSTRA SPECIAL FARMS.xlsx
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765617312559_Реестр заказов (2).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766927743438_Реестр заказов (1).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1765634948504_Реестр заказов (6).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765623720432_Реестр заказов (2).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765649259706_Реестр заказов (1).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1766916619899_Реестр заказов (6).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765622742248_Реестр заказов (2).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766817542331_Реестр заказов (1).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1766830804478_Реестр заказов (7).xls
+5a69568ee46711080fd31d252d69fc20418eb6fd0adc3ae84b5b097bb10396f1  ./project/public/uploads/1765904164282_Реестр заказов (6).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765648756022_Реестр заказов (2).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1767469376685_Реестр заказов (7).xls
+f214d7f2dc932afe055e5a1e4bc6f1ff7acf87a014f847d525e11d8373b16667  ./project/public/uploads/1765905133067_2025-12-16 21.58.32.jpg.processed.png
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765648765112_Реестр заказов (3).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1766817734526_Реестр заказов (1).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765624345242_Реестр заказов (3).xls
+b2bae300c2418be8a6ae577e1f5735cc8314e5e06482b3a70efe855b66a43e4e  ./project/public/uploads/1765904172410_Реестр заказов (5).xls
+6165dbd48b2ff0c24a5496fbdd743667ae05daa031f1ff3850a6b6ce1e2b69ae  ./project/public/uploads/1765625825083_Реестр заказов (3).xls
+3c251a1cedbd3e8ec7f7dc6b5604ce69ff33eb0b831045bd67d08007c3c8cb5a  ./project/public/uploads/1766820001268_Реестр заказов (4).xls
+3c251a1cedbd3e8ec7f7dc6b5604ce69ff33eb0b831045bd67d08007c3c8cb5a  ./project/public/uploads/1765904181050_Реестр заказов (4).xls
+3c251a1cedbd3e8ec7f7dc6b5604ce69ff33eb0b831045bd67d08007c3c8cb5a  ./project/public/uploads/1765634939354_Реестр заказов (4).xls
+b2bae300c2418be8a6ae577e1f5735cc8314e5e06482b3a70efe855b66a43e4e  ./project/public/uploads/1766820005636_Реестр заказов (5).xls
+2a75953f34ecb7d72bede2cded3a432ce649f528034e977ee7bdd8f6f298c779  ./project/public/uploads/1765624324330_Реестр заказов (1).xls
+27f77bbefc04db13ec19f407c68e1d5c1834539b6f5ba514c51b98804dcf1768  ./project/public/uploads/1767103886908_Реестр заказов (7).xls
+2fbab59a5fcdea9de329d8787c6cb1e0242d093d8530c853d5f8dd6135458860  ./project/public/uploads/1765622644449_Реестр заказов (2).xls
+f081337b2fee635b455b63275406a3e7f39d6a014e25ad90dab5a67e62a12ac4  ./project/public/vercel.svg
+55995dfad6ecb4945a1e856ddca03c5e16aa5bf13fd21b4df6a74ae79357bcfc  ./project/public/next.svg
+b614b9bf183925957661ac851498fe1d8029fd43a62fbfed86f9e2624a57e7cf  ./project/public/globe.svg
+644768c4aaeb4767bce293344eeb0c125fb804a94d801440424072202d85e3a1  ./project/public/window.svg
+9cbb3cef569aa3be01ad5277ef3e80bc75374d6c65d9ccaaff18ecb810abaa56  ./project/check-drivers-vehicles.ts
+657f0106a59031b3dd7af060eafb4bb4d855ca4b6fe31c79ca7e3a10048c23b5  ./project/.gitignore
+694b97bf751c78e45c4a8d694742811cc46d80aa0361cccbbe8f2284d78be753  ./project/package-lock.json
+520ac4eab3bf082c25148ee66b9194aab7e27609e043d1e9f2e69b3cd3c289aa  ./project/package.json
+78b7fb624cd283904ae4a6e51e36e4e0dac94bc7eae236f64b7551016b313aa4  ./project/.env
+574397a0ed952a920b241caa06e7d42492fb82b3e35220d50cace09e3a47574e  ./project/add-missing-products.ts
+2cf210df494036a14c1eb1b798720db791edab70856b1c8e0fc5ad8e64d5d329  ./project/simulate-upload.ts
+83fd09e42eaa6b57cff65cc1a1283826cdd2b68a96cfcb40c17a7c9a63fd5e22  ./project/scripts/verify-branch-coordinates.md
+24d250a1e2d367e42546994517a9e672bc99300aaefb6e9f866f29288eacaf6d  ./project/scripts/populate-old-branch-codes.ts
+3c395c0a8b74086eb0aecdf5b4672ad6a7209a72cafb5f8ac3168d8943f34565  ./project/scripts/create-sample-purchase-order.ts
+1d75f82ef7c26fc7971fe4f37fc5fa91dae29eeaffaaf0e5eb69f696222e09b3  ./project/scripts/examine-excel.ts
+591bf55cb7bd062266ee3d88c3e499edf8ca7c9db83f15694c202ae032e3f9e6  ./project/scripts/seed-issue-categories.ts
+38138380b2d951e7506dcac8698d9d7696aeece61724f63026539cccf5860cbf  ./project/scripts/seed-tashkent-route.sql
+5cdc8826c58d43ad72f063b73291921b912d6a761256ec37ea8ebeb42bce7386  ./project/scripts/check-branch-codes.ts
+9da25664ebf71ae9600119744812bd38e89eb42f79d015598a0e08935dbb70e2  ./project/scripts/update-korzinka-branches.ts
+af5422a5f18b663d27f543f845e5940d6869689dde49deda097c7e4aebaf6c24  ./project/scripts/examine-balton.ts
+639bdb6cf8ec39629db53797465be1fa3042f2990c4b968e51d8fe1210d9c688  ./project/scripts/seed-tashkent-route.ts
+3fafc6cc6976c3404b6691145c4d5983abb7fc71f79c88ca95b90753afd3bf36  ./project/scripts/extract-all-branch-codes.ts
+ddb83089d6a357e3e9562e320c1366e0ad58445f7f7e48a3ec79598b0c0b41d5  ./project/SERVICE_COMPLETION_API_GUIDE.md
+d88b4c2ba5c091d4eb56ca461cbf6094956eef16fa0eaf23104ddf7fc1f22798  ./project/add-drivers-vehicles-fixed.ts
+6b96d471870852b04b9aecd419aa9d861471bfed8252c802040d25565c732742  ./project/telegram-bot-minimal.ts
+2581ff4080842ab37341db8f5968981571a8bb1066c5459da4c50bc8cc57c949  ./project/check-products.mjs
+5c51df4c59f4510d8c7dadf07a5c32132228826a3b331da5e286207b4df7ef9c  ./project/tsconfig.json
+07da4e58e3982934af06e1676fe87cf11bd934d3024a4865b2683f60ce8ae21e  ./project/TELEGRAM_BOT_SETUP.md
+9a043e0a23d7e748970df5d20c11b101229b5508bac7799ae38849374f89414d  ./project/TRANSFER_TO_NEW_MAC.md
+76a4fe596e79e58df8c90a3dce2f9979ee9caea5ac795cebc93f604b6f8f4ec0  ./project/test-balton-order.xlsx
+d91274e4846f745376a2ada7a244f056eec5dd67dcb04821ac21b859196373eb  ./project/test-parser.ts
+49c282bf919df3319f72858f6d9fe889d88da5ab3f5a07773a1fc6413e07243c  ./project/verify_final_heights.mjs
+be1759a33b0ccd2686add2b29b2eddc2ef968d73dc8a18e1936c7f147e288c28  ./project/sample-purchase-order.xlsx
+2532947efe4ea2fd0536b634142eb1fcc681c45c5aa9aace99fe699b79a5ee25  ./project/add-vehicles-drivers.ts
+870f1adccecf3051cbcd9fd307cef51d7633cf510979c181a81f4b1797273493  ./project/eslint.config.mjs
+774f5f08403fae153c7825404ba0642bd87c576f56eea8ffbfd527405b6a0b9f  ./project/update-korzinka-vat.ts
+614bce25b089c3f19b1e17a6346c74b858034040154c6621e7d35303004767cc  ./project/next.config.ts
+5c6cf9e5abc0067a50bfb3e70622e224af4db5599c0284504831a31b94a2717f  ./project/ROUTE_PLANNING_IMPLEMENTATION_PLAN.md
+1e1fd20840958d62d674ac343378c19ba3d98793bc44d0c5aff5a0237eca459e  ./project/EDO_INTEGRATION_STATUS.md
+91ee99f75d6abb5b25cc341b4bbb271ed706e55b748a1501195d31348658b224  ./project/src/types/yandex.ts
+d74157b6f6dba9f3fb84b3d818129e3e18c6ab24960048fa93fd37eace86f985  ./project/src/app/customers/[id]/page.tsx
+8d55cdb9c69868792b319fd5bea24768629e9e1e8ece6ca8767cb1bc2bb1faf2  ./project/src/app/customers/[id]/page.tsx.bak
+27262ea632ad9c2643209ef570c105a98165d1c20aaefb349b725bec798890d3  ./project/src/app/customers/page.tsx
+3e54b8aefeff8abc5bb220ef61109b057111366ef7d6a52be23d387d73be7fdf  ./project/src/app/clients/page.tsx
+eb9cbe5eae05cf6f3ff0dd477d050cafd3c2b41446182551dcad7b5473af05cd  ./project/src/app/settings/edo/page.tsx
+78160a6e4b4c0a89429de5461485935cb7c9f6fd4e97334e14a689b1e7172b49  ./project/src/app/settings/edo/page.tsx.bak
+8a66499bd16758ccfa9d241764ea8cb8e15c56cc7fc1783080fabeab0de83920  ./project/src/app/tickets/[id]/approve/page.tsx
+6ae452511bbad2708e563bb746b8e96b562f4c9ea9dc87c3b84a4188dcad7250  ./project/src/app/tickets/create/page.tsx
+38d68292b946b825f42629f502b5ba1d3171c6da6ac27663fcb72be60f9fbec1  ./project/src/app/edo/sync/page.tsx
+2b8ad2d33455a8f736fc3a8ebf8f0bdea8848ad4c0db48a2833bd0f9cd775932  ./project/src/app/favicon.ico
+ca8a95676f7b2c803f06f16a536fb2718e683719c5804d13718b1b822d7a4dbc  ./project/src/app/drivers/page.tsx
+014c682c3fedcc842dbe3c011c737268ea4aeb7ae9b49d2c4aaab768b1d3a651  ./project/src/app/products/page.tsx
+daf12d2172e1036530855517b89c8d609958148150258ba180af0cffa241ff8a  ./project/src/app/driver/navigate/navigation-content.tsx
+cee9f758d0b55feed6ccfc847faf97da3006ffcd3afda28848866c692840452c  ./project/src/app/driver/navigate/layout.tsx
+10cd6bced00389f5e2ae95fef2d48eaeb11e39be857131ff6de22e33ea07677a  ./project/src/app/driver/navigate/page.tsx
+47dbb7c694e63e1462950e2d0f8cc37762894f61029091d9e005989263d96e66  ./project/src/app/driver/layout.tsx
+8b743543431807bbd15fb6a41405f9a269520a64b2410b2560100ec7faa95737  ./project/src/app/driver/delivery/[deliveryId]/page.tsx
+6b991f0e302a771391c222ea4c9ff8796061005c31232c9c35cc4911f203097e  ./project/src/app/driver/routes/page.tsx
+86e553a5d83d518b83a0c62aa9b80ea560b79dba215df65ebb7a30e53fd770ea  ./project/src/app/dispatcher/tickets/[id]/page.tsx
+d0a0d4cf6e2bdd9c58caad6b548c65fd1599962e0ed8451d27413d928f352e1b  ./project/src/app/dispatcher/tickets/page.tsx
+c8dd5c665a556b923c58e2cf9dbdf0cee6ab60d2bbe703afe51494e097b0b719  ./project/src/app/dispatcher/page.tsx
+80cb3378bbaf7317315bcede5242547613abacf3830ea64a5614599b29a1dafe  ./project/src/app/dispatcher/analytics/page.tsx
+69b1170eda2a1b7eba5ad5eb21532c73d558d95292ad74cda781cdd8c3128b74  ./project/src/app/map-test/page.tsx
+a1a101026d2b27b7519b4aefe9fccd2d8523e0218f396d6123e9d25e66d0d991  ./project/src/app/admin/add-vehicles-drivers/page.tsx
+9d1988d431ea533c93ed17fedc9cd41683ae4af38afd2f75e126d2cf89639939  ./project/src/app/admin/branches/[id]/technicians/page.tsx
+2b3cd641fc0abb71e1a3613574ca4444e3a91d95c81a3deeec29587360dc325f  ./project/src/app/admin/branches/[id]/page.tsx
+55ba67027433cb8b798477e33c62174164bddad337d0bddf725ae4407446b0db  ./project/src/app/admin/branches/page.tsx
+408759d505a019a1b4a9d38d934b462a71a189a02834dbc390ffb3327552f9f5  ./project/src/app/admin/customer-prices/page.tsx
+75e00b8bf3f99013be39c4aa8488164658d559cc15b711ff6a51fb31d1148302  ./project/src/app/about/page.tsx
+75d8ca25722fb10d8a004e9f955413010dfbdc9166eda14ff76c4425d7bf3f6f  ./project/src/app/dashboard/page.tsx
+3901d8c9443fa8ad7ba562b2c9c448b5311ed7ad8448e100612248d07bbaee05  ./project/src/app/layout.tsx
+327db650c42be893bf32e0ef1c261affdc1a0b6d0551a6c22e3b36d6ebba103d  ./project/src/app/api/customers/route.ts
+5fa144d67732f6749222911a7cddf824d9a7310afeb7b9966d5f0be382080fdb  ./project/src/app/api/customers/[id]/route.ts
+d139fe19184f2b7068a77f781b3c0ff7dbecf1d40e30d542ba670892d6948466  ./project/src/app/api/customers/[id]/branches/[branchId]/route.ts
+54e879a228c347bab86404defb49f3cc789a0a2aeecc93980d796774024c705d  ./project/src/app/api/customers/[id]/branches/route.ts
+30aa990776c6078f064e2aea427fa05bc69df0b58d21836ca28ef0b302084bee  ./project/src/app/api/tickets/route.ts
+10fbd0cef2f688b101184b59e25d8e98c610e4468368716506b5f2f20e7ea5df  ./project/src/app/api/tickets/[id]/complete/route.ts
+fc014a6fef6bcc8649ddb8a82ade4c75597feeb8440368c3806237256349325c  ./project/src/app/api/tickets/[id]/route.ts
+ac092b11538e1bef35dd0c5dfe0270f228a86269a4557c8eba788a66557d6aa7  ./project/src/app/api/edo/test-connection/route.ts
+2b88b9471734a88462a875feeaaeea726499ce687666da44277bcfe85aa7f317  ./project/src/app/api/edo/integrations/route.ts
+95702b161dd8a6971298dfb8f44a82b80b33575f79e64aa23719b5da0141c169  ./project/src/app/api/edo/integrations/[id]/route.ts
+b53252e4b58b9b6487949106284d762c6be8aaaead6d63e0bbeaf7c018bed6e1  ./project/src/app/api/edo/sync/status/route.ts
+4efc62efd0d7ad33ec99d400f323cb320827876d281274d2d4387a96dfb2409a  ./project/src/app/api/edo/sync/download/route.ts
+76184afdb55321cb4136861ad562f539ed18cba66da760cb87a85eff2f247fad  ./project/src/app/api/edo/sync/upload/route.ts
+4cecbe86dc18e341e2dde7e1677272f1f238798108d98acc9a956905d23e131a  ./project/src/app/api/drivers/route.ts
+68683319d9e42550dd2a2b42209d278dcf2b664e517d5a9e1023860944dfe23e  ./project/src/app/api/drivers/[id]/route.ts
+2039dcbc7dfbdd8f745342ac75d96fa21b2273d8d1821095e38787828601e9b9  ./project/src/app/api/products/route.ts
+73ab0fedf848173a848e35870ebf44f3017934c9f71e488531129d50d66b140c  ./project/src/app/api/products/[id]/route.ts
+b1cf933a73b4e032aa2813237590983f4363ee2c80c6fc13e01022ed3f01b109  ./project/src/app/api/issue-categories/route.ts
+c2a427d808b6c78936ed21810997357a15393809532d9f23b5cf38f57c295794  ./project/src/app/api/issue-categories/[id]/subcategories/route.ts
+9d7e00bd92396ad2a6d15c43cb50b443eb3321a723b05cbd2e661c684ac39eb3  ./project/src/app/api/technicians/route.ts
+c730ace5770d3ffe2514b215bf139833af2f1eaf99d18a9fa43867487fea2b11  ./project/src/app/api/technicians/[id]/assign/route.ts
+c6902686fd3bfb721de870559ac6c2dac6178f71eb78d2a68f2a436809d82f3d  ./project/src/app/api/technicians/[id]/route.ts
+299bf2c9f96814b1c34a5e493404823fda404ede91f0af60d05dc9f3b37261df  ./project/src/app/api/completions/[id]/approve/route.ts
+d6d07b276c734845593ae3edd1433af3d4f617da9d8fb64479521e9bd296cc37  ./project/src/app/api/customer-branches/route.ts
+c2aaab885bbee4e381a77568e70a00016c83ec005f6d5d8acc5387010945af31  ./project/src/app/api/admin/add-vehicles-drivers/route.ts
+ca17e8b86414de04d735a80e2f25988543db576cf7f7dbfdeeaa686371fda7ef  ./project/src/app/api/admin/customer-prices/route.ts
+09ec2138ce97df60ca190695f412ed896b031a734d5cb00b4bd5388c2b3a88e9  ./project/src/app/api/upload-purchase-order/route.ts
+54f37f4831c8313012c0558655b00015e07d2db7dd4044cc12895e19aaf2d306  ./project/src/app/api/upload-image/route.ts
+db3a59ad4c739038fb2e22652bc9aba68944674fcac36a6ec3e968abd6588ff0  ./project/src/app/api/yandex/matrix/route.ts
+f0f807a38505b5afdccaabaae5fbd600dbc25ff56fa33b0939c84b32cff5a3bc  ./project/src/app/api/yandex/routes/route.ts
+2b3c299451bafba2dcd246574cd9db6dbb53b269fe5cd45f1106e7e86bf6f62a  ./project/src/app/api/telegram/webhook/route.ts
+378f8a06115530b65f9d474bd05381ffc668e2c463e8596a93d2c0e81182ea50  ./project/src/app/api/vehicles/route.ts
+288cfd4525a8f3ecb91094b2afe4b877fabe4ca9ad714192247d07bb455b3e96  ./project/src/app/api/vehicles/[id]/route.ts
+7a8a9e2ca919d5fd13adfbf8112f606a2b13308da7e38f704aee92182acf3950  ./project/src/app/api/branches/route.ts
+c868dd7e23faf139ce54fcf83ab6c742c464ed0b0cfeb6c1900ed52dfd987fd1  ./project/src/app/api/branches/[id]/technicians/route.ts
+332fc857ba1006eb0ec1a797edca3d7b6ef3e249808a473191cf6e8bfbaacc3a  ./project/src/app/api/branches/[id]/route.ts
+1978507385b014831843329b5e0bafe41b5f7e9df76fca6a04725cbbcb2a2ea8  ./project/src/app/api/orders/route.ts
+c68c90f6cb12487eb1e75ba9e6727a91882dfa5ccb27ba03df1aebe63ea32144  ./project/src/app/api/orders/export/route.ts
+f45b9753c737d6f9b4b072e583949bdbc8dc56b1688ceaaa3340ecedb5427d93  ./project/src/app/api/orders/bulk-schet-faktura/route.ts
+c6cc14ef06431dda8e9b3ec5e3151f2d1ad4e5db2db3d6e7b8feccea0bd33636  ./project/src/app/api/orders/[id]/schet-faktura/route.ts
+e773ddd783b7787618334066ff4299e584896aa68b241a29a8b4280be24772c5  ./project/src/app/api/orders/[id]/route.ts
+78e57d7ee4c20e551c56ca213d179619eb5c0a510eed6cd69055ec966933e3e1  ./project/src/app/api/orders/[id]/items/route.ts
+d050b443e72d9cf22d3c99c4d7e355421bfadb3dc25f94e8cc4004500f1aa3bd  ./project/src/app/api/photos/presigned-url/route.ts
+d9acc396020ec862156aa8006678d9e40deabeda841cf5cac657dc1df705af2c  ./project/src/app/api/photos/sync/route.ts
+10880705b85d3fde8c35821f69106fe7c7ce10cae751ef8de6325ed65f48695f  ./project/src/app/api/photos/upload/route.ts
+d707853cac8944b3e0a2fb9bd1682b8a6f0f7d315d0169855344b834b5f3825f  ./project/src/app/api/routes/optimize/route.ts
+7ad21e8ffa8b40e03577f57c9b5145a592b7c6fb410f07b5ded8493994f79ebe  ./project/src/app/api/routes/[routeId]/reroute/route.ts
+de910443b7c28248d2857a30f0fa68341850a0b926fd055567688ee364c09710  ./project/src/app/api/routes/[routeId]/complete/route.ts
+c36532c17a66ea9d2d98143b5c5f7262f48a36a94ec6222684d30e7cd3f2e27e  ./project/src/app/api/routes/[routeId]/eta-stream/route.ts
+fbe2b5f140289bf67e8fa2a4e445d656bcd73b096e313e05b5fa8656bbfaeb81  ./project/src/app/api/routes/[routeId]/start/route.ts
+c13aed722fe27b7c391accfab2f38b1da7b479e73f63319f214f94f14e557117  ./project/src/app/api/routes/[routeId]/stops/[stopId]/route.ts
+0cfe0b796369ebf0e58125a59ca409be9ae9677037ee4815eb441699f4fc74ab  ./project/src/app/api/routes/[routeId]/route.ts
+52e0f0a10afc1f8171d3ddf05b074871eae2305a7a8d96a09f13255fac62f1b5  ./project/src/app/api/routes/[routeId]/alternatives/route.ts
+90cfdc3aa0f5830bacc2fdc4411b063e01e8470d6a66376237a09ed324b3afb7  ./project/src/app/api/routes/route.ts
+e3e026af1835438973e11db08afac3e575dc2a980bb26fd23ce499d9fcec498c  ./project/src/app/api/upload/route.ts
+2689d139f187d75c4392d3a059e093870b3c93721eb006340a1eaaf281fbb5b5  ./project/src/app/api/cron/escalate-tickets/route.ts
+5b7b042da2aa06b29611ba5c369308aade47d9323c823dad21ba68c3371aebca  ./project/src/app/api/analytics/route.ts
+3056bd738ff9c2404099d070c564f909b571bf6f42bd7c8d088a233d7015db88  ./project/src/app/api/analytics/sla/route.ts
+53ed3b9a7cfe4ba4fdf24596bff8312bc587b2fb730d4933b191d856465d7845  ./project/src/app/api/deliveries/route.ts
+f6b94bb82ce22cddb9c0f58bc61a5e87091a618e960fcc89af83b03e461c5396  ./project/src/app/api/deliveries/[id]/route.ts
+e0accfcb7af3b8dde1c7fccf9babe7d51e7be21c2fb7c4806fb3709af894dd36  ./project/src/app/api/deliveries/[id]/checklist/complete/route.ts
+0592ccd7101272b5e49e5c874a89e0a696afffa986de52fb3c79d1f055087812  ./project/src/app/vehicles/page.tsx
+b754d15533e4b612450fa799da5c93d995036efcb5a37d5536f1a7ce25eed950  ./project/src/app/branches/page.tsx
+bfda6660e831bd5bb8ec2e0ef8b44272f5546e5615730e46d6cd8245d75e41f4  ./project/src/app/branches/page.tsx.bak
+b5d19cab9e1b92747fe49f6c6134b94f402e5f7c0871da6028153b378acea671  ./project/src/app/orders/[id]/page.tsx
+4e684f7cc0ade30741f3d75a376c38a163b166740f4e7a4149591c8bd63e3cac  ./project/src/app/orders/page.tsx
+9e1cbbfe222d2043911072f08a29784e53b29595b521e25575a69a5be3ae3e93  ./project/src/app/fleet/page.tsx
+1479a8ec8e7f1fd7127cd70ea905e45638d7df1f7019cca1aebf3d2a9cefb24c  ./project/src/app/page.tsx
+59286614392ca42148a0249875eb7afbf70df514fb874cb8dd97b7b57d493e00  ./project/src/app/tech/tickets/[id]/complete/page.tsx
+900c93b3c2f640e1d17f8c25a9aa3690709d5b13ccf0c01d8dd0c7de664122c2  ./project/src/app/tech/tickets/page.tsx
+abc13dfa6fec2b0df8b9365041c2e5ca00eb0b4dca50e5f95731b57505781621  ./project/src/app/tech/dashboard/page.tsx
+62056281840c5f2cdc85d366c1d89f1558f8d51e12f00c7267eced390bb979ad  ./project/src/app/tech/list/page.tsx
+b5c6e155d1c0f6a2a437af8970f8cf96e416fe48a627dd578c7c97453a244d45  ./project/src/app/tech/page.tsx
+26072081d42931c03c2b68527ee0dc9945eca32dca3bc7ba98f1045232523fba  ./project/src/app/tech/create/page.tsx
+26c8492464c0fbeca7ac0ad10115a36d33f01f1f829f4d182c88e57f1f3fbc05  ./project/src/app/routes/[routeId]/page.tsx
+6fd47627d0edffd10fc2f400689e37980699cef5f9236449d4df10294d10d241  ./project/src/app/routes/page.tsx
+d697bb02ed973abb91741257ce00138bc231a6b49d42e24bf62e37ebfae7c112  ./project/src/app/routes/page.tsx.bak
+e9658605da077b93c617e9d110ea72feee0e11c4b5815c7f00a540ad67ab1857  ./project/src/app/globals.css
+761718459343d225c6fba81d1cbd94745cd7b66143ddc008d2e6a67a8f171ce1  ./project/src/config/yandexMaps.ts
+1a50d472bd69e5355c52eacb1e6057dc4e7c22e35e1636bfcf21d0b2d3b9e7f0  ./project/src/utils/routeOptimization.ts
+f4f9618f437b813770daf7bbac68837edadcd9d053adca5dee22c78cebb357d7  ./project/src/utils/navigationRouting.ts
+9e289dbb09cc1f16cd2470b1a2ef85fc1465db936fefedad8e5cd4f3ae2a4f2f  ./project/src/components/TicketCreateForm.tsx
+ad25e87eb79757cd0c7623fb54fa447fd443dd78617ce72938d35ddc91ff282d  ./project/src/components/DatePicker.tsx
+272929808c038ed033f5f7f19fa90760889539fb6e220e5ed215ecae47bbda01  ./project/src/components/TicketApprovalForm.tsx
+18e63d7d6d43cdd5063034dfe3dead045ac34b84722e69101e33277e3e6f5448  ./project/src/components/Driver/ItemVerification.tsx
+22283bde73a09f115ddb676688edf595b06e5251db3eec06d827a66b698ac292  ./project/src/components/Driver/PhotoCapture.tsx
+e72f24cbe3a57401f2dfd42d56ca5cd221beab1712146c86136458fa1d80455e  ./project/src/components/Driver/SignatureCanvas.tsx
+32acf4e7dea45859f28dcb0f6ab3d853c8cf2f3c3dbb4fb4dc79a23ac9410012  ./project/src/components/AppNavigation.tsx
+aa33f7392be95728440b2edd2971656b65e8f167dddf8e382eabfc51cee6cdb2  ./project/src/components/TicketsTable.tsx
+e1f595a89b8d61bbc30ebd150c3b2d615f1822e5c9c73b644c6653d598daee86  ./project/src/components/Navigation/TurnByTurnNav.tsx
+b7ea86f08857a603e893e8a733e38dabe1a50b401d1028232642464dba4122ea  ./project/src/components/TechnicianAssignment.tsx
+c3c31a60b07b37db473e3d62ed3d7c2580e4c7e4810eca19c09f1e5aef9b3604  ./project/src/components/BranchesList.tsx
+1d5d762425f79446410e2cf2d9cdc1d1a770fb19db8f0280f9535d2b7b56e0e2  ./project/src/components/TechnicianCreateForm.tsx
+06f77e5a70e0442d4f8b5010f89c29b8ad14b7ba75bb3f766e9c0b20845ba455  ./project/src/components/Map/LeafletMap.tsx
+6922a35d2f6274e63052966b65398e6451840ca739601616c6fcf75a8df45c19  ./project/src/components/Map/RoutingLayer.tsx
+41fcca393718ec9a567255e7005ae8417cb2d71ab97a0d83a6afd691adecb398  ./project/src/components/Map/DirectionsPanel.tsx
+d41b4c144b08797e3a5f8c25864532e38ef5bc5b87b62decf7960418d498a440  ./project/src/components/Map/AlternativeRoutesModal.tsx
+bd48c01a23e80e296c88855032f8766083c336f344e1b499e21ec3ba8e9267c3  ./project/src/components/Map/GoogleMap.tsx
+1cb985e3fba41168afbf8e80565b0114e7cd84bb67741a85db9f2bef0550a578  ./project/src/components/Map/index.ts
+5db4ba38167f8cfa3110cd4152b394c92258abd3c36532342919de365bf046e8  ./project/src/components/Map/DeliveryMap.tsx
+9fa9e561ca53e67b44b743a83feba214c7929b227fd69a635bb281a30b69ba63  ./project/src/components/Map/YandexMap.tsx
+39a755a9886367303a78b3bba2ad2b00ede954b8bb24232021c58aab4fe8f0df  ./project/src/components/TechnicianTicketQueue.tsx
+13c7b931da11e2a73f351d152601207dc9b5e3a02afb9f1c288b6d6273ed3fda  ./project/src/components/CompleteServiceForm.tsx
+580946a08ac4d01d844f3c4a845c7c8c77d54fb7804f7140e5e9fd6cf93154ba  ./project/src/components/BranchTechnicianAssignment.tsx
+0dfa6aa13000eef2fd260af4ff9b6a0dbcff81eaa51613f63e41a49075e6c536  ./project/src/components/TechniciansList.tsx
+2465cf4ba9a2ff2bb5230173018f096078f9b2212da5a341cbaf6b26bcb8fe60  ./project/src/__tests__/tickets.integration.test.ts
+a7178cefe65dba96b507cdedfb27c324d80623b7e38fe584e49371bd73dd410c  ./project/src/hooks/useETAStream.ts
+ba05fd1ef7c19651d6f927a45facf3e736c399721fa99e7631ab6e2e92282b3f  ./project/src/hooks/useLocationTracking.ts
+61543fff8b1cca95689f1cbc7255b69cdea6cbd72aaf2f4cbf65d697ac9da706  ./project/src/lib/prisma.ts
+00322f160d6bf434347cfada59b0c11ba6061d2e7006612506e707cabdc7c0eb  ./project/src/lib/parsers/image-parser.ts
+caf6a131fa1662e96706893d38e86a0d6526a1a47e55c01046c1449312666982  ./project/src/lib/parsers/purchase-order-parser.ts
+5bea73f73f007802f5e433a53fda452067ee9e92c1d7f0567dadd6abfb5eaf56  ./project/src/lib/parsers/excel-parser.ts
+f6d25ce3470e2dcfaa466900727aca1a95a38c64264b4bfde21edc3df68fa068  ./project/src/lib/edo/connectors/faktura.ts
+dfcd9d3bfed9f48ec3bda70afab3adf113f06ce8031254417b0f0bcb462419b1  ./project/src/lib/edo/connectors/hippo.ts
+35a614983d54312e965191aad9dcca99a7320432a39e0bd31c32bd705a2b799f  ./project/src/lib/edo/connectors/factory.ts
+ea033d313fce11d3d168dff84f7b83828a1a96d24972b998b3595eed82ea3b47  ./project/src/lib/edo/connectors/didox.ts
+77b6498f3f3822eaec529faa0ddb10710636892ba6c8b5537faaa0fee92a08af  ./project/src/lib/edo/types.ts
+4d720bb9292a82adf68b642e812277c536948c7c0025780da4dde99736a3f9f6  ./project/src/lib/edo/service.ts
+47484455762f49ec9c83eb145c5c15f15e543263d52a5c407dbd51a250bd5db8  ./project/src/lib/navigationService.ts
+515c8731c43b0dbe5a671cf8910932530c2193d136ce19785b57872d7b5b50dc  ./project/src/lib/technicians.ts
+eaeb2530a1a87711d0435b5b32d7684c415951ceb3bc04e57a6c251a4eb14d58  ./project/src/lib/sla.ts
+088ba476b07dc100c73db7fd1a175359135f8a7d86f33ee54900ddfc9119cfd5  ./project/src/lib/excel/invoice-types.ts
+633f7cdb614df8cabd7b1553084c682e3a5b67e49c9c6047857d37d4b96ca182  ./project/src/lib/excel/invoice-template.ts
+3e56faffe855de06998f5da65112d5d025c573f2fac4600c336a6bb091cff416  ./project/src/lib/excel/invoice-utils.ts
+8a72c9cff26e13c1afae5a267d3e024720849e606dffd8e6150cbc6fbfea82ee  ./project/src/lib/excel/invoice-formatter.ts
+795a1dde93c227a54a57630eb0614a8b338926f82e04f835cc7ffa0a59878398  ./project/src/lib/etaService.ts
+b97bb21b68ff4fa3b367a269aba24b459d986f2403c6e872c5cec250f17be6f4  ./project/src/lib/completions.ts
+db74dbba92b3219cd0af4392206601fa72a8a0790d3e4ba37c2ccd3913b87bb7  ./project/src/lib/telegram-notifications.ts
+9e97eacab5dff3cd84dfbbe45b458ae91a3a0e0d7d15c646275fc08290fc4a66  ./project/src/lib/__tests__/distanceCalculator.test.ts
+4afb3a5ab5634bef1933cf77478159583e2d38a0d47b4f881b6a2d87b80e7cd6  ./project/src/lib/routeOptimizer.ts
+92a5da6830359e66459d24b255864bef1f83aca84ba6a694e1449e4bbc211944  ./project/src/lib/telegram/bot.ts
+73dd7567547fffce458c01cfb830898c1c7038b489a05658ec96fd03974023a2  ./project/src/lib/photoUploadService.ts
+fca35fc6417a5f501bfeb5e5220044936fdd0781a66f99b3d82692df43cdf8ab  ./project/src/lib/routeComparisonService.ts
+f9327aca87c627ef0278aa33102c5269246f332dec8988c24cfeb9ea4b4687ab  ./project/src/lib/distanceCalculator.ts
+51681e0d3c735c843d8a76a20bc8359f3794909014e84de7c13a9b872685cf8f  ./project/src/lib/trafficMonitoringService.ts
+d239296dd455eabf82b01df495ba4a594b8c1f7c945b3b05baaeaec8436df1c7  ./project/src/lib/yandexRoutingService.ts
+fd1ffc437f3c6885ae0ead1779d0084f892f0e241e102a87ba0cdfc15c177a12  ./project/src/lib/tickets.ts
+09d59d790573e69bcae2c5647cfcb1307288ec198628778f08097b162401635a  ./node-version.txt
+78b7fb624cd283904ae4a6e51e36e4e0dac94bc7eae236f64b7551016b313aa4  ./env-backup.txt
+25275a34cbd33239b265e521af2e88c89b0305aa0acfce13d07835cfc8da51d8  ./npm-packages.txt

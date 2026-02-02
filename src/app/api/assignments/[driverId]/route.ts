@@ -1,0 +1,49 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { Pool } from 'pg'
+
+const pool = new Pool({
+  connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
+})
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ driverId: string }> }
+) {
+  try {
+    const { driverId } = await params
+
+    // Check if driver has an assignment
+    const vehicleCheck = await pool.query(
+      `SELECT id, "plateNumber" FROM "Vehicle" WHERE "driverId" = $1`,
+      [driverId]
+    )
+
+    if (vehicleCheck.rows.length === 0) {
+      return NextResponse.json(
+        { error: 'Driver has no vehicle assignment' },
+        { status: 404 }
+      )
+    }
+
+    // Unassign vehicle
+    const result = await pool.query(
+      `UPDATE "Vehicle" SET "driverId" = NULL WHERE "driverId" = $1 RETURNING *`,
+      [driverId]
+    )
+
+    return NextResponse.json(
+      {
+        success: true,
+        message: `Vehicle ${vehicleCheck.rows[0].plateNumber} unassigned`,
+        vehicle: result.rows[0],
+      },
+      { status: 200 }
+    )
+  } catch (error: any) {
+    console.error('Error deleting assignment:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to delete assignment' },
+      { status: 500 }
+    )
+  }
+}

@@ -1,0 +1,36 @@
+Evercold CRM - Backup Summary
+Created: 20260106_002922
+
+Database:
+  - Name: evercold_crm
+  - Size: 128K
+  - Tables: 24
+
+Project:
+  - Source: /Users/user/Documents/evercold-crm
+  - Files: 330
+  - Size:  13M
+
+Versions:
+  - PostgreSQL: psql (PostgreSQL) 14.19 (Homebrew)
+  - Node.js: v22.19.0
+  - npm: 10.9.3
+
+Files Included:
+  - evercold_crm_database.sql  (PostgreSQL database dump)
+  - project/                    (Full project source code)
+  - env-backup.txt              (Environment variables)
+  - npm-packages.txt            (Package list)
+  - node-version.txt            (Node.js and npm versions)
+  - postgresql-version.txt      (PostgreSQL version)
+  - RESTORE_INSTRUCTIONS.md     (Manual restore guide)
+  - restore.sh                  (Automated restore script)
+  - checksums.txt               (File integrity checksums)
+
+Total Backup Size:  13M
+
+Next Steps:
+1. Transfer this entire folder to your new Mac
+2. Read RESTORE_INSTRUCTIONS.md for manual setup
+3. Or run ./restore.sh for automated setup
+

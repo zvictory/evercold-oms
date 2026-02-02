@@ -1,0 +1,247 @@
+import { NextRequest, NextResponse } from 'next/server'
+import { writeFile } from 'fs/promises'
+import { join } from 'path'
+import { parseExcelFile } from '@/lib/parsers/excel-parser'
+import { prisma } from '@/lib/prisma'
+
+export async function POST(request: NextRequest) {
+  try {
+    const formData = await request.formData()
+    const file = formData.get('file') as File
+    const customOrderDateStr = formData.get('customOrderDate') as string | null
+
+    if (!file) {
+      return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
+    }
+
+    const bytes = await file.arrayBuffer()
+    const buffer = Buffer.from(bytes)
+
+    const filename = `${Date.now()}_${file.name}`
+    const filepath = join(process.cwd(), 'public', 'uploads', filename)
+
+    await writeFile(filepath, buffer)
+
+    const receivedDate = new Date()
+    // Parse custom date and time without timezone conversion
+    let customOrderDate: Date | null = null
+    if (customOrderDateStr) {
+      // Format: 2025-12-01T14:30
+      const [datePart, timePart] = customOrderDateStr.split('T')
+      const [year, month, day] = datePart.split('-').map(Number)
+
+      if (timePart) {
+        const [hours, minutes] = timePart.split(':').map(Number)
+        customOrderDate = new Date(year, month - 1, day, hours, minutes, 0)
+      } else {
+        customOrderDate = new Date(year, month - 1, day, 12, 0, 0) // noon if no time
+      }
+    }
+    const parseResult = await parseExcelFile(filepath, receivedDate)
+
+    let ordersCreated = 0
+    let ordersSkipped = 0
+    let batchId: string | null = null
+
+    if (Array.isArray(parseResult)) {
+      for (const parsedOrder of parseResult) {
+        const result = await createOrder(parsedOrder, filename, receivedDate, undefined, customOrderDate)
+        if (result.created) {
+          ordersCreated++
+        } else {
+          ordersSkipped++
+        }
+      }
+    } else {
+      batchId = parseResult.batchId
+      for (const parsedOrder of parseResult.orders) {
+        const result = await createOrder(parsedOrder, filename, receivedDate, batchId, customOrderDate)
+        if (result.created) {
+          ordersCreated++
+        } else {
+          ordersSkipped++
+        }
+      }
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Successfully processed ${ordersCreated} orders${ordersSkipped > 0 ? `, skipped ${ordersSkipped} duplicates` : ''}`,
+      ordersCreated,
+      ordersSkipped,
+      batchId,
+    })
+  } catch (error: any) {
+    console.error('Upload error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to process file' },
+      { status: 500 }
+    )
+  }
+}
+
+async function createOrder(
+  parsedOrder: any,
+  filename: string,
+  receivedDate: Date,
+  batchId?: string,
+  customOrderDate?: Date | null
+): Promise<{ created: boolean; orderId?: string }> {
+  // Check if order already exists
+  const existingOrder = await prisma.order.findUnique({
+    where: { orderNumber: parsedOrder.orderNumber },
+  })
+
+  if (existingOrder) {
+    console.log(`Order ${parsedOrder.orderNumber} already exists, skipping`)
+    return { created: false }
+  }
+
+  const customer = await prisma.customer.findFirst({
+    where: { name: { contains: parsedOrder.customerName, mode: 'insensitive' } },
+    select: {
+      id: true,
+      name: true,
+      hasVat: true,
+    },
+  })
+
+  if (!customer) {
+    throw new Error(`Customer not found: ${parsedOrder.customerName}`)
+  }
+
+  let branch = null
+  if (parsedOrder.branchCode) {
+    branch = await prisma.customerBranch.findFirst({
+      where: {
+        OR: [
+          { branchCode: parsedOrder.branchCode },
+          { oldBranchCode: parsedOrder.branchCode },
+        ],
+      },
+    })
+  }
+
+  const email = await prisma.email.create({
+    data: {
+      receivedDate,
+      attachmentFilename: filename,
+      processed: true,
+      processedAt: new Date(),
+    },
+  })
+
+  const itemsWithPrices = []
+  let orderSubtotal = 0
+  let orderVatAmount = 0
+  let orderTotalAmount = 0
+
+  for (const item of parsedOrder.items) {
+    let product = await prisma.product.findFirst({
+      where: {
+        OR: [
+          { sapCode: item.sapCode },
+          { barcode: item.barcode },
+          { name: { contains: item.productName, mode: 'insensitive' } },
+        ],
+      },
+      include: {
+        customerPrices: {
+          where: {
+            customerId: customer.id,
+          },
+        },
+      },
+    })
+
+    if (!product) {
+      product = await prisma.product.create({
+        data: {
+          name: item.productName,
+          sapCode: item.sapCode,
+          barcode: item.barcode,
+          unitPrice: item.unitPrice || 0,
+          unit: 'ШТ',
+          vatRate: item.vatRate || 12,
+        },
+        include: {
+          customerPrices: {
+            where: {
+              customerId: customer.id,
+            },
+          },
+        },
+      })
+    }
+
+    let itemBranch = branch
+    if (item.branchCode && item.branchCode !== parsedOrder.branchCode) {
+      itemBranch = await prisma.customerBranch.findFirst({
+        where: {
+          OR: [
+            { branchCode: item.branchCode },
+            { oldBranchCode: item.branchCode },
+          ],
+        },
+      })
+    }
+
+    const customerPrice = product.customerPrices?.[0]?.unitPrice
+    const unitPrice = item.unitPrice || customerPrice || product.unitPrice
+    const vatRate = customer.hasVat ? (item.vatRate || product.vatRate) : 0
+    const subtotal = item.subtotal || item.quantity * unitPrice
+    const vatAmount = item.vatAmount || (subtotal * vatRate) / 100
+    const totalAmount = item.totalAmount || subtotal + vatAmount
+
+    orderSubtotal += subtotal
+    orderVatAmount += vatAmount
+    orderTotalAmount += totalAmount
+
+    itemsWithPrices.push({
+      item,
+      product,
+      itemBranch,
+      unitPrice,
+      vatRate,
+      subtotal,
+      vatAmount,
+      totalAmount,
+    })
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      orderNumber: parsedOrder.orderNumber,
+      orderDate: customOrderDate || new Date(), // Use custom date or current time
+      customerId: customer.id,
+      contractInfo: parsedOrder.contractInfo,
+      sourceType: parsedOrder.sourceType,
+      subtotal: orderSubtotal,
+      vatAmount: orderVatAmount,
+      totalAmount: orderTotalAmount,
+      emailId: email.id,
+      batchId,
+    },
+  })
+
+  for (const itemData of itemsWithPrices) {
+    await prisma.orderItem.create({
+      data: {
+        orderId: order.id,
+        branchId: itemData.itemBranch?.id,
+        productId: itemData.product.id,
+        productName: itemData.item.productName,
+        barcode: itemData.item.barcode,
+        sapCode: itemData.item.sapCode,
+        quantity: itemData.item.quantity,
+        unitPrice: itemData.unitPrice,
+        subtotal: itemData.subtotal,
+        vatRate: itemData.vatRate,
+        vatAmount: itemData.vatAmount,
+        totalAmount: itemData.totalAmount,
+      },
+    })
+  }
+
+  return { created: true, orderId: order.id }
+}

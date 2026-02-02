@@ -1,0 +1,49 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+build/
+dist/
+*.tsbuildinfo
+
+# Environment files - NEVER COMMIT
+.env
+.env.local
+.env.production
+.env*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+deployment-*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing
+coverage/
+.nyc_output/
+
+# Deployment
+.vercel
+backups/
+*.tar.gz
+*.sql
+*.sql.gz
+evercold-deploy.tar.gz
+
+# Dev scripts (moved to scripts/dev-tools)
+scripts/dev-tools/

@@ -1,0 +1,248 @@
+import { NextResponse } from 'next/server'
+import { Pool } from 'pg'
+import { formatDistanceToNow } from 'date-fns'
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL || 'postgresql://zafar@localhost:5432/evercold_crm',
+})
+
+export async function GET() {
+  try {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+
+    const now = new Date()
+    const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000)
+    const slaTimeAgo = new Date(now.getTime() - 60 * 60 * 1000)
+
+    // Execute all queries in parallel
+    const [
+      todaysOrdersResult,
+      yesterdaysOrdersResult,
+      vehiclesResult,
+      deliveriesResult,
+      branchesResult,
+      servedBranchesResult,
+      criticalTicketsResult,
+      newOrdersResult,
+      completedDeliveriesResult,
+      newCriticalTicketsResult,
+      activeRoutesResult,
+    ] = await Promise.all([
+      // Today's orders volume
+      pool.query(
+        `SELECT COALESCE(SUM(quantity), 0) as total_volume FROM "OrderItem" oi
+         JOIN "Order" o ON oi."orderId" = o.id
+         WHERE o."orderDate" >= $1 AND o."orderDate" < $2`,
+        [today, tomorrow]
+      ),
+
+      // Yesterday's orders volume
+      pool.query(
+        `SELECT COALESCE(SUM(quantity), 0) as total_volume FROM "OrderItem" oi
+         JOIN "Order" o ON oi."orderId" = o.id
+         WHERE o."orderDate" >= $1 AND o."orderDate" < $2`,
+        [yesterday, today]
+      ),
+
+      // Total vehicles
+      pool.query(
+        `SELECT COUNT(*) as total_count FROM "Vehicle" WHERE status IN ('AVAILABLE', 'IN_USE')`
+      ),
+
+      // Active deliveries
+      pool.query(
+        `SELECT COUNT(*) as active_count FROM "Delivery" WHERE status = 'IN_TRANSIT' AND "updatedAt" >= $1`,
+        [today]
+      ),
+
+      // Total branches
+      pool.query(
+        `SELECT COUNT(*) as total_branches FROM "CustomerBranch" WHERE "isActive" = true`
+      ),
+
+      // Branches served today
+      pool.query(
+        `SELECT COUNT(DISTINCT "branchId") as served_branches FROM "OrderItem" oi
+         JOIN "Order" o ON oi."orderId" = o.id
+         WHERE o."orderDate" >= $1 AND o."orderDate" < $2 AND oi."branchId" IS NOT NULL`,
+        [today, tomorrow]
+      ),
+
+      // Critical tickets
+      pool.query(
+        `SELECT * FROM "ServiceTicket"
+         WHERE priority = 'CRITICAL' AND status NOT IN ('COMPLETED', 'CLOSED')
+         ORDER BY "createdAt" ASC
+         LIMIT 10`
+      ),
+
+      // Recent orders
+      pool.query(
+        `SELECT o.*, c."name" as customer_name FROM "Order" o
+         JOIN "Customer" c ON o."customerId" = c.id
+         WHERE o."createdAt" >= $1
+         ORDER BY o."createdAt" DESC
+         LIMIT 3`,
+        [twoHoursAgo]
+      ),
+
+      // Completed deliveries
+      pool.query(
+        `SELECT d.*, o.*, c."name" as customer_name, dr."name" as driver_name FROM "Delivery" d
+         JOIN "Order" o ON d."orderId" = o.id
+         JOIN "Customer" c ON o."customerId" = c.id
+         LEFT JOIN "Driver" dr ON d."driverId" = dr.id
+         WHERE d.status = 'DELIVERED' AND d."deliveryTime" >= $1
+         ORDER BY d."deliveryTime" DESC
+         LIMIT 3`,
+        [twoHoursAgo]
+      ),
+
+      // Recent critical tickets
+      pool.query(
+        `SELECT st.*, cb."branchName", cb."branchCode" FROM "ServiceTicket" st
+         LEFT JOIN "CustomerBranch" cb ON st."branchId" = cb.id
+         WHERE st.priority = 'CRITICAL' AND st."createdAt" >= $1
+         ORDER BY st."createdAt" DESC
+         LIMIT 2`,
+        [twoHoursAgo]
+      ),
+
+      // Active routes
+      pool.query(
+        `SELECT dr.*, dv."plateNumber" as vehicle_name, d."name" as driver_name FROM "DeliveryRoute" dr
+         LEFT JOIN "Driver" d ON dr."driverId" = d.id
+         LEFT JOIN "Vehicle" dv ON dr."vehicleId" = dv.id
+         WHERE dr.status = 'IN_PROGRESS' AND dr."actualStartTime" >= $1
+         ORDER BY dr."actualStartTime" DESC
+         LIMIT 2`,
+        [today]
+      ),
+    ])
+
+    // Process results
+    const todaysVolume = parseInt(todaysOrdersResult.rows[0].total_volume)
+    const yesterdaysVolume = parseInt(yesterdaysOrdersResult.rows[0].total_volume)
+    const volumeChange = yesterdaysVolume > 0
+      ? ((todaysVolume - yesterdaysVolume) / yesterdaysVolume) * 100
+      : 0
+
+    const totalVehicles = parseInt(vehiclesResult.rows[0].total_count)
+    const activeDeliveries = parseInt(deliveriesResult.rows[0].active_count)
+    const fleetPercentage = totalVehicles > 0 ? (activeDeliveries / totalVehicles) * 100 : 0
+
+    const totalBranches = parseInt(branchesResult.rows[0].total_branches)
+    const servedBranches = parseInt(servedBranchesResult.rows[0].served_branches)
+    const coveragePercentage = totalBranches > 0 ? (servedBranches / totalBranches) * 100 : 0
+
+    const criticalCount = criticalTicketsResult.rows.length
+
+    // Build activity feed
+    const activities: any[] = []
+
+    // Add orders
+    newOrdersResult.rows.forEach((order: any) => {
+      activities.push({
+        id: `order-${order.id}`,
+        type: 'order',
+        message: `Order #${order.orderNumber} created`,
+        timestamp: order.createdAt,
+        icon: 'FileText',
+        color: 'text-indigo-500 bg-indigo-50',
+        border: 'border-indigo-100',
+      })
+    })
+
+    // Add deliveries
+    completedDeliveriesResult.rows.forEach((delivery: any) => {
+      activities.push({
+        id: `delivery-${delivery.id}`,
+        type: 'delivery',
+        message: `Delivery completed to ${delivery.customer_name}`,
+        timestamp: delivery.deliveryTime,
+        icon: 'Truck',
+        color: 'text-sky-500 bg-sky-50',
+        border: 'border-sky-100',
+      })
+    })
+
+    // Add tickets
+    newCriticalTicketsResult.rows.forEach((ticket: any) => {
+      activities.push({
+        id: `ticket-${ticket.id}`,
+        type: 'alert',
+        message: `Critical Ticket ${ticket.ticketNumber} at ${ticket.branchCode || 'Unknown'}`,
+        timestamp: ticket.createdAt,
+        icon: 'AlertCircle',
+        color: 'text-red-500 bg-red-50',
+        border: 'border-red-100',
+      })
+    })
+
+    // Add routes
+    activeRoutesResult.rows.forEach((route: any) => {
+      activities.push({
+        id: `route-${route.id}`,
+        type: 'success',
+        message: `Route "${route.routeName}" started by ${route.driver_name || 'Unknown'}`,
+        timestamp: route.actualStartTime,
+        icon: 'CheckCircle2',
+        color: 'text-emerald-500 bg-emerald-50',
+        border: 'border-emerald-100',
+      })
+    })
+
+    // Sort and format
+    const recentActivity = activities
+      .sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime())
+      .slice(0, 10)
+      .map((activity) => ({
+        ...activity,
+        time: formatDistanceToNow(new Date(activity.timestamp), { addSuffix: true }),
+      }))
+
+    // Process critical tickets with overdue info
+    const ticketsWithOverdue = criticalTicketsResult.rows.map((ticket: any) => ({
+      ticketNumber: ticket.ticketNumber,
+      branchName: ticket.branchName || 'Unknown',
+      branchCode: ticket.branchCode || '',
+      createdAt: ticket.createdAt,
+      hoursOverdue: Math.max(0, (now.getTime() - new Date(ticket.createdAt).getTime()) / (1000 * 60 * 60)),
+    }))
+
+    return NextResponse.json({
+      todaysVolume: {
+        total: todaysVolume,
+        comparison: yesterdaysVolume,
+        change: volumeChange,
+      },
+      activeFleet: {
+        active: activeDeliveries,
+        total: totalVehicles,
+        percentage: fleetPercentage,
+      },
+      branchCoverage: {
+        served: servedBranches,
+        total: totalBranches,
+        percentage: coveragePercentage,
+      },
+      serviceHealth: {
+        critical: criticalCount,
+        tickets: ticketsWithOverdue,
+      },
+      recentActivity,
+    })
+  } catch (error: any) {
+    console.error('Dashboard API error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch dashboard data' },
+      { status: 500 }
+    )
+  }
+}

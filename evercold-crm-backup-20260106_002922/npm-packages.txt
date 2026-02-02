@@ -1,0 +1,75 @@
+evercold-crm@0.1.0 /Users/user/Documents/evercold-crm
+├── @emnapi/core@1.7.1 extraneous
+├── @emnapi/runtime@1.7.1 extraneous
+├── @emnapi/wasi-threads@1.1.0 extraneous
+├── @napi-rs/wasm-runtime@0.2.12 extraneous
+├── @prisma/adapter-pg@7.1.0
+├── @prisma/client@7.1.0
+├── @react-google-maps/api@2.20.7
+├── @tailwindcss/postcss@4.1.18
+├── @tanstack/react-table@8.21.3
+├── UNMET DEPENDENCY @testing-library/jest-dom@^6.1.5
+├── UNMET DEPENDENCY @testing-library/react@^14.1.2
+├── @turf/turf@7.3.1
+├── @tybys/wasm-util@0.10.1 extraneous
+├── @types/haversine@1.1.8
+├── UNMET DEPENDENCY @types/jest@^29.5.11
+├── @types/leaflet@1.9.21
+├── @types/node-geocoder@4.2.6
+├── @types/node@20.19.26
+├── @types/pg@8.16.0
+├── @types/react-dom@19.2.3
+├── @types/react@19.2.7
+├── @types/xml2js@0.4.14
+├── axios@1.13.2
+├── date-fns@4.1.0
+├── dayjs@1.11.19
+├── didox@0.0.6
+├── dotenv@17.2.3
+├── eslint-config-next@16.0.10
+├── eslint@9.39.2
+├── exceljs@4.4.0
+├── flatpickr@4.6.13
+├── haversine@1.1.1
+├── UNMET DEPENDENCY jest-environment-jsdom@^29.7.0
+├── UNMET DEPENDENCY jest-environment-node@^29.7.0
+├── UNMET DEPENDENCY jest@^29.7.0
+├── leaflet@1.9.4
+├── lru-cache@11.2.4
+├── lucide-react@0.561.0
+├── maplibre-gl@5.14.0
+├── next@16.0.10
+├── node-geocoder@4.4.1
+├── pg@8.16.3
+├── prisma@7.1.0
+├── react-dom@19.2.1
+├── react-leaflet@5.0.0
+├── react-map-gl@8.1.0
+├── react-webcam@7.2.0
+├── react@19.2.1
+├── sharp@0.34.5
+├── signature_pad@5.1.3
+├── tailwindcss@4.1.18
+├── telegraf@4.16.3
+├── tesseract.js@7.0.0
+├── ts-node@10.9.2
+├── tsx@4.21.0
+├── typescript@5.9.3
+├── uuid@13.0.0
+├── xlsx@0.18.5
+├── xml2js@0.6.2
+└── zod@4.1.13
+
+npm error code ELSPROBLEMS
+npm error extraneous: @emnapi/core@1.7.1 /Users/user/Documents/evercold-crm/node_modules/@emnapi/core
+npm error extraneous: @emnapi/runtime@1.7.1 /Users/user/Documents/evercold-crm/node_modules/@emnapi/runtime
+npm error extraneous: @emnapi/wasi-threads@1.1.0 /Users/user/Documents/evercold-crm/node_modules/@emnapi/wasi-threads
+npm error extraneous: @napi-rs/wasm-runtime@0.2.12 /Users/user/Documents/evercold-crm/node_modules/@napi-rs/wasm-runtime
+npm error missing: @testing-library/jest-dom@^6.1.5, required by evercold-crm@0.1.0
+npm error missing: @testing-library/react@^14.1.2, required by evercold-crm@0.1.0
+npm error extraneous: @tybys/wasm-util@0.10.1 /Users/user/Documents/evercold-crm/node_modules/@tybys/wasm-util
+npm error missing: @types/jest@^29.5.11, required by evercold-crm@0.1.0
+npm error missing: jest-environment-jsdom@^29.7.0, required by evercold-crm@0.1.0
+npm error missing: jest-environment-node@^29.7.0, required by evercold-crm@0.1.0
+npm error missing: jest@^29.7.0, required by evercold-crm@0.1.0
+npm error A complete log of this run can be found in: /Users/user/.npm/_logs/2026-01-05T19_29_24_598Z-debug-0.log

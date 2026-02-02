@@ -1,0 +1,253 @@
+@import "tailwindcss";
+
+:root {
+  /* Ice & Steel Palette - Light Mode */
+  --background: #ffffff;
+  --foreground: #0f172a; /* Slate 900 */
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+
+  /* Primary: Deep Ice Blue */
+  --primary: #0ea5e9; /* Sky 500 */
+  --primary-foreground: #f8fafc; /* Slate 50 */
+
+  /* Secondary: Soft Slate */
+  --secondary: #f1f5f9; /* Slate 100 */
+  --secondary-foreground: #0f172a;
+
+  /* Muted: Subtle grays */
+  --muted: #f8fafc; /* Slate 50 */
+  --muted-foreground: #64748b; /* Slate 500 */
+
+  /* Accent: Hover states / Interactions */
+  --accent: #f1f5f9; /* Slate 100 */
+  --accent-foreground: #0f172a;
+
+  /* Destructive: Error states */
+  --destructive: #ef4444; /* Red 500 */
+  --destructive-foreground: #f8fafc;
+
+  /* Borders & Inputs */
+  --border: #e2e8f0; /* Slate 200 - Crisp and subtle */
+  --input: #e2e8f0;
+  --ring: #0ea5e9; /* Matching primary for focus rings */
+
+  /* Radius defaults */
+  --radius: 0.5rem;
+
+  /* Chart Colors for Bento Grid / Analytics */
+  --chart-1: #0ea5e9; /* Sky 500 */
+  --chart-2: #3b82f6; /* Blue 500 */
+  --chart-3: #6366f1; /* Indigo 500 */
+  --chart-4: #8b5cf6; /* Violet 500 */
+  --chart-5: #d946ef; /* Fuchsia 500 */
+}
+
+/* Dark Mode - Optional/Future-proofing but sticking to "Ice & Steel" predominantly light for now as per brief */
+.dark {
+  --background: #0f172a; /* Slate 900 */
+  --foreground: #f8fafc; /* Slate 50 */
+
+  --card: #1e293b; /* Slate 800 */
+  --card-foreground: #f8fafc;
+
+  --popover: #1e293b;
+  --popover-foreground: #f8fafc;
+
+  --primary: #0ea5e9;
+  --primary-foreground: #f8fafc;
+
+  --secondary: #1e293b;
+  --secondary-foreground: #f8fafc;
+
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+
+  --accent: #1e293b;
+  --accent-foreground: #f8fafc;
+
+  --destructive: #7f1d1d;
+  --destructive-foreground: #f8fafc;
+
+  --border: #1e293b;
+  --input: #1e293b;
+  --ring: #0ea5e9;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-geist-sans, ui-sans-serif, system-ui, sans-serif);
+  --font-mono: var(--font-geist-mono, ui-monospace, SFMono-Regular, monospace);
+  
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+  
+  @keyframes accordion-down {
+    from { height: 0; }
+    to { height: var(--radix-accordion-content-height); }
+  }
+  @keyframes accordion-up {
+    from { height: var(--radix-accordion-content-height); }
+    to { height: 0; }
+  }
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-feature-settings: "rlig" 1, "calt" 1;
+}
+
+/* Glassmorphism Utilities */
+.glass {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.dark .glass {
+  background: rgba(15, 23, 42, 0.7);
+  border-bottom: 1px solid rgba(30, 41, 59, 0.8);
+}
+
+/* ============================================
+   Flatpickr Ice & Steel Theme Customization
+   ============================================ */
+
+/* Calendar Container */
+.flatpickr-calendar {
+  background: #ffffff;
+  border: 1px solid #e2e8f0; /* slate-200 */
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  font-family: inherit;
+}
+
+/* Month/Year Navigation */
+.flatpickr-months {
+  background: #f8fafc; /* slate-50 */
+  border-bottom: 1px solid #e2e8f0;
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+
+.flatpickr-current-month {
+  color: #0f172a; /* slate-900 */
+  font-weight: 600;
+}
+
+.flatpickr-prev-month,
+.flatpickr-next-month {
+  color: #64748b; /* slate-500 */
+}
+
+.flatpickr-prev-month:hover,
+.flatpickr-next-month:hover {
+  color: #0f172a; /* slate-900 */
+  background: #f1f5f9; /* slate-100 */
+}
+
+/* Weekday Headers */
+.flatpickr-weekdays {
+  background: #f8fafc; /* slate-50 */
+}
+
+span.flatpickr-weekday {
+  color: #64748b; /* slate-500 */
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+}
+
+/* Day Cells */
+.flatpickr-day {
+  color: #0f172a; /* slate-900 */
+  border: none;
+  border-radius: 0.375rem;
+}
+
+.flatpickr-day:hover:not(.flatpickr-disabled):not(.selected) {
+  background: #f1f5f9; /* slate-100 */
+  border: none;
+}
+
+/* Selected Date - Primary Sky Color (Ice & Steel) */
+.flatpickr-day.selected,
+.flatpickr-day.startRange,
+.flatpickr-day.endRange {
+  background: #0284c7 !important; /* sky-600 */
+  border: none;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+
+.flatpickr-day.selected:hover,
+.flatpickr-day.startRange:hover,
+.flatpickr-day.endRange:hover {
+  background: #0369a1 !important; /* sky-700 */
+}
+
+/* In Range Dates */
+.flatpickr-day.inRange {
+  background: #e0f2fe; /* sky-100 */
+  border: none;
+  color: #0c4a6e; /* sky-900 */
+}
+
+/* Today Date */
+.flatpickr-day.today:not(.selected) {
+  border: 1px solid #0284c7; /* sky-600 */
+  background: transparent;
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.flatpickr-day.today:hover:not(.selected) {
+  background: #e0f2fe; /* sky-100 */
+  border-color: #0284c7;
+}
+
+/* Disabled Dates */
+.flatpickr-day.flatpickr-disabled {
+  color: #cbd5e1; /* slate-300 */
+  cursor: not-allowed;
+}
+
+/* Focus States */
+.flatpickr-calendar:focus {
+  outline: 2px solid #0284c7;
+  outline-offset: 2px;
+}
