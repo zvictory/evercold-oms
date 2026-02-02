@@ -23,6 +23,10 @@ export class DeliveryItem {
   delivery: any
 }
 
+export class RouteStop {
+  delivery: any
+}
+
 export enum DeliveryStatus {
   PENDING = 'PENDING',
   SCHEDULED = 'SCHEDULED',
@@ -94,6 +98,9 @@ export class Delivery {
 
   @OneToMany(() => DeliveryItem, item => item.delivery, { cascade: true })
   deliveryItems: DeliveryItem[]
+
+  @OneToMany(() => RouteStop, stop => stop.delivery, { cascade: true })
+  routeStops: RouteStop[]
 }
 
 registerEntity(Delivery)

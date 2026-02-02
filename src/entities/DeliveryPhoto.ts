@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm'
+import { Entity, PrimaryColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm'
 import { registerEntity } from '@/lib/database'
 import { DeliveryChecklist } from './DeliveryChecklist'
 
@@ -18,6 +18,9 @@ export class DeliveryPhoto {
 
   @CreateDateColumn()
   createdAt: Date
+
+  @UpdateDateColumn()
+  updatedAt: Date
 
   @ManyToOne(() => DeliveryChecklist, checklist => checklist.photos, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'checklistId' })
