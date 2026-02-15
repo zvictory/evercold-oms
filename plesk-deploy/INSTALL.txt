@@ -1,0 +1,66 @@
+═══════════════════════════════════════════════════════════════
+  AUTO-CUSTOMER DEPLOYMENT PACKAGE
+═══════════════════════════════════════════════════════════════
+
+📦 WHAT'S IN THIS ZIP:
+  • src/app/api/upload/route.ts (Updated with auto-create)
+  • This installation guide
+
+🚀 HOW TO DEPLOY (3 STEPS):
+
+STEP 1: Extract ZIP
+─────────────────────────────────────────────────────────────
+1. Open Plesk File Manager
+2. Navigate to: /var/www/vhosts/evercold.uz/app.evercold.uz/
+3. Upload this ZIP file
+4. Right-click → Extract
+   (Files will be extracted into the directory)
+
+STEP 2: Replace the file
+─────────────────────────────────────────────────────────────
+Option A - Using Plesk File Manager:
+  1. Go to: src/app/api/upload/
+  2. Backup: Rename current route.ts → route.ts.backup
+  3. Rename: route.ts (newly extracted) is now active
+
+Option B - Using SSH Terminal:
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+  cp src/app/api/upload/route.ts src/app/api/upload/route.ts.backup
+  # route.ts from zip is already in place
+
+STEP 3: Rebuild & Restart
+─────────────────────────────────────────────────────────────
+1. Open SSH Terminal in Plesk
+2. Run:
+   cd /var/www/vhosts/evercold.uz/app.evercold.uz
+   npm run build
+
+3. In Plesk Panel:
+   Websites & Domains → Node.js → Restart App
+
+✅ DONE! Your app now has auto-customer creation!
+
+─────────────────────────────────────────────────────────────
+TEST IT:
+
+1. Go to: https://app.evercold.uz/ru/orders
+2. Try uploading an Excel with a NEW customer name
+3. Should work without error! ✅
+4. New customer will be in database with AUTO-{timestamp} code
+
+─────────────────────────────────────────────────────────────
+WHAT THIS FIXES:
+
+✗ Old behavior: "Customer not found" error
+✓ New behavior: Customer auto-created, import succeeds
+
+─────────────────────────────────────────────────────────────
+NEED TO ROLLBACK?
+
+1. File Manager → src/app/api/upload/
+2. Delete route.ts
+3. Rename route.ts.backup → route.ts
+4. SSH: npm run build
+5. Restart app
+
+═══════════════════════════════════════════════════════════════

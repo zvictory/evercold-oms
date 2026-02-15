@@ -29,6 +29,28 @@ export interface InvoiceData {
   }
 
   items: InvoiceItem[]
+
+  // EDO metadata (optional - only when EDO sync is active)
+  edoMetadata?: {
+    didoxId?: string           // Didox.uz document ID
+    roumingId?: string          // Rouming.uz document ID
+    documentType?: string       // e.g., "Стандартный"
+    sentStamp?: {
+      number: string            // e.g., "№2022895979"
+      timestamp: Date           // 2025.12.09 13:58:52
+      operatorName: string      // NASRITDINOV ZUXRITDIN ERKINOVICH
+      operatorSystem: string    // didox.uz
+      ipAddress: string         // 89.236.232.33
+    }
+    confirmedStamp?: {
+      number: string            // e.g., "№2020567907"
+      timestamp: Date           // 2025.12.09 14:36:57
+      operatorName: string      // USMANOV AZIZBEK MAMUR O'G'LI
+      operatorSystem: string    // app.hippo.uz
+      ipAddress: string         // 89.249.60.188
+    }
+    qrCodeData?: string         // QR code content (URL or data)
+  }
 }
 
 export interface InvoiceItem {

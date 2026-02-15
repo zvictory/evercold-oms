@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Счет фактура</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @page {
+            size: A4;
+            margin: 8mm;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 8pt;
+            line-height: 1.1;
+            color: #000;
+        }
+
+        .invoice {
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .header h1 {
+            font-size: 12pt;
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .header-info {
+            font-size: 8pt;
+            margin-bottom: 2px;
+        }
+
+        .parties-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+            font-size: 7pt;
+        }
+
+        .parties-table td {
+            border: 1px solid #000;
+            padding: 2px 4px;
+            vertical-align: top;
+        }
+
+        .party-title {
+            font-weight: bold;
+            font-size: 7pt;
+            margin-bottom: 2px;
+        }
+
+        .party-row {
+            margin-bottom: 1px;
+            font-size: 7pt;
+        }
+
+        .party-label {
+            display: inline-block;
+            width: 140px;
+        }
+
+        table.items {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+
+        table.items th,
+        table.items td {
+            border: 1px solid #000;
+            padding: 2px;
+            font-size: 7pt;
+        }
+
+        table.items th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .col-num {
+            width: 25px;
+            text-align: center;
+        }
+
+        .col-name {
+            width: auto;
+            min-width: 150px;
+        }
+
+        .col-code {
+            width: 140px;
+            font-size: 6pt;
+        }
+
+        .col-barcode {
+            width: 90px;
+        }
+
+        .col-unit {
+            width: 40px;
+            text-align: center;
+        }
+
+        .col-qty {
+            width: 50px;
+            text-align: right;
+        }
+
+        .col-price {
+            width: 60px;
+            text-align: right;
+        }
+
+        .col-subtotal {
+            width: 70px;
+            text-align: right;
+        }
+
+        .col-vat-rate {
+            width: 40px;
+            text-align: center;
+        }
+
+        .col-vat-amount {
+            width: 70px;
+            text-align: right;
+        }
+
+        .col-total {
+            width: 80px;
+            text-align: right;
+        }
+
+        .totals-row {
+            font-weight: bold;
+        }
+
+        .footer-section {
+            margin-top: 10px;
+            font-size: 8pt;
+        }
+
+        .signature-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .signature-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .signature-label {
+            margin-right: 10px;
+        }
+
+        .signature-line {
+            border-bottom: 1px solid #000;
+            width: 200px;
+            display: inline-block;
+        }
+
+        .footer-note {
+            margin-top: 15px;
+            font-size: 7pt;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="invoice">
+        <!-- Header -->
+        <div class="header">
+            <h1>Счет фактура</h1>
+            <div class="header-info">№ {{invoiceNumber}} от {{invoiceDate}}</div>
+            <div class="header-info">{{contractInfo}}</div>
+        </div>
+
+        <!-- Parties Information Table -->
+        <table class="parties-table">
+            <tr>
+                <td style="width: 50%;">
+                    <div class="party-title">ПОСТАВЩИК (ПРОДАВЕЦ)</div>
+                    <div class="party-row">
+                        <span class="party-label">Наименование:</span>
+                        <span>{{supplierName}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Идентификационный номер:</span>
+                        <span>{{supplierINN}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Регистрационный код плательщика НДС:</span>
+                        <span>{{supplierVATCode}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Адрес:</span>
+                        <span>{{supplierAddress}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Р/счет:</span>
+                        <span>{{supplierBankAccount}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">МФО:</span>
+                        <span>{{supplierMFO}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">ТГ:</span>
+                        <span>{{supplierTG}}</span>
+                    </div>
+                </td>
+                <td style="width: 50%;">
+                    <div class="party-title">ПОКУПАТЕЛЬ (ЗАКАЗЧИК)</div>
+                    <div class="party-row">
+                        <span class="party-label">Наименование:</span>
+                        <span>{{buyerName}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Идентификационный номер:</span>
+                        <span>{{buyerINN}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Регистрационный код плательщика НДС:</span>
+                        <span>{{buyerVATCode}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Адрес:</span>
+                        <span>{{buyerAddress}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">Р/счет:</span>
+                        <span>{{buyerBankAccount}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">МФО:</span>
+                        <span>{{buyerMFO}}</span>
+                    </div>
+                    <div class="party-row">
+                        <span class="party-label">ТГ:</span>
+                        <span>{{buyerTG}}</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <!-- Items Table -->
+        <table class="items">
+            <thead>
+                <tr>
+                    <th class="col-num">№</th>
+                    <th class="col-name">Наименование товара (услуги)</th>
+                    <th class="col-code">Идентификационный код товара по Единому классификатору товаров и услуг
+                        внешнеэкономической деятельности Республики Узбекистан</th>
+                    <th class="col-barcode">Штрих-код</th>
+                    <th class="col-unit">Единица измерения</th>
+                    <th class="col-qty">Количество</th>
+                    <th class="col-price">Цена (без НДС)</th>
+                    <th class="col-subtotal">Стоимость (без НДС)</th>
+                    <th class="col-vat-rate">Ставка НДС %</th>
+                    <th class="col-vat-amount">Сумма НДС</th>
+                    <th class="col-total">Стоимость с учетом НДС</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{itemsRows}}
+                <tr class="totals-row">
+                    <td colspan="7" style="text-align: right; font-weight: bold;">Итого:</td>
+                    <td style="text-align: right;">{{totalWithoutVAT}}</td>
+                    <td></td>
+                    <td style="text-align: right;">{{vatAmount}}</td>
+                    <td style="text-align: right;">{{totalWithVAT}}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- Footer Section -->
+        <div class="footer-section">
+            <div class="signature-row">
+                <div class="signature-item">
+                    <span class="signature-label">Руководитель:</span>
+                    <span class="signature-line">NABITONOV Z</span>
+                </div>
+                <div class="signature-item">
+                    <span class="signature-label">Получил:</span>
+                    <span class="signature-line"></span>
+                </div>
+            </div>
+            <div class="signature-row">
+                <div class="signature-item">
+                    <span class="signature-label">Главный бухгалтер:</span>
+                    <span class="signature-line">НЕ ПРЕДУСМОТРЕН</span>
+                </div>
+                <div class="signature-item">
+                    <span class="signature-label">Доверенность:</span>
+                    <span class="signature-line"></span>
+                </div>
+            </div>
+            <div class="signature-row">
+                <div class="signature-item">
+                    <span class="party-label">М.П. (при наличии печати)</span>
+                </div>
+                <div class="signature-item">
+                    <span class="signature-label">Товар отпустил:</span>
+                    <span class="signature-line"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Отпуск продукции или оказание услуг разрешаю (подпись, печать)
+        </div>
+    </div>
+</body>
+
+</html>

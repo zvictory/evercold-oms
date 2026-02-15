@@ -3,7 +3,7 @@ export const INVOICE_CONSTANTS = {
     NAME: 'ЧАСТНОЕ ПРЕДПРИЯТИЕ "EVER COLD"',
     ADDRESS: 'ГОРОД ТАШКЕНТ АЛМАЗАРСКИЙ РАЙОН ZIYO KO`CHASI, 3-UY',
     INN: '304628242',
-    VAT_CODE: '326090030353 (сертификат активный)',
+    VAT_CODE: '326090030353',
     BANK_ACCOUNT: '20208000100748810001',
     MFO: '00963',
     TG: '0.1',

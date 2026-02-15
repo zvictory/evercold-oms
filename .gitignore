@@ -47,3 +47,7 @@ evercold-deploy.tar.gz
 
 # Dev scripts (moved to scripts/dev-tools)
 scripts/dev-tools/
+
+# Uploaded files and delivery photos
+public/uploads/*.xls
+public/delivery-photos/

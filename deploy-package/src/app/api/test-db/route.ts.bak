@@ -1,0 +1,26 @@
+import { NextResponse } from 'next/server'
+import { Pool } from 'pg'
+
+export async function GET() {
+  try {
+    const pool = new Pool({
+      host: 'localhost',
+      port: 5432,
+      database: 'evercold_crm',
+      user: 'zafar',
+    })
+
+    const result = await pool.query('SELECT NOW()')
+    await pool.end()
+
+    return NextResponse.json({
+      success: true,
+      timestamp: result.rows[0],
+    })
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: error.message },
+      { status: 500 }
+    )
+  }
+}

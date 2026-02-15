@@ -101,10 +101,45 @@ export async function GET(
 
     const buffer = await generateSchetFakturaPDF(invoiceData);
 
+    // Helper function to format date as DDMMYYYY
+    const formatDateForFilename = (date: Date): string => {
+      const day = String(date.getDate()).padStart(2, '0')
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const year = date.getFullYear()
+      return `${day}${month}${year}`
+    }
+
+    // Cyrillic to Latin transliteration map
+    const translitMap: { [key: string]: string } = {
+      'а': 'a', 'б': 'b', 'в': 'v', 'г': 'g', 'д': 'd', 'е': 'e', 'ё': 'yo', 'ж': 'zh', 'з': 'z',
+      'и': 'i', 'й': 'y', 'к': 'k', 'л': 'l', 'м': 'm', 'н': 'n', 'о': 'o', 'п': 'p', 'р': 'r',
+      'с': 's', 'т': 't', 'у': 'u', 'ф': 'f', 'х': 'h', 'ц': 'ts', 'ч': 'ch', 'ш': 'sh', 'щ': 'sch',
+      'ъ': '', 'ы': 'y', 'ь': '', 'э': 'e', 'ю': 'yu', 'я': 'ya',
+      'А': 'A', 'Б': 'B', 'В': 'V', 'Г': 'G', 'Д': 'D', 'Е': 'E', 'Ё': 'Yo', 'Ж': 'Zh', 'З': 'Z',
+      'И': 'I', 'Й': 'Y', 'К': 'K', 'Л': 'L', 'М': 'M', 'Н': 'N', 'О': 'O', 'П': 'P', 'Р': 'R',
+      'С': 'S', 'Т': 'T', 'У': 'U', 'Ф': 'F', 'Х': 'H', 'Ц': 'Ts', 'Ч': 'Ch', 'Ш': 'Sh', 'Щ': 'Sch',
+      'Ъ': '', 'Ы': 'Y', 'Ь': '', 'Э': 'E', 'Ю': 'Yu', 'Я': 'Ya'
+    }
+
+    // Helper function to sanitize and transliterate customer name
+    const sanitizeCustomerName = (name: string): string => {
+      return name
+        .split('')
+        .map(char => translitMap[char] || char)
+        .join('')
+        .replace(/[^\w\s\-]/gi, '') // Remove special chars
+        .replace(/\s+/g, '_') // Replace spaces with underscores
+        .substring(0, 30) // Limit length
+    }
+
+    const dateStr = formatDateForFilename(order.orderDate)
+    const customerName = sanitizeCustomerName(order.customer.name)
+    const filename = `Invoice_${order.invoiceNumber}_${dateStr}_${customerName}.pdf`
+
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment; filename="schet-faktura-${order.invoiceNumber}.pdf"`,
+        'Content-Disposition': `attachment; filename="${encodeURIComponent(filename)}"`,
       },
     });
   } catch (error: any) {

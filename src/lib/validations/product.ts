@@ -6,15 +6,18 @@ export const productSchema = z.object({
     .max(255, "Name too long"),
 
   sapCode: z.string()
-    .optional()
+    .nullish()
+    .transform(val => val || undefined)
     .refine(val => !val || val.length <= 50, "SAP code too long"),
 
   barcode: z.string()
-    .optional()
+    .nullish()
+    .transform(val => val || undefined)
     .refine(val => !val || val.length <= 50, "Barcode too long"),
 
   sku: z.string()
-    .optional()
+    .nullish()
+    .transform(val => val || undefined)
     .refine(val => !val || val.length <= 50, "SKU too long"),
 
   unitPrice: z.number()
@@ -33,8 +36,9 @@ export const productSchema = z.object({
     .optional(),
 
   description: z.string()
-    .max(1000, "Description too long")
-    .optional(),
+    .nullish()
+    .transform(val => val || undefined)
+    .refine(val => !val || val.length <= 1000, "Description too long"),
 })
 
 export type ProductFormValues = z.infer<typeof productSchema>

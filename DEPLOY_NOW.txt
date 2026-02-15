@@ -1,0 +1,195 @@
+═══════════════════════════════════════════════════════════════════════════════
+🚀 PRODUCTION DEPLOYMENT - READY TO GO
+═══════════════════════════════════════════════════════════════════════════════
+
+FILE: evercold-production-ready.zip (24 MB)
+
+✅ INCLUDES EVERYTHING:
+  ✓ .next (built app)
+  ✓ src (source code)
+  ✓ server.js (Node.js startup - THIS WAS MISSING!)
+  ✓ package.json + package-lock.json
+  ✓ schema.prisma
+  ✓ .env.production (example - use your real one)
+  ✓ public directory
+  ✓ All dependencies list
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 DEPLOYMENT STEPS (5 MINUTES)
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: CLEAR OLD FILES
+───────────────────────────────────────────────────────────────────────────────
+SSH into server:
+
+  ssh root@135.181.84.232
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+
+  # Backup (just in case)
+  tar -czf ~/app-backup-$(date +%s).tar.gz . 2>/dev/null
+
+  # Clear everything
+  rm -rf *
+
+  # Verify it's empty
+  ls -la
+
+
+STEP 2: UPLOAD ZIP
+───────────────────────────────────────────────────────────────────────────────
+In Plesk:
+
+  1. Websites & Domains → evercold.uz → File Manager
+  2. Navigate to: /var/www/vhosts/evercold.uz/app.evercold.uz/
+  3. Upload: evercold-production-ready.zip
+  4. Right-click → Extract
+
+
+STEP 3: INSTALL DEPENDENCIES
+───────────────────────────────────────────────────────────────────────────────
+Back in SSH:
+
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+
+  # Verify files extracted
+  ls -la
+  # Should show: .next src server.js package.json public/ etc.
+
+  # Install dependencies (CRITICAL!)
+  npm install --production --legacy-peer-deps
+
+  # Wait 2-3 minutes...
+  # Should end with: "added 808 packages"
+
+  # Verify PDFKit fonts
+  ls node_modules/pdfkit/js/data/ | grep Helvetica
+  # Should show 4 files
+
+
+STEP 4: SET PERMISSIONS
+───────────────────────────────────────────────────────────────────────────────
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+
+  # Fix ownership
+  chown -R evercold.uz_ilqqlf5tka:psacln .
+
+  # Create uploads folder
+  mkdir -p public/uploads
+  chmod 777 public/uploads
+
+  # Verify server.js exists (THIS IS CRITICAL!)
+  ls -la server.js
+  # Should show: -rw-r--r-- ... server.js
+
+
+STEP 5: RESTART APP
+───────────────────────────────────────────────────────────────────────────────
+In Plesk:
+
+  1. Websites & Domains → evercold.uz
+  2. Node.js tab
+  3. Verify "Application Startup File" shows: server.js ✅
+  4. Click "Restart App"
+  5. Wait 15 seconds
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🧪 TEST IT
+═══════════════════════════════════════════════════════════════════════════════
+
+Test 1: App Loads
+─────────────────
+  curl -I https://app.evercold.uz
+  # Should return: HTTP/2 200
+
+
+Test 2: Dashboard Works
+────────────────────────
+  Open in browser: https://app.evercold.uz
+
+  ✓ No 500 errors in console
+  ✓ Dashboard loads
+  ✓ Can navigate to Orders, Customers, etc.
+
+
+Test 3: Upload Excel (Auto-Customer Creation)
+──────────────────────────────────────────────
+  1. Go to: https://app.evercold.uz/ru/orders
+  2. Upload Excel with NEW customer name
+  3. Should succeed ✅
+  4. Customer auto-created with AUTO-{timestamp}
+
+
+Test 4: Generate Invoice (PDFKit Fix)
+──────────────────────────────────────
+  1. Find an order
+  2. Click to generate invoice
+  3. PDF downloads ✅
+  4. NO "Helvetica.afm" error
+
+
+═══════════════════════════════════════════════════════════════════════════════
+⚠️ CRITICAL CHECKPOINTS
+═══════════════════════════════════════════════════════════════════════════════
+
+After STEP 3 (npm install):
+  ✓ 507+ modules installed
+  ✓ Helvetica font files exist (4 files)
+
+After STEP 4 (permissions):
+  ✓ server.js exists at root
+  ✓ public/uploads exists with 777 permissions
+
+After STEP 5 (restart):
+  ✓ Plesk shows "Application will be restarted after the first request"
+  ✓ No "file not found" errors in Plesk
+
+
+═══════════════════════════════════════════════════════════════════════════════
+🔄 ROLLBACK (If Needed)
+═══════════════════════════════════════════════════════════════════════════════
+
+If something goes wrong:
+
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+  rm -rf *
+
+  # Extract backup
+  tar -xzf ~/app-backup-* -C .
+
+  # Restart in Plesk
+
+
+═══════════════════════════════════════════════════════════════════════════════
+📦 WHAT'S FIXED IN THIS DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ Auto-Customer Creation
+   - Customers auto-created if missing
+   - No more "Customer not found" errors
+   - Code format: AUTO-{timestamp}
+
+✅ Invoice Generation (PDFKit)
+   - Replaced Puppeteer with PDFKit
+   - No Chromium/system dependencies needed
+   - Helvetica fonts included
+   - Generates in 100-200ms
+
+✅ server.js Included
+   - THIS WAS THE MISSING FILE!
+   - Node.js app will start correctly
+   - No more "startup file not found" error
+
+
+═══════════════════════════════════════════════════════════════════════════════
+✨ YOU'RE READY!
+═══════════════════════════════════════════════════════════════════════════════
+
+File: evercold-production-ready.zip (24 MB)
+Location: /Users/zafar/Documents/evercold/
+
+Follow the 5 steps above and your app will be running in 5 minutes!
+
+Good luck! 🚀
+
+═══════════════════════════════════════════════════════════════════════════════

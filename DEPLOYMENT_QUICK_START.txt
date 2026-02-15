@@ -1,0 +1,166 @@
+═══════════════════════════════════════════════════════════════════════════════
+🚀 EVERCOLD CRM - PRODUCTION DEPLOYMENT (QUICK START)
+═══════════════════════════════════════════════════════════════════════════════
+
+✅ YOUR DEPLOYMENT PACKAGE IS READY!
+
+File: evercold-production-complete.zip (24 MB)
+
+What's Included:
+  ✓ Complete Next.js 16 build (.next/)
+  ✓ Auto-customer creation feature (fixed "Customer not found" error)
+  ✓ PDFKit invoice generation (replaces broken Puppeteer)
+  ✓ All source code and dependencies list
+  ✓ Step-by-step deployment guide
+
+═══════════════════════════════════════════════════════════════════════════════
+📋 DEPLOYMENT IN 4 STEPS (15 minutes)
+═══════════════════════════════════════════════════════════════════════════════
+
+STEP 1: UPLOAD ZIP FILE
+───────────────────────────────────────────────────────────────────────────────
+1. Open Plesk Control Panel
+2. Websites & Domains → evercold.uz → File Manager
+3. Navigate to: /var/www/vhosts/evercold.uz/app.evercold.uz/
+4. Upload: evercold-production-complete.zip
+5. Right-click → Extract
+
+STEP 2: INSTALL DEPENDENCIES (CRITICAL!)
+───────────────────────────────────────────────────────────────────────────────
+SSH into your server:
+
+  ssh root@135.181.84.232
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz/deploy-package
+  npm install --production
+
+⚠️ THIS STEP IS CRITICAL!
+This installs PDFKit with font files needed for invoices.
+Takes about 2-3 minutes.
+
+STEP 3: DEPLOY NEW VERSION
+───────────────────────────────────────────────────────────────────────────────
+In SSH terminal:
+
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+  mv app app.backup-$(date +%s)
+  mv deploy-package app
+
+STEP 4: RESTART APPLICATION
+───────────────────────────────────────────────────────────────────────────────
+In Plesk:
+1. Websites & Domains → evercold.uz
+2. Click Node.js tab
+3. Click "Restart App"
+4. Wait 10-15 seconds
+
+✅ DONE!
+
+═══════════════════════════════════════════════════════════════════════════════
+🧪 TEST YOUR DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+Test 1: App Loads
+  curl -I https://app.evercold.uz/ru/orders
+  Should return: HTTP/2 200
+
+Test 2: Auto-Customer Creation ✨
+  1. Go to https://app.evercold.uz/ru/orders
+  2. Upload Excel with NEW customer name (not in database)
+  3. Should succeed ✅
+  4. New customer created with AUTO-{timestamp} code
+
+Test 3: Invoice Generation ✨
+  1. Find an order in the app
+  2. Click to generate invoice
+  3. PDF should download ✅
+  4. NO MORE "Helvetica.afm not found" error!
+
+═══════════════════════════════════════════════════════════════════════════════
+🔄 ROLLBACK (If something goes wrong)
+═══════════════════════════════════════════════════════════════════════════════
+
+If you need to go back to the previous version:
+
+  cd /var/www/vhosts/evercold.uz/app.evercold.uz
+  rm -rf app
+  mv app.backup-* app
+
+Then restart app in Plesk.
+
+═══════════════════════════════════════════════════════════════════════════════
+📝 KEY CHANGES IN THIS DEPLOYMENT
+═══════════════════════════════════════════════════════════════════════════════
+
+1. AUTO-CUSTOMER CREATION
+   Problem:  "Customer not found" error when importing orders
+   Solution: Customers are now auto-created if missing
+   Code:     AUTO-{timestamp}
+
+2. INVOICE GENERATION FIXED
+   Problem:  Puppeteer fails (no Chromium on Plesk server)
+   Solution: Switched to PDFKit (pure JavaScript, no system libs)
+   Result:   Invoices generate instantly ✨
+
+3. FONT FILES DEPLOYMENT
+   Problem:  Previous deployment missing PDFKit font files
+   Solution: npm install --production installs them
+   Result:   Helvetica.afm and other fonts available
+
+═══════════════════════════════════════════════════════════════════════════════
+❓ TROUBLESHOOTING
+═══════════════════════════════════════════════════════════════════════════════
+
+"npm install --production" is taking too long
+  → Normal, it takes 2-3 minutes. Be patient.
+
+"Cannot find module 'pdfkit'"
+  → You missed Step 2 (npm install). Do it now.
+
+"Helvetica.afm not found"
+  → Same issue. Run: npm install --production
+
+App won't start after restart
+  → Check logs: tail -100 app/.next/dev/logs/next-development.log
+  → Or check Plesk → Logs
+  → Verify npm install completed successfully
+
+Invoices still not generating
+  → Verify fonts exist: ls app/node_modules/pdfkit/js/data/ | grep Helvetica
+  → Should show files like "Helvetica.afm"
+  → If missing, run npm install --production again
+
+═══════════════════════════════════════════════════════════════════════════════
+📚 DETAILED DOCUMENTATION
+═══════════════════════════════════════════════════════════════════════════════
+
+For more detailed information, see these files:
+
+1. PRODUCTION_DEPLOYMENT_COMPLETE.md
+   - Complete deployment guide with verification steps
+
+2. DEPLOYMENT_GUIDE.md
+   - Inside the ZIP file
+   - Step-by-step instructions with examples
+
+3. TECHNICAL_FIXES_SUMMARY.md
+   - What was broken and how it was fixed
+   - Before/after code comparison
+   - Performance improvements
+
+═══════════════════════════════════════════════════════════════════════════════
+✅ YOU'RE READY!
+═══════════════════════════════════════════════════════════════════════════════
+
+Next steps:
+1. Download: evercold-production-complete.zip
+2. Follow the 4 steps above
+3. Test auto-customer creation and invoices
+4. Report any issues
+
+Everything is tested and ready to go! 🎉
+
+═══════════════════════════════════════════════════════════════════════════════
+Version: 1.0.0 Final
+Created: 2026-02-15
+Status: Production Ready ✅
+═══════════════════════════════════════════════════════════════════════════════

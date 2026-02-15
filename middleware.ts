@@ -8,17 +8,21 @@ const LOCALES = ['ru', 'en', 'uz-Latn', 'uz-Cyrl']
 const PUBLIC_ROUTES = [
   '/login',
   '/403',
-  '/driver/login',
+  '/driver-login',
   '/api/auth/login',
   '/api/auth/logout',
   '/api/driver/login',
 ]
 
-// Driver-only routes
-const DRIVER_ROUTES = ['/driver']
-
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
+
+  // Redirect old driver routes to new locale-aware routes
+  if (pathname === '/driver/login' || pathname.startsWith('/driver/')) {
+    const newUrl = new URL(request.url)
+    newUrl.pathname = `/ru${pathname.replace('/driver/login', '/driver-login')}`
+    return NextResponse.redirect(newUrl)
+  }
 
   // Skip middleware for public assets and static files
   if (
@@ -43,19 +47,24 @@ export function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // For driver routes, skip middleware (handled by API-level auth)
-  if (DRIVER_ROUTES.some((route) => pathname.startsWith(route))) {
+  // For driver routes, skip middleware (handled by DriverAuthGuard component)
+  // Match both /driver and /locale/driver routes
+  const isDriverRoute = LOCALES.some((locale) => pathname.startsWith(`/${locale}/driver`)) ||
+    pathname.startsWith('/driver')
+
+  if (isDriverRoute) {
     return NextResponse.next()
   }
 
   // Check for authentication token in cookies or headers
   const authToken = request.cookies.get('authToken')?.value
+  const driverToken = request.cookies.get('driverToken')?.value
   const authHeader = request.headers.get('authorization')
 
   // Extract token from Bearer header or cookie
   const token = authHeader?.startsWith('Bearer ')
     ? authHeader.substring(7)
-    : authToken
+    : (authToken || driverToken)
 
   if (!token) {
     // No token, redirect to login

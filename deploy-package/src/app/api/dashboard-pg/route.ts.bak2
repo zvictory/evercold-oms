@@ -1,0 +1,100 @@
+import { NextResponse } from 'next/server'
+// import { Pool } from 'pg' // DISABLED FOR MYSQL
+import { formatDistanceToNow } from 'date-fns'
+
+const pool = new Pool({
+  connectionString: 'postgresql://zafar@localhost:5432/evercold_crm',
+})
+
+export async function GET() {
+  try {
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    const tomorrow = new Date(today)
+    tomorrow.setDate(tomorrow.getDate() + 1)
+
+    const yesterday = new Date(today)
+    yesterday.setDate(yesterday.getDate() - 1)
+
+    const now = new Date()
+    const twoHoursAgo = new Date(now.getTime() - 2 * 60 * 60 * 1000)
+
+    // Query today's orders volume
+    const todaysOrdersResult = await pool.query(
+      `SELECT COALESCE(SUM(quantity), 0) as total_volume FROM "OrderItem" oi
+       JOIN "Order" o ON oi."orderId" = o.id
+       WHERE o."orderDate" >= $1 AND o."orderDate" < $2`,
+      [today, tomorrow]
+    )
+
+    const yesterdaysOrdersResult = await pool.query(
+      `SELECT COALESCE(SUM(quantity), 0) as total_volume FROM "OrderItem" oi
+       JOIN "Order" o ON oi."orderId" = o.id
+       WHERE o."orderDate" >= $1 AND o."orderDate" < $2`,
+      [yesterday, today]
+    )
+
+    // Query vehicle counts
+    const vehiclesResult = await pool.query(
+      `SELECT COUNT(*) as total_count FROM "Vehicle" WHERE status IN ('AVAILABLE', 'IN_USE')`
+    )
+
+    // Query active deliveries
+    const deliveriesResult = await pool.query(
+      `SELECT COUNT(*) as active_count FROM "Delivery" WHERE status = 'IN_TRANSIT' AND "updatedAt" >= $1`,
+      [today]
+    )
+
+    // Query branch counts
+    const branchesResult = await pool.query(
+      `SELECT COUNT(*) as total_branches FROM "CustomerBranch" WHERE "isActive" = true`
+    )
+
+    // Query branches served today
+    const servedBranchesResult = await pool.query(
+      `SELECT COUNT(DISTINCT "branchId") as served_branches FROM "OrderItem" oi
+       JOIN "Order" o ON oi."orderId" = o.id
+       WHERE o."orderDate" >= $1 AND o."orderDate" < $2 AND oi."branchId" IS NOT NULL`,
+      [today, tomorrow]
+    )
+
+    const todaysVolume = parseInt(todaysOrdersResult.rows[0].total_volume)
+    const yesterdaysVolume = parseInt(yesterdaysOrdersResult.rows[0].total_volume)
+    const volumeChange = yesterdaysVolume > 0
+      ? ((todaysVolume - yesterdaysVolume) / yesterdaysVolume) * 100
+      : 0
+
+    const totalVehicles = parseInt(vehiclesResult.rows[0].total_count)
+    const activeDeliveries = parseInt(deliveriesResult.rows[0].active_count)
+    const fleetPercentage = totalVehicles > 0 ? (activeDeliveries / totalVehicles) * 100 : 0
+
+    const totalBranches = parseInt(branchesResult.rows[0].total_branches)
+    const servedBranches = parseInt(servedBranchesResult.rows[0].served_branches)
+    const coveragePercentage = totalBranches > 0 ? (servedBranches / totalBranches) * 100 : 0
+
+    return NextResponse.json({
+      todaysVolume: {
+        total: todaysVolume,
+        comparison: yesterdaysVolume,
+        change: volumeChange,
+      },
+      activeFleet: {
+        active: activeDeliveries,
+        total: totalVehicles,
+        percentage: fleetPercentage,
+      },
+      branchCoverage: {
+        served: servedBranches,
+        total: totalBranches,
+        percentage: coveragePercentage,
+      },
+      recentActivity: [],
+    })
+  } catch (error: any) {
+    console.error('Dashboard API (PG) error:', error)
+    return NextResponse.json(
+      { error: error.message || 'Failed to fetch dashboard data' },
+      { status: 500 }
+    )
+  }
+}
