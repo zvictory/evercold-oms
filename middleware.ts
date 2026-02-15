@@ -12,6 +12,7 @@ const PUBLIC_ROUTES = [
   '/api/auth/login',
   '/api/auth/logout',
   '/api/driver/login',
+  '/api/telegram/webhook',  // Telegram bot webhook (no auth required)
 ]
 
 export function middleware(request: NextRequest) {
