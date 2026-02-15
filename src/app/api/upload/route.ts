@@ -92,6 +92,131 @@ export async function POST(request: NextRequest) {
   }
 }
 
+/**
+ * Find existing customer or auto-create if not found
+ * Tries lookup by exact name first, then by partial match, then creates new customer
+ */
+async function findOrCreateCustomer(
+  customerName: string
+): Promise<{ id: string; name: string; hasVat: boolean }> {
+  // Try exact match first
+  let customer = await prisma.customer.findFirst({
+    where: { name: customerName },
+    select: {
+      id: true,
+      name: true,
+      hasVat: true,
+    },
+  })
+
+  if (customer) {
+    console.log(`✅ Found existing customer (exact): ${customerName}`)
+    return customer
+  }
+
+  // Try partial match (contains)
+  customer = await prisma.customer.findFirst({
+    where: { name: { contains: customerName } },
+    select: {
+      id: true,
+      name: true,
+      hasVat: true,
+    },
+  })
+
+  if (customer) {
+    console.log(`✅ Found existing customer (partial): ${customerName} -> ${customer.name}`)
+    return customer
+  }
+
+  // Auto-create new customer
+  const newCustomer = await prisma.customer.create({
+    data: {
+      name: customerName,
+      customerCode: `AUTO-${Date.now()}`,
+      hasVat: true, // Default to VAT-enabled
+      isActive: true,
+    },
+    select: {
+      id: true,
+      name: true,
+      hasVat: true,
+    },
+  })
+
+  console.log(`🆕 Auto-created customer: ${customerName}`)
+  return newCustomer
+}
+
+/**
+ * Find existing branch or auto-create if not found
+ * Tries lookup by code first, then by name, then creates new branch
+ */
+async function findOrCreateBranch(
+  customerId: string,
+  customerName: string,
+  branchCode?: string,
+  branchName?: string
+): Promise<{ id: string } | null> {
+  // If no branch info provided, return null
+  if (!branchCode && !branchName) {
+    return null
+  }
+
+  // Try to find existing branch by code
+  if (branchCode) {
+    const existing = await prisma.customerBranch.findFirst({
+      where: {
+        customerId,
+        OR: [{ branchCode }, { oldBranchCode: branchCode }],
+      },
+      select: { id: true },
+    })
+
+    if (existing) {
+      console.log(`✅ Found existing branch: ${branchCode}`)
+      return existing
+    }
+  }
+
+  // Try to find by name if no code or code lookup failed
+  if (branchName) {
+    const existing = await prisma.customerBranch.findFirst({
+      where: {
+        customerId,
+        branchName: { contains: branchName },
+      },
+      select: { id: true },
+    })
+
+    if (existing) {
+      console.log(`✅ Found existing branch by name: ${branchName}`)
+      return existing
+    }
+  }
+
+  // Auto-create new branch if we have enough info
+  if (branchCode || branchName) {
+    const newBranch = await prisma.customerBranch.create({
+      data: {
+        customerId,
+        branchCode: branchCode || `AUTO-${Date.now()}`,
+        branchName: branchName || branchCode || 'Unnamed Branch',
+        fullName: `${customerName} - ${branchName || branchCode || 'Branch'}`,
+        isActive: true,
+      },
+      select: { id: true },
+    })
+
+    console.log(
+      `🆕 Auto-created branch: ${branchCode || branchName} for ${customerName}`
+    )
+    return newBranch
+  }
+
+  return null
+}
+
 async function createOrder(
   parsedOrder: any,
   filename: string,
@@ -109,30 +234,15 @@ async function createOrder(
     return { created: false }
   }
 
-  const customer = await prisma.customer.findFirst({
-    where: { name: { contains: parsedOrder.customerName, mode: 'insensitive' } },
-    select: {
-      id: true,
-      name: true,
-      hasVat: true,
-    },
-  })
+  // Find or auto-create customer
+  const customer = await findOrCreateCustomer(parsedOrder.customerName)
 
-  if (!customer) {
-    throw new Error(`Customer not found: ${parsedOrder.customerName}`)
-  }
-
-  let branch = null
-  if (parsedOrder.branchCode) {
-    branch = await prisma.customerBranch.findFirst({
-      where: {
-        OR: [
-          { branchCode: parsedOrder.branchCode },
-          { oldBranchCode: parsedOrder.branchCode },
-        ],
-      },
-    })
-  }
+  const branch = await findOrCreateBranch(
+    customer.id,
+    customer.name,
+    parsedOrder.branchCode,
+    parsedOrder.branchName
+  )
 
   const email = await prisma.email.create({
     data: {
@@ -154,7 +264,7 @@ async function createOrder(
         OR: [
           { sapCode: item.sapCode },
           { barcode: item.barcode },
-          { name: { contains: item.productName, mode: 'insensitive' } },
+          { name: { contains: item.productName } },
         ],
       },
       include: {
@@ -188,14 +298,12 @@ async function createOrder(
 
     let itemBranch = branch
     if (item.branchCode && item.branchCode !== parsedOrder.branchCode) {
-      itemBranch = await prisma.customerBranch.findFirst({
-        where: {
-          OR: [
-            { branchCode: item.branchCode },
-            { oldBranchCode: item.branchCode },
-          ],
-        },
-      })
+      itemBranch = await findOrCreateBranch(
+        customer.id,
+        customer.name,
+        item.branchCode,
+        item.branchName
+      )
     }
 
     const customerPrice = product.customerPrices?.[0]?.unitPrice
