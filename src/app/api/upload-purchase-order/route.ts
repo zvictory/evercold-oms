@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
             name: true,
             customerCode: true,
             hasVat: true,
+            taxStatus: true,
           },
         });
 
@@ -189,7 +190,7 @@ export async function POST(request: NextRequest) {
             // Calculate prices
             const customerPrice = product.customerPrices?.[0]?.unitPrice;
             const unitPrice = customerPrice || product.unitPrice || 0;
-            const vatRate = customer.hasVat ? (product.vatRate || 12) : 0;
+            const vatRate = customer.taxStatus === 'VAT_PAYER' ? (product.vatRate || 12) : 0;
             const subtotal = item.quantity * unitPrice;
             const vatAmount = (subtotal * vatRate) / 100;
             const totalAmount = subtotal + vatAmount;

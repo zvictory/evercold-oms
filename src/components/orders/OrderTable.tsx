@@ -19,7 +19,7 @@ import {
     Download,
     AlertCircle
 } from "lucide-react"
-import { cn, fetchWithAuth } from "@/lib/utils"
+import { cn, fetchWithAuth, formatPrice, formatQuantity } from "@/lib/utils"
 import { formatDate } from "@/lib/date-utils"
 import { format } from "date-fns"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -368,13 +368,13 @@ export function OrderTable({
                                     )}
                                     {!order.products?.ice3kg && !order.products?.ice1kg && (
                                         <span className="tabular-nums text-slate-600">
-                                            {order.weight.toLocaleString()} <span className="text-[10px] text-slate-400 font-bold ml-0.5">KG</span>
+                                            {formatQuantity(order.weight)} <span className="text-[10px] text-slate-400 font-bold ml-0.5">KG</span>
                                         </span>
                                     )}
                                 </div>
                             </TableCell>
                             <TableCell className="text-right tabular-nums font-medium text-slate-900">
-                                {order.amount.toLocaleString()} <span className="text-[10px] text-slate-400 font-bold ml-0.5">UZS</span>
+                                {formatPrice(order.amount)} <span className="text-[10px] text-slate-400 font-bold ml-0.5">UZS</span>
                             </TableCell>
                             {/* Unified Status Column (Order + Delivery) */}
                             <TableCell className="py-3">

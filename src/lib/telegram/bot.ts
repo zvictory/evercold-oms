@@ -1,6 +1,7 @@
 import { Telegraf, Context, Markup } from 'telegraf';
 import { prisma } from '@/lib/prisma';
 import { Update } from 'telegraf/types';
+import { formatPrice } from '@/lib/utils';
 
 // Session data for managing conversation state
 interface SessionData {
@@ -240,7 +241,7 @@ export function createBot(token: string) {
         const shortName = p.name.length > 35 ? p.name.substring(0, 32) + '...' : p.name;
         return [
           Markup.button.callback(
-            `${shortName} • ${price.toLocaleString()} сўм`,
+            `${shortName} • ${formatPrice(price)} сўм`,
             `product:${p.id}`
           )
         ];
@@ -494,12 +495,14 @@ export function createBot(token: string) {
     // Get customer and branch names
     const customer = await prisma.customer.findUnique({
       where: { id: session.customerId },
-      select: { name: true, hasVat: true },
+      select: { name: true, hasVat: true, taxStatus: true },
     });
     const branch = await prisma.customerBranch.findUnique({
       where: { id: session.branchId },
       select: { fullName: true, branchName: true },
     });
+
+    const isVatPayer = customer?.taxStatus === 'VAT_PAYER' || customer?.hasVat;
 
     orderSummary += `👥 Клиент: ${customer?.name}\n`;
     orderSummary += `🏪 Филиал: ${branch?.fullName || branch?.branchName}\n\n`;
@@ -509,19 +512,19 @@ export function createBot(token: string) {
       const itemTotal = item.quantity * item.unitPrice;
       subtotal += itemTotal;
       orderSummary += `${idx + 1}. ${item.productName}\n`;
-      orderSummary += `   ${item.quantity} × ${item.unitPrice.toLocaleString()} = ${itemTotal.toLocaleString()} сўм\n`;
+      orderSummary += `   ${item.quantity} × ${formatPrice(item.unitPrice)} = ${formatPrice(itemTotal)} сўм\n`;
     });
 
     // Calculate VAT only if customer is VAT-registered
-    const vatAmount = customer?.hasVat ? subtotal * 0.12 : 0;
+    const vatAmount = isVatPayer ? subtotal * 0.12 : 0;
     const totalAmount = subtotal + vatAmount;
 
     orderSummary += `\n💰 Итого:\n`;
-    orderSummary += `   Сумма: ${subtotal.toLocaleString()} сўм\n`;
-    if (customer?.hasVat) {
-      orderSummary += `   НДС (12%): ${vatAmount.toLocaleString()} сўм\n`;
+    orderSummary += `   Сумма: ${formatPrice(subtotal)} сўм\n`;
+    if (isVatPayer) {
+      orderSummary += `   НДС (12%): ${formatPrice(vatAmount)} сўм\n`;
     }
-    orderSummary += `   Всего: ${totalAmount.toLocaleString()} сўм\n`;
+    orderSummary += `   Всего: ${formatPrice(totalAmount)} сўм\n`;
 
     const keyboard = Markup.inlineKeyboard([
       [Markup.button.callback('✅ Подтвердить', 'confirm_order')],
@@ -555,8 +558,10 @@ export function createBot(token: string) {
       // Get customer's VAT setting
       const customer = await prisma.customer.findUnique({
         where: { id: session.customerId },
-        select: { hasVat: true },
+        select: { hasVat: true, taxStatus: true },
       });
+
+      const isVatPayer = customer?.taxStatus === 'VAT_PAYER' || customer?.hasVat;
 
       // Calculate totals
       let subtotal = 0;
@@ -565,7 +570,7 @@ export function createBot(token: string) {
 
       session.items.forEach(item => {
         const itemSubtotal = item.quantity * item.unitPrice;
-        const itemVat = customer?.hasVat ? itemSubtotal * 0.12 : 0;
+        const itemVat = isVatPayer ? itemSubtotal * 0.12 : 0;
         subtotal += itemSubtotal;
         vatAmount += itemVat;
         totalAmount += itemSubtotal + itemVat;
@@ -588,7 +593,7 @@ export function createBot(token: string) {
       // Create order items
       for (const item of session.items) {
         const itemSubtotal = item.quantity * item.unitPrice;
-        const itemVat = customer?.hasVat ? itemSubtotal * 0.12 : 0;
+        const itemVat = isVatPayer ? itemSubtotal * 0.12 : 0;
         const itemTotal = itemSubtotal + itemVat;
 
         await prisma.orderItem.create({
@@ -601,7 +606,7 @@ export function createBot(token: string) {
             quantity: item.quantity,
             unitPrice: item.unitPrice,
             subtotal: itemSubtotal,
-            vatRate: customer?.hasVat ? 12 : 0,
+            vatRate: isVatPayer ? 12 : 0,
             vatAmount: itemVat,
             totalAmount: itemTotal,
           },
@@ -612,7 +617,7 @@ export function createBot(token: string) {
       await ctx.editMessageText(
         `✅ Заказ успешно создан!\n\n` +
         `📝 Номер заказа: ${orderNumber}\n` +
-        `💰 Сумма: ${totalAmount.toLocaleString()} сўм\n\n` +
+        `💰 Сумма: ${formatPrice(totalAmount)} сўм\n\n` +
         `Используйте /order для создания нового заказа`
       );
 

@@ -8,8 +8,15 @@ import * as z from "zod"
 import { EntityFormLayout } from "@/components/common/EntityFormLayout"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Switch } from "@/components/ui/switch"
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { fetchWithAuth } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Upload, Calendar, Building2, User, FileText, CheckCircle2 } from "lucide-react"
 
@@ -25,6 +32,8 @@ const customerSchema = z.object({
     bankMfo: z.string().regex(/^\d{5}$/, "MFO must be 5 digits").optional().or(z.literal('')),
     bankAccount: z.string().min(20, "Account number must be 20 digits").optional().or(z.literal('')),
     hasVat: z.boolean(),
+    taxStatus: z.string().optional(),
+    customerGroupId: z.string().optional(),
 
     // Section 3: Contact
     contactName: z.string().min(2, "Contact name required"),
@@ -44,11 +53,21 @@ export default function NewCustomerPage() {
     const params = useParams()
     const locale = params.locale || 'ru'
     const [isSubmitting, setIsSubmitting] = React.useState(false)
+    const [customerGroups, setCustomerGroups] = React.useState<Array<{ id: string; name: string }>>([])
+
+    React.useEffect(() => {
+        fetchWithAuth('/api/customer-groups')
+            .then(res => res.json())
+            .then(data => setCustomerGroups(data.groups || []))
+            .catch(() => {})
+    }, [])
 
     const form = useForm<CustomerFormValues>({
         resolver: zodResolver(customerSchema),
         defaultValues: {
             hasVat: false,
+            taxStatus: 'VAT_PAYER',
+            customerGroupId: '',
             contractDate: new Date().toISOString().split('T')[0]
         },
         mode: "onChange" // Real-time validation
@@ -186,26 +205,50 @@ export default function NewCustomerPage() {
                                         <p className="text-xs text-red-500">{form.formState.errors.taxId.message}</p>
                                     )}
                                 </div>
-                                <div className="space-y-2">
-                                    <div className="flex items-center justify-between mb-2">
-                                        <label className="text-sm font-medium text-slate-700">VAT Registration</label>
-                                        <div className="flex items-center gap-2">
-                                            <span className={`text-xs font-medium ${form.watch("hasVat") ? 'text-emerald-600' : 'text-slate-500'}`}>
-                                                {form.watch("hasVat") ? 'Registered' : 'Not Registered'}
-                                            </span>
-                                            <Switch
-                                                checked={form.watch("hasVat")}
-                                                onCheckedChange={(checked) => form.setValue("hasVat", checked)}
-                                            />
-                                        </div>
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Tax Status</label>
+                                        <Select
+                                            value={form.watch("taxStatus")}
+                                            onValueChange={(value: 'VAT_PAYER' | 'EXEMPT') => {
+                                                form.setValue("taxStatus", value)
+                                                form.setValue("hasVat", value === 'VAT_PAYER')
+                                            }}
+                                        >
+                                            <SelectTrigger className="bg-white border-slate-200 h-10">
+                                                <SelectValue placeholder="Select tax status" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="VAT_PAYER">VAT Payer (12%)</SelectItem>
+                                                <SelectItem value="EXEMPT">Exempt</SelectItem>
+                                            </SelectContent>
+                                        </Select>
                                     </div>
-                                    {form.watch("hasVat") && (
+                                    {form.watch("taxStatus") === 'VAT_PAYER' && (
                                         <Input
                                             {...form.register("vatCode")}
                                             placeholder="VAT Code (Optional)"
                                             className="bg-white border-slate-200 h-10"
                                         />
                                     )}
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium text-slate-700">Customer Group</label>
+                                        <Select
+                                            value={form.watch("customerGroupId") || '_none'}
+                                            onValueChange={(value) => form.setValue("customerGroupId", value === '_none' ? '' : value)}
+                                        >
+                                            <SelectTrigger className="bg-white border-slate-200 h-10">
+                                                <SelectValue placeholder="No group assigned" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="_none">No group</SelectItem>
+                                                {customerGroups.map(group => (
+                                                    <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                        <p className="text-xs text-slate-500">Assigns group-level pricing tier</p>
+                                    </div>
                                 </div>
                             </div>
                             <div className="grid md:grid-cols-3 gap-6">

@@ -3,16 +3,10 @@ import QRCode from 'qrcode'
 import { InvoiceData } from '../excel/invoice-types'
 import { formatInvoiceDate } from '../excel/invoice-utils'
 import { numberToRussianWords } from '../utils/numberToWords'
+import { formatNumber } from '../utils/format-number'
 
-/**
- * Format number with Russian thousands separator (space)
- * Example: 14513.40 -> "14 513.40"
- */
-function formatRussianNumber(num: number, decimals: number = 2): string {
-  const parts = num.toFixed(decimals).split('.')
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-  return parts.join('.')
-}
+/** @deprecated Use formatNumber from utils/format-number instead */
+const formatRussianNumber = formatNumber
 
 /**
  * Format timestamp for EDO stamps: YYYY.MM.DD HH:mm:ss

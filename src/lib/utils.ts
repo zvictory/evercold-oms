@@ -5,6 +5,8 @@ export function cn(...inputs: ClassValue[]) {
     return twMerge(clsx(inputs))
 }
 
+export { formatNumber, formatPrice, formatCurrency, formatQuantity } from './utils/format-number'
+
 /**
  * Fetch with automatic Authorization header
  * Retrieves token from localStorage and adds it to the request

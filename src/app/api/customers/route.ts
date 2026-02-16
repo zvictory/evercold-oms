@@ -18,9 +18,14 @@ export async function GET(request: NextRequest) {
         contractNumber: true,
         contractDate: true,
         hasVat: true,
+        taxStatus: true,
+        customerGroupId: true,
         notes: true,
         createdAt: true,
         updatedAt: true,
+        customerGroup: {
+          select: { id: true, name: true },
+        },
         _count: {
           select: {
             orders: true,
@@ -55,6 +60,8 @@ export async function POST(request: NextRequest) {
         contractNumber: body.contractNumber || null,
         contractDate: body.contractDate || null,
         hasVat: body.hasVat !== undefined ? body.hasVat : false,
+        taxStatus: body.taxStatus || (body.hasVat ? 'VAT_PAYER' : 'EXEMPT'),
+        customerGroupId: body.customerGroupId || null,
         notes: body.notes || null,
       },
     })

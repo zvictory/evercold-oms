@@ -60,7 +60,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { cn, fetchWithAuth } from "@/lib/utils"
+import { cn, fetchWithAuth, formatPrice } from "@/lib/utils"
 import { useScopedI18n } from "@/locales/client"
 
 const orderSchema = z.object({
@@ -602,7 +602,7 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                                     <span className="text-sky-600 text-xs" title="Custom price">💎</span>
                                                                 )}
                                                                 <span className="font-mono font-semibold tabular-nums text-slate-900 text-xs">
-                                                                    {(item?.price || 0).toLocaleString()}
+                                                                    {formatPrice(item?.price || 0)}
                                                                 </span>
                                                             </div>
                                                         </td>
@@ -610,7 +610,7 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                         {/* Amount (Subtotal) */}
                                                         <td className="py-2 px-2 w-[100px] text-right">
                                                             <span className="font-mono font-bold tabular-nums text-slate-900 text-xs">
-                                                                {itemSubtotal.toLocaleString()}
+                                                                {formatPrice(itemSubtotal)}
                                                             </span>
                                                         </td>
 
@@ -624,14 +624,14 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                         {/* VAT Amount */}
                                                         <td className="py-2 px-2 w-[95px] text-right">
                                                             <span className="font-mono text-amber-700 tabular-nums text-xs">
-                                                                {itemVatAmount.toLocaleString()}
+                                                                {formatPrice(itemVatAmount)}
                                                             </span>
                                                         </td>
 
                                                         {/* Total with VAT */}
                                                         <td className="py-2 px-2 w-[110px] text-right">
                                                             <span className="font-mono font-bold text-sky-700 tabular-nums text-xs">
-                                                                {itemTotalWithVat.toLocaleString()}
+                                                                {formatPrice(itemTotalWithVat)}
                                                             </span>
                                                         </td>
 
@@ -678,7 +678,7 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                             {t("netLabel")}
                                                         </div>
                                                         <div className="font-mono font-black text-slate-900 tabular-nums text-sm">
-                                                            {subtotal.toLocaleString()}
+                                                            {formatPrice(subtotal)}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -693,7 +693,7 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                             {t("vatLabel")}
                                                         </div>
                                                         <div className="font-mono font-black text-amber-700 tabular-nums text-sm">
-                                                            {totalVatAmount.toLocaleString()}
+                                                            {formatPrice(totalVatAmount)}
                                                         </div>
                                                     </div>
                                                 </td>
@@ -705,7 +705,7 @@ export function OrderSheet({ open, onOpenChange, initialData, onSave }: OrderShe
                                                             {t("totalWithVatLabel")}
                                                         </div>
                                                         <div className="font-mono font-black text-sky-700 tabular-nums text-base">
-                                                            {totalAmount.toLocaleString()}
+                                                            {formatPrice(totalAmount)}
                                                         </div>
                                                     </div>
                                                 </td>

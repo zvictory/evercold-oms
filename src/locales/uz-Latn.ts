@@ -497,6 +497,22 @@ export default {
       active: 'Faol',
       inactive: 'Nofaol',
     },
+    form: {
+      taxStatus: 'Soliq holati',
+      taxStatusVatPayer: 'QQS to\'lovchi (12%)',
+      taxStatusExempt: 'Ozod qilingan',
+      customerGroup: 'Mijozlar guruhi',
+      noGroup: 'Guruh yo\'q',
+      customerGroupHelper: 'Guruh darajasidagi narx bo\'limini tayinlaydi',
+    },
+  },
+  customerGroups: {
+    title: 'Mijozlar guruhlari',
+    newGroup: 'Yangi guruh',
+    form: {
+      name: 'Guruh nomi',
+      description: 'Tavsif',
+    },
   },
   Dashboard: {
     title: 'Boshqaruv paneli',
@@ -550,6 +566,7 @@ export default {
     tabs: {
       productList: 'Tovarlar ro\'yxati',
       customerPricing: 'Mijozlar uchun narxlar',
+      priceMatrix: 'Narxlar matritsasi',
     },
     sheet: {
       createTitle: 'Yangi tovar',
@@ -590,9 +607,23 @@ export default {
       sku: 'SKU',
       skuHelper: 'Tovar artikuli (ixtiyoriy)',
       codesNote: 'Barcha tovar kodlari ko\'rsatilsa, unikal bo\'lishi kerak. Tegishli bo\'lmasa, bo\'sh qoldiring.',
+      nationalCatalogCode: 'Milliy katalog kodi (EENKT)',
+      nationalCatalogCodeHelper: 'Didox hisob-fakturalari uchun 17 raqamli EENKT kodi',
+      nationalCatalogName: 'Katalog nomi',
+      nationalCatalogNameHelper: 'Katalog kodi uchun tavsifiy nom',
+      regulatoryCodes: 'Tartibga soluvchi kodlar (Didox / EENKT)',
       createButton: 'Tovar yaratish',
       updateButton: 'Tovarni yangilash',
       close: 'Yopish',
+    },
+    priceMatrix: {
+      title: 'Narxlar matritsasi',
+      subtitle: 'Guruh darajasidagi narxlarni belgilang. Tovarlar qatorlar, mijozlar guruhlari ustunlar sifatida.',
+      saveAll: 'Hammasini saqlash',
+      noGroups: 'Mijozlar guruhlari yo\'q',
+      noGroupsDescription: 'Guruh darajasidagi narxlarni sozlash uchun avval mijozlar guruhlarini yarating.',
+      basePrice: 'Asosiy narx',
+      product: 'Tovar',
     },
     table: {
       product: 'Tovar',

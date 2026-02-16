@@ -5,7 +5,14 @@ import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Switch } from "@/components/ui/switch"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { fetchWithAuth } from "@/lib/utils"
 
 interface CustomerEditSheetProps {
   isOpen: boolean
@@ -19,6 +26,8 @@ interface CustomerEditSheetProps {
     headquartersAddress: string | null
     contractNumber: string | null
     hasVat: boolean
+    taxStatus?: string | null
+    customerGroupId?: string | null
   }
   onSuccess: () => void
 }
@@ -32,9 +41,19 @@ export function CustomerEditSheet({ isOpen, onClose, customer, onSuccess }: Cust
     headquartersAddress: customer.headquartersAddress || '',
     contractNumber: customer.contractNumber || '',
     hasVat: customer.hasVat || false,
+    taxStatus: customer.taxStatus || (customer.hasVat ? 'VAT_PAYER' : 'EXEMPT'),
+    customerGroupId: customer.customerGroupId || '',
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
+  const [customerGroups, setCustomerGroups] = useState<Array<{ id: string; name: string }>>([])
+
+  useEffect(() => {
+    fetchWithAuth('/api/customer-groups')
+      .then(res => res.json())
+      .then(data => setCustomerGroups(data.groups || []))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     setFormData({
@@ -45,6 +64,8 @@ export function CustomerEditSheet({ isOpen, onClose, customer, onSuccess }: Cust
       headquartersAddress: customer.headquartersAddress || '',
       contractNumber: customer.contractNumber || '',
       hasVat: customer.hasVat || false,
+      taxStatus: customer.taxStatus || (customer.hasVat ? 'VAT_PAYER' : 'EXEMPT'),
+      customerGroupId: customer.customerGroupId || '',
     })
   }, [customer])
 
@@ -159,16 +180,40 @@ export function CustomerEditSheet({ isOpen, onClose, customer, onSuccess }: Cust
             />
           </div>
 
-          <div className="flex items-center justify-between rounded-lg border border-slate-200 p-4">
-            <div className="space-y-0.5">
-              <Label htmlFor="hasVat" className="text-sm font-medium">VAT Registered</Label>
-              <p className="text-xs text-slate-500">Customer is registered for VAT</p>
-            </div>
-            <Switch
-              id="hasVat"
-              checked={formData.hasVat}
-              onCheckedChange={(checked) => setFormData({ ...formData, hasVat: checked })}
-            />
+          <div className="space-y-2">
+            <Label>Tax Status</Label>
+            <Select
+              value={formData.taxStatus}
+              onValueChange={(value) => setFormData({ ...formData, taxStatus: value, hasVat: value === 'VAT_PAYER' })}
+            >
+              <SelectTrigger className="bg-white border-slate-200 h-10">
+                <SelectValue placeholder="Select tax status" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="VAT_PAYER">VAT Payer (12%)</SelectItem>
+                <SelectItem value="EXEMPT">Exempt</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-slate-500">Determines whether VAT is applied to orders</p>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Customer Group</Label>
+            <Select
+              value={formData.customerGroupId}
+              onValueChange={(value) => setFormData({ ...formData, customerGroupId: value === '_none' ? '' : value })}
+            >
+              <SelectTrigger className="bg-white border-slate-200 h-10">
+                <SelectValue placeholder="No group assigned" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="_none">No group</SelectItem>
+                {customerGroups.map(group => (
+                  <SelectItem key={group.id} value={group.id}>{group.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-slate-500">Assigns group-level pricing tier</p>
           </div>
 
           <div className="flex gap-3 pt-4">

@@ -147,7 +147,7 @@ export async function POST(request: NextRequest) {
 
           return {
             productName: invoiceProductName,
-            catalogCode: INVOICE_CONSTANTS.CATALOG_CODE,
+            catalogCode: (item.product as any)?.nationalCatalogCode || INVOICE_CONSTANTS.CATALOG_CODE,
             barcode: item.product?.barcode || item.barcode || item.sapCode || item.product?.sapCode || 'N/A',
             unit: item.product?.unit || 'штук',
             quantity: item.quantity,

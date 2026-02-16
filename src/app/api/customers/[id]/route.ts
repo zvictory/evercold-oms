@@ -58,6 +58,8 @@ export async function PATCH(
         headquartersAddress: body.headquartersAddress,
         contractNumber: body.contractNumber,
         hasVat: body.hasVat !== undefined ? body.hasVat : undefined,
+        taxStatus: body.taxStatus || undefined,
+        customerGroupId: body.customerGroupId !== undefined ? body.customerGroupId : undefined,
       },
     })
 

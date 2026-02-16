@@ -637,6 +637,22 @@ export default {
       active: 'Активен',
       inactive: 'Неактивен',
     },
+    form: {
+      taxStatus: 'Налоговый статус',
+      taxStatusVatPayer: 'Плательщик НДС (12%)',
+      taxStatusExempt: 'Освобождён',
+      customerGroup: 'Группа клиентов',
+      noGroup: 'Нет группы',
+      customerGroupHelper: 'Назначает уровень групповых цен',
+    },
+  },
+  customerGroups: {
+    title: 'Группы клиентов',
+    newGroup: 'Новая группа',
+    form: {
+      name: 'Название группы',
+      description: 'Описание',
+    },
   },
   Dashboard: {
     title: 'Панель управления',
@@ -690,6 +706,7 @@ export default {
     tabs: {
       productList: 'Список товаров',
       customerPricing: 'Цены для клиентов',
+      priceMatrix: 'Матрица цен',
     },
     sheet: {
       createTitle: 'Новый товар',
@@ -730,9 +747,23 @@ export default {
       sku: 'SKU',
       skuHelper: 'Артикул товара (необязательно)',
       codesNote: 'Все коды товаров должны быть уникальными, если указаны. Оставьте пустым, если не применимо.',
+      nationalCatalogCode: 'Код национального каталога (ЕЭНКТ)',
+      nationalCatalogCodeHelper: '17-значный код ЕЭНКТ для счетов-фактур Didox',
+      nationalCatalogName: 'Название каталога',
+      nationalCatalogNameHelper: 'Описательное название для кода каталога',
+      regulatoryCodes: 'Регуляторные коды (Didox / ЕЭНКТ)',
       createButton: 'Создать товар',
       updateButton: 'Обновить товар',
       close: 'Закрыть',
+    },
+    priceMatrix: {
+      title: 'Матрица цен',
+      subtitle: 'Установите групповые цены. Товары по строкам, группы клиентов по столбцам.',
+      saveAll: 'Сохранить все',
+      noGroups: 'Нет групп клиентов',
+      noGroupsDescription: 'Сначала создайте группы клиентов для настройки групповых цен.',
+      basePrice: 'Базовая цена',
+      product: 'Товар',
     },
     table: {
       product: 'Товар',

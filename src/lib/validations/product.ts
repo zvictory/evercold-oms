@@ -39,6 +39,16 @@ export const productSchema = z.object({
     .nullish()
     .transform(val => val || undefined)
     .refine(val => !val || val.length <= 1000, "Description too long"),
+
+  nationalCatalogCode: z.string()
+    .nullish()
+    .transform(val => val || undefined)
+    .refine(val => !val || /^\d{17}$/.test(val), "Catalog code must be exactly 17 digits"),
+
+  nationalCatalogName: z.string()
+    .nullish()
+    .transform(val => val || undefined)
+    .refine(val => !val || val.length <= 255, "Catalog name too long"),
 })
 
 export type ProductFormValues = z.infer<typeof productSchema>

@@ -20,6 +20,8 @@ model Customer {
   inn                 String?
   vatRegistrationCode String?
   hasVat              Boolean                @default(false)
+  taxStatus           TaxStatus              @default(VAT_PAYER)
+  customerGroupId     String?
   bankAccount         String?
   mfo                 String?
   tg                  String?
@@ -30,6 +32,9 @@ model Customer {
   branches            CustomerBranch[]
   productPrices       CustomerProductPrice[]
   orders              Order[]
+  customerGroup       CustomerGroup?         @relation(fields: [customerGroupId], references: [id])
+
+  @@index([customerGroupId])
 }
 
 model CustomerBranch {
@@ -61,21 +66,25 @@ model CustomerBranch {
 }
 
 model Product {
-  id             String                 @id @default(cuid())
-  name           String
-  sku            String?                @unique
-  barcode        String?                @unique
-  sapCode        String?                @unique
-  unitPrice      Float
-  unit           String                 @default("ШТ")
-  vatRate        Float                  @default(12.0)
-  description    String?
-  isActive       Boolean                @default(true)
-  createdAt      DateTime               @default(now())
-  updatedAt      DateTime               @updatedAt
-  customerPrices CustomerProductPrice[]
-  orderItems     OrderItem[]
-  deliveryItems  DeliveryItem[]
+  id                  String                 @id @default(cuid())
+  name                String
+  sku                 String?                @unique
+  barcode             String?                @unique
+  sapCode             String?                @unique
+  unitPrice           Float
+  unit                String                 @default("ШТ")
+  vatRate             Float                  @default(12.0)
+  description         String?
+  nationalCatalogCode String?
+  nationalCatalogName String?
+  translations        Json?
+  isActive            Boolean                @default(true)
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+  customerPrices      CustomerProductPrice[]
+  orderItems          OrderItem[]
+  deliveryItems       DeliveryItem[]
+  priceLists          PriceListEntry[]
 
   @@index([barcode])
   @@index([sapCode])
@@ -433,6 +442,42 @@ model EdoDocumentSync {
   @@index([orderId])
   @@index([status])
   @@index([externalId])
+}
+
+model CustomerGroup {
+  id          String           @id @default(cuid())
+  name        String           @unique
+  description String?
+  sortOrder   Int              @default(0)
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  customers   Customer[]
+  priceLists  PriceListEntry[]
+}
+
+model PriceListEntry {
+  id              String        @id @default(cuid())
+  customerGroupId String
+  productId       String
+  basePrice       Float
+  currency        String        @default("UZS")
+  effectiveDate   DateTime      @default(now())
+  expiresAt       DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  customerGroup   CustomerGroup @relation(fields: [customerGroupId], references: [id], onDelete: Cascade)
+  product         Product       @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@unique([customerGroupId, productId, effectiveDate])
+  @@index([customerGroupId])
+  @@index([productId])
+  @@index([effectiveDate])
+}
+
+enum TaxStatus {
+  VAT_PAYER
+  EXEMPT
 }
 
 enum OrderStatus {

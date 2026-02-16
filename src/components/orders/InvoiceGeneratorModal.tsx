@@ -4,6 +4,7 @@ import * as React from "react"
 import { format } from "date-fns"
 import { Calculator, Calendar as CalendarIcon, FileText, Check } from "lucide-react"
 import { formatDate, toInputDateValue } from "@/lib/date-utils"
+import { formatPrice, formatQuantity } from "@/lib/utils"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -118,20 +119,20 @@ export function InvoiceGeneratorModal({ open, onOpenChange, selectedOrders }: In
                             </div>
                             <div className="flex justify-between">
                                 <span className="text-slate-500">Total Weight</span>
-                                <span className="font-medium font-mono">{totals.weight.toLocaleString()} kg</span>
+                                <span className="font-medium font-mono">{formatQuantity(totals.weight)} kg</span>
                             </div>
                             <div className="h-px bg-slate-200 my-1" />
                             <div className="flex justify-between">
                                 <span className="text-slate-500">Сумма без НДС</span>
-                                <span className="font-medium font-mono">{totals.net.toLocaleString(undefined, { maximumFractionDigits: 2 })} UZS</span>
+                                <span className="font-medium font-mono">{formatPrice(totals.net)} UZS</span>
                             </div>
                             <div className="flex justify-between text-slate-600">
                                 <span>НДС (12%)</span>
-                                <span className="font-medium font-mono">{totals.vat.toLocaleString(undefined, { maximumFractionDigits: 2 })} UZS</span>
+                                <span className="font-medium font-mono">{formatPrice(totals.vat)} UZS</span>
                             </div>
                             <div className="flex justify-between pt-2 border-t border-slate-200">
                                 <span className="font-bold text-slate-900">Сумма к оплате</span>
-                                <span className="font-bold text-sky-700 font-mono text-lg">{totals.gross.toLocaleString()} UZS</span>
+                                <span className="font-bold text-sky-700 font-mono text-lg">{formatPrice(totals.gross)} UZS</span>
                             </div>
                         </div>
                     </div>

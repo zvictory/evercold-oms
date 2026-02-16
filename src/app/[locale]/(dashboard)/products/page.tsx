@@ -10,12 +10,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Checkbox } from "@/components/ui/checkbox";
-import { Package, DollarSign, Plus, Eye, Edit, Trash2, MoreHorizontal } from "lucide-react";
+import { Package, DollarSign, Plus, Eye, Edit, Trash2, MoreHorizontal, LayoutGrid } from "lucide-react";
 import { ProductSheet } from "@/components/products/ProductSheet";
 import { ProductDeleteDialog } from "@/components/products/ProductDeleteDialog";
 import { BulkDeleteProductsDialog } from "@/components/products/BulkDeleteProductsDialog";
 import { BulkActionBar } from "@/components/products/BulkActionBar";
-import { cn, fetchWithAuth } from "@/lib/utils";
+import { PriceMatrix } from "@/components/products/PriceMatrix";
+import { cn, fetchWithAuth, formatPrice } from "@/lib/utils";
 import type { ProductFormValues } from "@/lib/validations/product";
 import { useI18n } from '@/locales/client';
 
@@ -438,7 +439,7 @@ export default function ProductsPage() {
         {/* Tab Interface */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as 'products' | 'pricing')} className="w-full">
           <div className="bg-white rounded-lg border border-slate-200 shadow-sm mb-4 overflow-hidden sticky top-0 z-20">
-            <TabsList className="w-full h-auto bg-transparent p-0 grid grid-cols-2 rounded-none">
+            <TabsList className="w-full h-auto bg-transparent p-0 grid grid-cols-3 rounded-none">
               <TabsTrigger
                 value="products"
                 className="rounded-none border-b-2 border-transparent data-[state=active]:border-sky-600 data-[state=active]:bg-sky-50/30 px-4 py-3 text-sm font-semibold transition-all data-[state=active]:text-sky-700 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
@@ -455,6 +456,15 @@ export default function ProductsPage() {
                 <div className="flex items-center gap-2">
                   <DollarSign className="h-4 w-4" />
                   <span>{t('Products.tabs.customerPricing')}</span>
+                </div>
+              </TabsTrigger>
+              <TabsTrigger
+                value="priceMatrix"
+                className="rounded-none border-b-2 border-transparent data-[state=active]:border-sky-600 data-[state=active]:bg-sky-50/30 px-4 py-3 text-sm font-semibold transition-all data-[state=active]:text-sky-700 text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+              >
+                <div className="flex items-center gap-2">
+                  <LayoutGrid className="h-4 w-4" />
+                  <span>Price Matrix</span>
                 </div>
               </TabsTrigger>
             </TabsList>
@@ -604,10 +614,7 @@ export default function ProductsPage() {
                               />
                             ) : (
                               <span className="text-xs font-bold text-slate-900 tabular-nums">
-                                {product.currentPrice.toLocaleString('en-US', {
-                                  minimumFractionDigits: 2,
-                                  maximumFractionDigits: 2,
-                                })}{' '}
+                                {formatPrice(product.currentPrice)}{' '}
                                 <span className="text-[10px] text-slate-500 font-normal">сўм</span>
                               </span>
                             )}
@@ -627,10 +634,7 @@ export default function ProductsPage() {
                           </td>
                           <td className="px-2 py-1 text-right">
                             <span className="text-xs font-bold text-sky-600 tabular-nums">
-                              {product.priceWithVat.toLocaleString('en-US', {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              })}{' '}
+                              {formatPrice(product.priceWithVat)}{' '}
                               <span className="text-[10px] text-sky-400 font-normal">сўм</span>
                             </span>
                           </td>
@@ -950,7 +954,7 @@ export default function ProductsPage() {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right">
                                   <span className="text-sm font-bold text-slate-900 tabular-nums">
-                                    {product.unitPrice.toLocaleString()} сўм
+                                    {formatPrice(product.unitPrice)} сўм
                                   </span>
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-right">
@@ -1017,6 +1021,11 @@ export default function ProductsPage() {
                 </p>
               </div>
             )}
+          </TabsContent>
+
+          {/* Price Matrix Tab */}
+          <TabsContent value="priceMatrix" className="mt-0">
+            <PriceMatrix />
           </TabsContent>
         </Tabs>
 

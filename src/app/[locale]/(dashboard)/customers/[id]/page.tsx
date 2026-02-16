@@ -18,6 +18,9 @@ interface CustomerDetail {
   headquartersAddress: string | null
   contractNumber: string | null
   hasVat: boolean
+  taxStatus?: string | null
+  customerGroupId?: string | null
+  customerGroup?: { id: string; name: string } | null
   branches: Array<{
     id: string
     branchName: string
@@ -125,6 +128,8 @@ export default function CustomerDetailPage() {
             headquartersAddress: customer.headquartersAddress,
             contractNumber: customer.contractNumber,
             hasVat: customer.hasVat,
+            taxStatus: customer.taxStatus,
+            customerGroupId: customer.customerGroupId,
           }}
           onSuccess={() => {
             fetchCustomer(customer.id)
@@ -138,6 +143,8 @@ export default function CustomerDetailPage() {
           contractNumber={customer.contractNumber}
           taxId={null} // API doesn't return this yet, would prompt refactor
           hasVat={customer.hasVat}
+          taxStatus={customer.taxStatus}
+          customerGroupName={customer.customerGroup?.name}
           contactPerson={null} // API gap
           contactPhone={customer.phone}
           contactEmail={customer.email}

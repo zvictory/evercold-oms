@@ -497,6 +497,22 @@ export default {
       active: 'Фаол',
       inactive: 'Нофаол',
     },
+    form: {
+      taxStatus: 'Солиқ ҳолати',
+      taxStatusVatPayer: 'ҚҚС тўловчи (12%)',
+      taxStatusExempt: 'Озод қилинган',
+      customerGroup: 'Мижозлар гуруҳи',
+      noGroup: 'Гуруҳ йўқ',
+      customerGroupHelper: 'Гуруҳ даражасидаги нарх бўлимини тайинлайди',
+    },
+  },
+  customerGroups: {
+    title: 'Мижозлар гуруҳлари',
+    newGroup: 'Янги гуруҳ',
+    form: {
+      name: 'Гуруҳ номи',
+      description: 'Тавсиф',
+    },
   },
   Dashboard: {
     title: 'Бошқарув панели',
@@ -550,6 +566,7 @@ export default {
     tabs: {
       productList: 'Товарлар рўйхати',
       customerPricing: 'Мижозлар учун нархлар',
+      priceMatrix: 'Нархлар матрицаси',
     },
     sheet: {
       createTitle: 'Янги товар',
@@ -590,9 +607,23 @@ export default {
       sku: 'SKU',
       skuHelper: 'Товар артикули (ихтиёрий)',
       codesNote: 'Барча товар кодлари кўрсатилса, уникал бўлиши керак. Тегишли бўлмаса, бўш қолдиринг.',
+      nationalCatalogCode: 'Миллий каталог коди (ЕЭНКТ)',
+      nationalCatalogCodeHelper: 'Дидокс ҳисоб-фактуралари учун 17 рақамли ЕЭНКТ коди',
+      nationalCatalogName: 'Каталог номи',
+      nationalCatalogNameHelper: 'Каталог коди учун тавсифий ном',
+      regulatoryCodes: 'Тартибга солувчи кодлар (Дидокс / ЕЭНКТ)',
       createButton: 'Товар яратиш',
       updateButton: 'Товарни янгилаш',
       close: 'Ёпиш',
+    },
+    priceMatrix: {
+      title: 'Нархлар матрицаси',
+      subtitle: 'Гуруҳ даражасидаги нархларни белгиланг. Товарлар қаторлар, мижозлар гуруҳлари устунлар сифатида.',
+      saveAll: 'Ҳаммасини сақлаш',
+      noGroups: 'Мижозлар гуруҳлари йўқ',
+      noGroupsDescription: 'Гуруҳ даражасидаги нархларни созлаш учун аввал мижозлар гуруҳларини яратинг.',
+      basePrice: 'Асосий нарх',
+      product: 'Товар',
     },
     table: {
       product: 'Товар',

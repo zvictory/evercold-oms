@@ -9,6 +9,7 @@ import {
   Barcode,
   Calculator,
   Info,
+  FileText,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -40,7 +41,7 @@ import {
 import { Separator } from "@/components/ui/separator"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, formatPrice } from "@/lib/utils"
 import { productSchema, type ProductFormValues } from "@/lib/validations/product"
 
 interface Product {
@@ -358,16 +359,13 @@ export function ProductSheet({
                     </div>
                     <div className="text-right">
                       <p className="text-2xl font-bold text-sky-700 tabular-nums">
-                        {priceWithVat.toLocaleString('en-US', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })}
+                        {formatPrice(priceWithVat)}
                       </p>
                       <p className="text-xs text-sky-600 font-medium">UZS</p>
                     </div>
                   </div>
                   <p className="text-xs text-sky-700 mt-2">
-                    Formula: {watchUnitPrice.toLocaleString()} × (1 + {watchVatRate}%) = {priceWithVat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} сўм
+                    Formula: {formatPrice(watchUnitPrice)} × (1 + {watchVatRate}%) = {formatPrice(priceWithVat)} сўм
                   </p>
                 </div>
               </div>
@@ -468,6 +466,69 @@ export function ProductSheet({
                   </p>
                 </div>
               </div>
+
+              {/* Regulatory Codes Section */}
+              <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-5">
+                <div className="flex items-center gap-2 text-sm font-semibold text-slate-900">
+                  <FileText className="h-4 w-4 text-emerald-500" />
+                  Regulatory Codes (Didox / EENKT)
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="nationalCatalogCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-slate-900">
+                        National Catalog Code (EENKT)
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isView}
+                          placeholder="e.g., 02105001002000000"
+                          maxLength={17}
+                          className={cn(
+                            "h-11 bg-slate-50 border-slate-200 hover:bg-white transition-all font-mono",
+                            isView && "cursor-not-allowed opacity-70"
+                          )}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs text-slate-500">
+                        17-digit EENKT code for Didox invoices
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="nationalCatalogName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-sm font-medium text-slate-900">
+                        Catalog Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          disabled={isView}
+                          placeholder="e.g., Лёд пищевой"
+                          className={cn(
+                            "h-11 bg-slate-50 border-slate-200 hover:bg-white transition-all",
+                            isView && "cursor-not-allowed opacity-70"
+                          )}
+                        />
+                      </FormControl>
+                      <FormDescription className="text-xs text-slate-500">
+                        Descriptive name for the catalog code
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </form>
           </Form>
         </ScrollArea>
@@ -482,7 +543,7 @@ export function ProductSheet({
                   Unit Price
                 </span>
                 <p className="text-lg font-mono font-bold text-slate-900 tabular-nums">
-                  {watchUnitPrice.toLocaleString()} <span className="text-xs">UZS</span>
+                  {formatPrice(watchUnitPrice)} <span className="text-xs">UZS</span>
                 </p>
               </div>
               <div className="h-8 w-px bg-slate-200" />
@@ -491,7 +552,7 @@ export function ProductSheet({
                   With VAT
                 </span>
                 <p className="text-lg font-mono font-bold text-sky-600 tabular-nums">
-                  {priceWithVat.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })} <span className="text-xs">UZS</span>
+                  {formatPrice(priceWithVat)} <span className="text-xs">UZS</span>
                 </p>
               </div>
             </div>

@@ -509,6 +509,22 @@ export default {
       active: 'Active',
       inactive: 'Inactive',
     },
+    form: {
+      taxStatus: 'Tax Status',
+      taxStatusVatPayer: 'VAT Payer (12%)',
+      taxStatusExempt: 'Exempt',
+      customerGroup: 'Customer Group',
+      noGroup: 'No group',
+      customerGroupHelper: 'Assigns group-level pricing tier',
+    },
+  },
+  customerGroups: {
+    title: 'Customer Groups',
+    newGroup: 'New Group',
+    form: {
+      name: 'Group Name',
+      description: 'Description',
+    },
   },
   Dashboard: {
     title: 'Executive Dashboard',
@@ -562,6 +578,7 @@ export default {
     tabs: {
       productList: 'Product List',
       customerPricing: 'Customer Pricing',
+      priceMatrix: 'Price Matrix',
     },
     sheet: {
       createTitle: 'New Product',
@@ -602,9 +619,23 @@ export default {
       sku: 'SKU',
       skuHelper: 'Stock Keeping Unit (optional)',
       codesNote: 'All product codes must be unique if provided. Leave empty if not applicable.',
+      nationalCatalogCode: 'National Catalog Code (EENKT)',
+      nationalCatalogCodeHelper: '17-digit EENKT code for Didox invoices',
+      nationalCatalogName: 'Catalog Name',
+      nationalCatalogNameHelper: 'Descriptive name for the catalog code',
+      regulatoryCodes: 'Regulatory Codes (Didox / EENKT)',
       createButton: 'Create Product',
       updateButton: 'Update Product',
       close: 'Close',
+    },
+    priceMatrix: {
+      title: 'Price Matrix',
+      subtitle: 'Set group-level prices. Products as rows, customer groups as columns.',
+      saveAll: 'Save All',
+      noGroups: 'No Customer Groups',
+      noGroupsDescription: 'Create customer groups first to set up group-level pricing.',
+      basePrice: 'Base Price',
+      product: 'Product',
     },
     table: {
       product: 'Product',

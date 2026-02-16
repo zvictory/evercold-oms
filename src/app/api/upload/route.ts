@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
  */
 async function findOrCreateCustomer(
   customerName: string
-): Promise<{ id: string; name: string; hasVat: boolean }> {
+): Promise<{ id: string; name: string; hasVat: boolean; taxStatus: string }> {
   // Try exact match first
   let customer = await prisma.customer.findFirst({
     where: { name: customerName },
@@ -140,6 +140,7 @@ async function findOrCreateCustomer(
       id: true,
       name: true,
       hasVat: true,
+      taxStatus: true,
     },
   })
 
@@ -155,6 +156,7 @@ async function findOrCreateCustomer(
       id: true,
       name: true,
       hasVat: true,
+      taxStatus: true,
     },
   })
 
@@ -169,12 +171,14 @@ async function findOrCreateCustomer(
       name: customerName,
       customerCode: `AUTO-${Date.now()}`,
       hasVat: true, // Default to VAT-enabled
+      taxStatus: 'VAT_PAYER',
       isActive: true,
     },
     select: {
       id: true,
       name: true,
       hasVat: true,
+      taxStatus: true,
     },
   })
 
@@ -345,7 +349,7 @@ async function createOrder(
 
     const customerPrice = product.customerPrices?.[0]?.unitPrice
     const unitPrice = item.unitPrice || customerPrice || product.unitPrice
-    const vatRate = customer.hasVat ? (item.vatRate || product.vatRate) : 0
+    const vatRate = customer.taxStatus === 'VAT_PAYER' ? (item.vatRate || product.vatRate) : 0
     const subtotal = item.subtotal || item.quantity * unitPrice
     const vatAmount = item.vatAmount || (subtotal * vatRate) / 100
     const totalAmount = item.totalAmount || subtotal + vatAmount

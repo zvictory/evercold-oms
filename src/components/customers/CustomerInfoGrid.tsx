@@ -19,6 +19,8 @@ interface CustomerInfoGridProps {
     contractNumber: string | null
     taxId: string | null // INN
     hasVat: boolean
+    taxStatus?: string | null
+    customerGroupName?: string | null
     bankAccount?: string | null
     mfo?: string | null
     contactPerson: string | null
@@ -33,6 +35,8 @@ export function CustomerInfoGrid({
     contractNumber,
     taxId,
     hasVat,
+    taxStatus,
+    customerGroupName,
     bankAccount,
     mfo,
     contactPerson,
@@ -42,6 +46,7 @@ export function CustomerInfoGrid({
     totalBranches,
     lastOrderDate
 }: CustomerInfoGridProps) {
+    const isVatPayer = taxStatus === 'VAT_PAYER' || hasVat
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 px-6">
             {/* 1. Contract & Legal */}
@@ -72,16 +77,19 @@ export function CustomerInfoGrid({
                         </div>
                         <div>
                             <p className="text-xs font-medium text-slate-500 mb-1">VAT Status</p>
-                            {hasVat ? (
+                            {isVatPayer ? (
                                 <span className="flex items-center gap-1.5 text-xs text-emerald-700 font-medium">
                                     <div className="h-1.5 w-1.5 rounded-full bg-emerald-500"></div>
-                                    Registered
+                                    VAT Payer
                                 </span>
                             ) : (
                                 <span className="flex items-center gap-1.5 text-xs text-slate-500">
                                     <div className="h-1.5 w-1.5 rounded-full bg-slate-400"></div>
-                                    Not Registered
+                                    Exempt
                                 </span>
+                            )}
+                            {customerGroupName && (
+                                <p className="text-xs text-sky-600 font-medium mt-1">{customerGroupName}</p>
                             )}
                         </div>
                     </div>

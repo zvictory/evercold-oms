@@ -70,6 +70,8 @@ export async function POST(request: NextRequest) {
         unit: validated.unit,
         vatRate: validated.vatRate,
         description: validated.description || null,
+        nationalCatalogCode: validated.nationalCatalogCode || null,
+        nationalCatalogName: validated.nationalCatalogName || null,
       },
     })
 

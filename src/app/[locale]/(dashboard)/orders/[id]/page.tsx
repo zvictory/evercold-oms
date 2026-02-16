@@ -6,6 +6,7 @@ import { format } from 'date-fns'
 import { useParams, useRouter, useSearchParams } from 'next/navigation'
 import DatePicker from '@/components/DatePicker'
 import { formatDate, formatDateTime, toInputDateTimeValue } from '@/lib/date-utils'
+import { formatPrice } from '@/lib/utils'
 
 interface OrderDetail {
   id: string
@@ -22,6 +23,7 @@ interface OrderDetail {
     name: string
     customerCode?: string
     hasVat: boolean
+    taxStatus?: string
   }
   orderItems: Array<{
     id: string
@@ -698,10 +700,10 @@ export default function OrderDetailPage() {
                     <th className="px-6 py-3 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">Товар</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Количество</th>
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Цена за единицу</th>
-                    {order.customer.hasVat && (
+                    {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
                       <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Промежуточная сумма</th>
                     )}
-                    {order.customer.hasVat && (
+                    {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
                       <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">НДС ({order.orderItems[0]?.vatRate}%)</th>
                     )}
                     <th className="px-6 py-3 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">Итого</th>
@@ -753,16 +755,16 @@ export default function OrderDetailPage() {
                               <span className="text-sm text-gray-600">сўм</span>
                             </div>
                           ) : (
-                            <span className="text-base font-medium text-gray-900">{item.unitPrice.toLocaleString()} сўм</span>
+                            <span className="text-base font-medium text-gray-900">{formatPrice(item.unitPrice)} сўм</span>
                           )}
                         </td>
-                        {order.customer.hasVat && (
-                          <td className="px-6 py-4 text-right text-base font-medium text-gray-900">{subtotal.toLocaleString()} сўм</td>
+                        {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
+                          <td className="px-6 py-4 text-right text-base font-medium text-gray-900">{formatPrice(subtotal)} сўм</td>
                         )}
-                        {order.customer.hasVat && (
-                          <td className="px-6 py-4 text-right text-base font-medium text-gray-900">{vatAmount.toLocaleString()} сўм</td>
+                        {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
+                          <td className="px-6 py-4 text-right text-base font-medium text-gray-900">{formatPrice(vatAmount)} сўм</td>
                         )}
-                        <td className="px-6 py-4 text-right text-base font-semibold text-gray-900">{totalAmount.toLocaleString()} сўм</td>
+                        <td className="px-6 py-4 text-right text-base font-semibold text-gray-900">{formatPrice(totalAmount)} сўм</td>
                       </tr>
                     )
                   })}
@@ -771,29 +773,29 @@ export default function OrderDetailPage() {
                   <tr>
                     <td colSpan={3} className="px-6 py-4 text-right text-base font-semibold text-gray-900">
                       {isEditMode && <span className="text-green-600 mr-2">(Пересчитано)</span>}
-                      {order.customer.hasVat ? 'Промежуточная сумма:' : 'Итого:'}
+                      {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) ? 'Промежуточная сумма:' : 'Итого:'}
                     </td>
-                    {order.customer.hasVat && (
+                    {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
                       <td className="px-6 py-4 text-right text-base font-semibold text-gray-900">
-                        {isEditMode
-                          ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).subtotal, 0).toLocaleString()
-                          : order.subtotal.toLocaleString()
-                        } сўм
+                        {formatPrice(isEditMode
+                          ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).subtotal, 0)
+                          : order.subtotal
+                        )} сўм
                       </td>
                     )}
-                    {order.customer.hasVat && (
+                    {(order.customer.taxStatus === 'VAT_PAYER' || order.customer.hasVat) && (
                       <td className="px-6 py-4 text-right text-base font-semibold text-gray-900">
-                        {isEditMode
-                          ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).vatAmount, 0).toLocaleString()
-                          : order.vatAmount.toLocaleString()
-                        } сўм
+                        {formatPrice(isEditMode
+                          ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).vatAmount, 0)
+                          : order.vatAmount
+                        )} сўм
                       </td>
                     )}
                     <td className="px-6 py-4 text-right text-lg font-bold text-gray-900">
-                      {isEditMode
-                        ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).totalAmount, 0).toLocaleString()
-                        : order.totalAmount.toLocaleString()
-                      } сўм
+                      {formatPrice(isEditMode
+                        ? editableItems.reduce((sum, item) => sum + calculateItemTotals(item).totalAmount, 0)
+                        : order.totalAmount
+                      )} сўм
                     </td>
                   </tr>
                 </tfoot>
@@ -1144,7 +1146,7 @@ export default function OrderDetailPage() {
                     Это загрузит заказ <strong>№{order?.orderNumber}</strong> в выбранную систему ЭДО.
                   </p>
                   <p className="text-sm text-gray-600 mt-2">
-                    Общая сумма: <strong>{order?.totalAmount.toLocaleString()} сўм</strong>
+                    Общая сумма: <strong>{formatPrice(order?.totalAmount || 0)} сўм</strong>
                   </p>
                 </div>
               </div>

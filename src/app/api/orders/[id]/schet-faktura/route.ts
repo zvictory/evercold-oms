@@ -93,7 +93,7 @@ export async function GET(
 
         return {
           productName: invoiceProductName,
-          catalogCode: INVOICE_CONSTANTS.CATALOG_CODE,
+          catalogCode: (item.product as any)?.nationalCatalogCode || INVOICE_CONSTANTS.CATALOG_CODE,
           barcode: item.product?.barcode || item.barcode || '',
           unit: item.product?.unit || 'штук',
           quantity: item.quantity,
