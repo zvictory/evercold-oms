@@ -120,6 +120,7 @@ export async function GET(request: NextRequest) {
       return {
         id: order.id,
         orderNumber: order.orderNumber,
+        invoiceNumber: order.invoiceNumber,
         branch: branchName,
         branchCode: branchCode,
         customer: order.customer?.name || 'N/A',

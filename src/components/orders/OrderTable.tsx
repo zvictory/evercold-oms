@@ -38,6 +38,7 @@ import { InvoiceGeneratorModal } from "./InvoiceGeneratorModal"
 interface Order {
   id: string
   orderNumber: string
+  invoiceNumber?: number | null
   branch: string
   branchCode: string
   customer: string
@@ -292,6 +293,7 @@ export function OrderTable({
                         <TableHead className="w-[100px] font-semibold text-slate-900">{t('Orders.tableHeaders.id')}</TableHead>
                         <TableHead className="font-semibold text-slate-900">{t('Orders.tableHeaders.branch')}</TableHead>
                         <TableHead className="font-semibold text-slate-900">{t('Orders.tableHeaders.date')}</TableHead>
+                        <TableHead className="w-[110px] font-semibold text-slate-900">Счет-фактура</TableHead>
                         <TableHead className="text-right font-semibold text-slate-900">{t('Orders.tableHeaders.volume')}</TableHead>
                         <TableHead className="text-right font-semibold text-slate-900">{t('Orders.tableHeaders.value')}</TableHead>
                         <TableHead className="font-semibold text-slate-900">Статус заказа</TableHead>
@@ -332,6 +334,23 @@ export function OrderTable({
                             </TableCell>
                             <TableCell className="text-slate-500 tabular-nums text-sm">
                                 {formatDate(order.date)}
+                            </TableCell>
+                            <TableCell>
+                                {order.invoiceNumber ? (
+                                    <button
+                                        onClick={() => handleDownloadInvoice(order.id)}
+                                        disabled={downloadingId === order.id}
+                                        className="flex items-center gap-1.5 group/invoice"
+                                        title="Скачать счёт-фактуру"
+                                    >
+                                        <span className="font-mono font-semibold text-slate-900 group-hover/invoice:text-sky-600 transition-colors">
+                                            #{order.invoiceNumber}
+                                        </span>
+                                        <Download className="h-3.5 w-3.5 text-slate-400 group-hover/invoice:text-sky-600 transition-colors" />
+                                    </button>
+                                ) : (
+                                    <span className="text-xs text-slate-400 italic">Не назначен</span>
+                                )}
                             </TableCell>
                             <TableCell className="text-right">
                                 <div className="flex items-center justify-end gap-1.5">
