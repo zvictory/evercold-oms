@@ -42,19 +42,9 @@ import { cn } from "@/lib/utils"
 const vehicleSchema = z.object({
     plateNumber: z.string().regex(/^[0-9]{2} [0-9]{3} [A-Z]{3}$/, "Invalid format. Use: 01 123 ABC"),
     model: z.string().optional(), // NOW OPTIONAL - will default to "Not Specified"
-    type: z.enum(["VAN", "TRUCK", "REFRIGERATED_VAN", "REFRIGERATED_TRUCK"]).optional().default("VAN"),
-    status: z.enum(["AVAILABLE", "IN_USE", "MAINTENANCE", "RETIRED"]).optional().default("AVAILABLE"),
-    capacity: z.preprocess(
-        (val) => {
-            // Handle empty string, null, undefined
-            if (val === "" || val === null || val === undefined) return undefined
-            // Convert to number if needed
-            const num = typeof val === 'number' ? val : Number(val)
-            // Return undefined if NaN, otherwise return the number
-            return isNaN(num) ? undefined : num
-        },
-        z.number().positive().optional()
-    ), // Transform empty/invalid values to undefined
+    type: z.enum(["VAN", "TRUCK", "REFRIGERATED_VAN", "REFRIGERATED_TRUCK"]).default("VAN"), // Default to VAN
+    status: z.enum(["AVAILABLE", "IN_USE", "MAINTENANCE", "RETIRED"]).default("AVAILABLE"), // Default to AVAILABLE
+    capacity: z.number().positive().optional().or(z.nan().transform(() => undefined)), // Accept number or NaN (converted to undefined)
     driverId: z.string().optional(),
 })
 
@@ -92,7 +82,7 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
         watch,
         reset,
         formState: { errors, isSubmitting },
-    } = useForm<VehicleFormValues>({
+    } = useForm({
         resolver: zodResolver(vehicleSchema),
         defaultValues
     })

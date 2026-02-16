@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link'
+import { useParams } from 'next/navigation'
 import { ArrowLeft, Building2, Store, Edit, Info } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -19,10 +20,13 @@ export function CustomerDetailHeader({
     onEdit,
     onAddBranch
 }: CustomerDetailHeaderProps) {
+    const params = useParams()
+    const locale = params.locale || 'ru'
+
     return (
         <div className="sticky top-0 z-10 bg-white/80 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all">
             <div className="flex items-center gap-4">
-                <Link href="/customers" className="text-slate-500 hover:text-slate-800 transition-colors p-1 rounded-full hover:bg-slate-100">
+                <Link href={`/${locale}/customers`} className="text-slate-500 hover:text-slate-800 transition-colors p-1 rounded-full hover:bg-slate-100">
                     <ArrowLeft className="h-5 w-5" />
                 </Link>
                 <Avatar className="h-12 w-12 border border-slate-200 shadow-sm">

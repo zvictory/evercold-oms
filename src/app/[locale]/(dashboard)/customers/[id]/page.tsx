@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CustomerDetailHeader } from '@/components/customers/CustomerDetailHeader'
 import { CustomerInfoGrid } from '@/components/customers/CustomerInfoGrid'
 import { CustomerBranchList } from '@/components/customers/CustomerBranchList'
+import { CustomerEditSheet } from '@/components/customers/CustomerEditSheet'
 
 // Define the interface locally to match the component needs
 interface CustomerDetail {
@@ -48,6 +49,7 @@ export default function CustomerDetailPage() {
   const [customer, setCustomer] = useState<CustomerDetail | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
+  const [editSheetOpen, setEditSheetOpen] = useState(false)
 
   useEffect(() => {
     if (params.id) {
@@ -89,7 +91,7 @@ export default function CustomerDetailPage() {
           <div className="text-red-600 mb-4 font-medium">Unable to load customer profile</div>
           <p className="text-slate-500 text-sm mb-6">{error || 'Customer not found'}</p>
           <button
-            onClick={() => router.push('/customers')}
+            onClick={() => router.push(`/${params.locale}/customers`)}
             className="px-4 py-2 bg-slate-900 text-white rounded-lg text-sm font-medium hover:bg-slate-800"
           >
             ← Back to Directory
@@ -105,9 +107,30 @@ export default function CustomerDetailPage() {
       <CustomerDetailHeader
         customerName={customer.name}
         customerCode={customer.customerCode}
-        onEdit={() => { /* TODO: Wire up Edit Modal */ }}
+        onEdit={() => setEditSheetOpen(true)}
         onAddBranch={() => { /* TODO: Wire up Add Branch Modal */ }}
       />
+
+      {/* Edit Customer Sheet */}
+      {customer && (
+        <CustomerEditSheet
+          isOpen={editSheetOpen}
+          onClose={() => setEditSheetOpen(false)}
+          customer={{
+            id: customer.id,
+            name: customer.name,
+            customerCode: customer.customerCode,
+            email: customer.email,
+            phone: customer.phone,
+            headquartersAddress: customer.headquartersAddress,
+            contractNumber: customer.contractNumber,
+            hasVat: customer.hasVat,
+          }}
+          onSuccess={() => {
+            fetchCustomer(customer.id)
+          }}
+        />
+      )}
 
       <div className="max-w-7xl mx-auto mt-6">
         {/* Info Grid */}
@@ -147,7 +170,7 @@ export default function CustomerDetailPage() {
                   fullName: b.oldBranchName || b.fullName || b.branchName // Fallback logic
                 }))}
                 onViewBranch={(branchId) => {
-                  router.push(`/customers/${customer.id}/branches/${branchId}/edit`)
+                  router.push(`/${params.locale}/customers/${customer.id}/branches/${branchId}/edit`)
                 }}
               />
             </TabsContent>

@@ -366,9 +366,17 @@ export function createBot(token: string) {
           await showProducts(ctx, session);
         } else {
           // New customer - create customer and branch
-          const phoneDigits = session.phoneNumber!.replace(/\D/g, '').slice(-8);
-          const namePrefix = session.companyName!.substring(0, 12).toUpperCase().replace(/\s+/g, '_');
-          const customerCode = `${namePrefix}_${phoneDigits}`;
+          // Generate simple customer code (e.g., SP01, SP02)
+          // Extract initials from company name
+          const words = session.companyName!.trim().split(/\s+/);
+          const initials = words.length > 1
+            ? words.map(w => w[0]).join('').toUpperCase().slice(0, 2)
+            : session.companyName!.substring(0, 2).toUpperCase();
+
+          // Get next sequential number
+          const customerCount = await prisma.customer.count();
+          const sequentialNumber = (customerCount + 1).toString().padStart(2, '0');
+          const customerCode = `${initials}${sequentialNumber}`;
 
           const customer = await prisma.customer.create({
             data: {

@@ -20,6 +20,7 @@ export default function EditBranchPage() {
   const router = useRouter();
   const customerId = params.id as string;
   const branchId = params.branchId as string;
+  const locale = params.locale || 'ru';
 
   const [branch, setBranch] = useState<Branch | null>(null);
   const [loading, setLoading] = useState(true);
@@ -101,7 +102,7 @@ export default function EditBranchPage() {
       }
 
       // Navigate back to customer page
-      router.push(`/customers/${customerId}`);
+      router.push(`/${locale}/customers/${customerId}`);
     } catch (err: any) {
       console.error('Error saving branch:', err);
       alert(err.message || 'Failed to save changes');
@@ -111,7 +112,7 @@ export default function EditBranchPage() {
 
   const handleCancel = () => {
     if (hasUnsavedChanges && !confirm('Discard unsaved changes?')) return;
-    router.push(`/customers/${customerId}`);
+    router.push(`/${locale}/customers/${customerId}`);
   };
 
   if (loading) {
@@ -133,7 +134,7 @@ export default function EditBranchPage() {
           <h2 className="text-xl font-semibold text-gray-900 mb-2">Error</h2>
           <p className="text-gray-600 mb-4">{error || 'Branch not found'}</p>
           <button
-            onClick={() => router.push(`/customers/${customerId}`)}
+            onClick={() => router.push(`/${locale}/customers/${customerId}`)}
             className="text-indigo-600 hover:text-indigo-800 font-medium"
           >
             ← Back to Customer

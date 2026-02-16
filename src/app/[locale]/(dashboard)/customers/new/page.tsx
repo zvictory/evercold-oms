@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
+import { useRouter, useParams } from "next/navigation"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -41,6 +41,8 @@ type CustomerFormValues = z.infer<typeof customerSchema>
 
 export default function NewCustomerPage() {
     const router = useRouter()
+    const params = useParams()
+    const locale = params.locale || 'ru'
     const [isSubmitting, setIsSubmitting] = React.useState(false)
 
     const form = useForm<CustomerFormValues>({
@@ -73,7 +75,7 @@ export default function NewCustomerPage() {
             // TODO: Integrate actual API
             // const response = await fetch('/api/customers', { ... })
 
-            router.push('/customers')
+            router.push(`/${locale}/customers`)
         } catch (error) {
             console.error("Failed to create customer", error)
         } finally {

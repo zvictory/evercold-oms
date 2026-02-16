@@ -50,14 +50,14 @@ function renderEdoStamp(
   doc.roundedRect(x, y, width, 60, 5).stroke()
 
   // Stamp number and timestamp (top line)
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto')
   doc.text(`${stamp.number}  ${formatEdoTimestamp(stamp.timestamp)}`, x + 5, y + 5, {
     width: width - 10,
     lineBreak: false
   })
 
   // Status (bold, colored)
-  doc.fontSize(11).font('Arial-Bold').fillColor(statusColor)
+  doc.fontSize(8).font('Roboto-Bold').fillColor(statusColor)
   doc.text(stamp.status, x + 5, y + 15, {
     width: width - 10,
     align: 'center',
@@ -68,7 +68,7 @@ function renderEdoStamp(
   doc.fillColor('#000000')
 
   // Operator name
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto')
   doc.text(stamp.operatorName, x + 5, y + 30, {
     width: width - 10,
     lineBreak: false
@@ -120,7 +120,7 @@ async function renderQRCodePage(doc: any, data: InvoiceData): Promise<void> {
 
   // Document IDs at top left
   let y = margin + 10
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto')
 
   if (data.edoMetadata?.didoxId) {
     doc.text(`ID документа (Didox.uz): ${data.edoMetadata.didoxId}`, margin, y)
@@ -137,7 +137,7 @@ async function renderQRCodePage(doc: any, data: InvoiceData): Promise<void> {
 
   // "Стандартный" label
   if (data.edoMetadata?.documentType) {
-    doc.fontSize(8).font('Arial')
+    doc.fontSize(8).font('Roboto')
     doc.rect(margin, y, 100, 25).stroke()
     doc.text(data.edoMetadata.documentType, margin + 10, y + 8)
   }
@@ -159,12 +159,12 @@ export async function generateBulkSchetFakturaPDF(dataArray: InvoiceData[]): Pro
         margin: 30,
       })
 
-      // Register Arial fonts for Cyrillic support
-      doc.registerFont('Arial', '/System/Library/Fonts/Supplemental/Arial Unicode.ttf')
-      doc.registerFont('Arial-Bold', '/System/Library/Fonts/Supplemental/Arial Bold.ttf')
+      // Register DejaVu Sans - full Unicode including Cyrillic
+      doc.registerFont('Roboto', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+      doc.registerFont('Roboto-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf')
 
       // Set default font immediately to prevent PDFKit from loading Helvetica
-      doc.font('Arial')
+      doc.font('Roboto')
 
       const chunks: Buffer[] = []
 
@@ -187,7 +187,7 @@ export async function generateBulkSchetFakturaPDF(dataArray: InvoiceData[]): Pro
         doc.moveTo(30, 400).lineTo(565, 400).dash(5, { space: 3 }).stroke().undash()
 
         // Add scissors icon/text for cutting
-        doc.fontSize(8).font('Arial').fillColor('#999999')
+        doc.fontSize(8).font('Roboto').fillColor('#999999')
         doc.text('✂', 10, 395)
         doc.fillColor('#000000')
 
@@ -219,12 +219,12 @@ export async function generateSchetFakturaPDF(data: InvoiceData): Promise<Buffer
         margin: 30,
       })
 
-      // Register Arial fonts for Cyrillic support
-      doc.registerFont('Arial', '/System/Library/Fonts/Supplemental/Arial Unicode.ttf')
-      doc.registerFont('Arial-Bold', '/System/Library/Fonts/Supplemental/Arial Bold.ttf')
+      // Register DejaVu Sans - full Unicode including Cyrillic
+      doc.registerFont('Roboto', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf')
+      doc.registerFont('Roboto-Bold', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf')
 
       // Set default font immediately to prevent PDFKit from loading Helvetica
-      doc.font('Arial')
+      doc.font('Roboto')
 
       const chunks: Buffer[] = []
 
@@ -239,7 +239,7 @@ export async function generateSchetFakturaPDF(data: InvoiceData): Promise<Buffer
       doc.moveTo(30, 400).lineTo(565, 400).dash(5, { space: 3 }).stroke().undash()
 
       // Add scissors icon/text for cutting
-      doc.fontSize(8).font('Arial').fillColor('#999999')
+      doc.fontSize(8).font('Roboto').fillColor('#999999')
       doc.text('✂', 10, 395)
       doc.fillColor('#000000')
 
@@ -267,24 +267,33 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   const pageWidth = 595.28 // A4 width
   const margin = 30
 
-  // Title - 8pt
-  doc.fontSize(8).font('Arial-Bold')
+  // Title - 8pt bold
+  doc.fontSize(8).font('Roboto-Bold')
   doc.text('Счет-фактура', margin, 40 + yOffset, { width: pageWidth - margin * 2, align: 'center' })
 
-  // Invoice number and date - 7pt
+  // Invoice number and date - 7pt (invoice number bold)
   const invoiceDate = formatInvoiceDate(data.invoiceDate || new Date())
-  doc.fontSize(7).font('Arial-Bold')
-  doc.text(`№ ${data.invoiceNumber} от ${invoiceDate}`, margin, 50 + yOffset, { width: pageWidth - margin * 2, align: 'center' })
+  const invoiceText = `№ ${data.invoiceNumber} от ${invoiceDate}`
+  doc.fontSize(7).font('Roboto')
+
+  // Calculate center position for the entire text
+  const textWidth = doc.widthOfString(invoiceText)
+  const centerX = (pageWidth - textWidth) / 2
+
+  // Render with bold invoice number
+  doc.text('№ ', centerX, 50 + yOffset, { continued: true })
+  doc.font('Roboto-Bold').text(data.invoiceNumber, { continued: true })
+  doc.font('Roboto').text(` от ${invoiceDate}`)
 
   // Contract info - 7pt
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto')
   doc.text(data.contractInfo || 'к договору № 1 от 02.01.2022', margin, 58 + yOffset, { width: pageWidth - margin * 2, align: 'center' })
 
   let y = 66 + yOffset
 
   // Order and branch info (if available) - 7pt
   if (data.orderId || data.branchName) {
-    doc.fontSize(7).font('Arial')
+    doc.fontSize(7).font('Roboto')
 
     const orderInfo = []
     if (data.orderId) {
@@ -311,8 +320,13 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   const rightCol = margin + colWidth
   const supplierStartY = y  // Store starting Y position for alignment
 
+  // Remove customer name from branch name if it's duplicated
+  const cleanBranchName = data.branchName
+    ? data.branchName.replace(new RegExp(`^${data.buyer.name}\\s*-\\s*`, 'i'), '')
+    : data.branchName
+
   const buyerNameWithBranch = data.branchCode
-    ? `${data.buyer.name} (${data.branchCode} - ${data.branchName})`
+    ? `${data.buyer.name} (${data.branchCode} - ${cleanBranchName})`
     : data.buyer.name
 
   // Define label width for alignment (compact for closer values)
@@ -320,78 +334,78 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   const valueX = leftCol + labelWidth
 
   // Поставщик (bold label)
-  doc.fontSize(7).font('Arial-Bold')
+  doc.fontSize(7).font('Roboto-Bold')
   doc.text('Поставщик:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.name, valueX, y, { width: colWidth - labelWidth - 10 })
+  doc.font('Roboto').text(data.supplier.name, valueX, y, { width: colWidth - labelWidth - 10 })
   y += 8
 
   // Address (bold label, allows 2 lines if needed)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Адрес:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.address, valueX, y, { width: colWidth - labelWidth - 10, lineGap: 0 })
-  y += 18  // Extra space to accommodate potential 2-line wrap + spacing
+  doc.font('Roboto').text(data.supplier.address, valueX, y, { width: colWidth - labelWidth - 10, lineGap: 1 })
+  y += 20  // Extra space to accommodate potential 2-line wrap + spacing
 
   // INN (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('ИНН:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.inn, valueX, y)
+  doc.font('Roboto').text(data.supplier.inn, valueX, y)
   y += 10
 
   // VAT code (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Рег. код НДС:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.vatCode, valueX, y)
+  doc.font('Roboto').text(data.supplier.vatCode, valueX, y)
   y += 8
 
   // Bank account (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Р/С:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.bankAccount, valueX, y)
+  doc.font('Roboto').text(data.supplier.bankAccount, valueX, y)
   y += 8
 
   // MFO (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('МФО:', leftCol, y, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.supplier.mfo, valueX, y)
+  doc.font('Roboto').text(data.supplier.mfo, valueX, y)
 
   // Reset Y for buyer column (right side)
   let buyerY = supplierStartY  // Start buyer at same Y as supplier
   const buyerValueX = rightCol + labelWidth
 
   // Покупатель (bold label)
-  doc.fontSize(7).font('Arial-Bold')
+  doc.fontSize(7).font('Roboto-Bold')
   doc.text('Покупатель:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(buyerNameWithBranch, buyerValueX, buyerY, { width: colWidth - labelWidth - 10 })
+  doc.font('Roboto').text(buyerNameWithBranch, buyerValueX, buyerY, { width: colWidth - labelWidth - 10 })
   buyerY += 8
 
   // Address (bold label, allows 2 lines if needed)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Адрес:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.buyer.address, buyerValueX, buyerY, { width: colWidth - labelWidth - 10, lineGap: 0 })
-  buyerY += 18  // Extra space to accommodate potential 2-line wrap + spacing
+  doc.font('Roboto').text(data.buyer.address, buyerValueX, buyerY, { width: colWidth - labelWidth - 10, lineGap: 1 })
+  buyerY += 20  // Extra space to accommodate potential 2-line wrap + spacing
 
   // INN (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('ИНН:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.buyer.inn, buyerValueX, buyerY)
+  doc.font('Roboto').text(data.buyer.inn, buyerValueX, buyerY)
   buyerY += 10
 
   // VAT code (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Рег. код НДС:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.buyer.vatCode, buyerValueX, buyerY)
+  doc.font('Roboto').text(data.buyer.vatCode, buyerValueX, buyerY)
   buyerY += 8
 
   // Bank account (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('Р/С:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.buyer.bankAccount, buyerValueX, buyerY)
+  doc.font('Roboto').text(data.buyer.bankAccount, buyerValueX, buyerY)
   buyerY += 8
 
   // MFO (bold label, regular value)
-  doc.font('Arial-Bold')
+  doc.font('Roboto-Bold')
   doc.text('МФО:', rightCol, buyerY, { width: labelWidth, lineGap: -2 })
-  doc.font('Arial').text(data.buyer.mfo, buyerValueX, buyerY)
+  doc.font('Roboto').text(data.buyer.mfo, buyerValueX, buyerY)
 
   // Move Y to bottom of both columns
   y = Math.max(y, buyerY) + 12
@@ -403,19 +417,18 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   // Set thin border for table
   doc.lineWidth(0.5)
 
-  // Column widths - precisely matched to reference PDF
+  // Column widths - optimized for readability and visual hierarchy
   const cols = [
-    { width: 18, label: '№', align: 'center' },
-    { width: 70, label: 'Наименование товаров (услуг)', align: 'center' },
-    { width: 125, label: 'Идентификационный код и название по Единому электронному национальному каталогу товаров (услуг)', align: 'center' },
-    { width: 40, label: 'Единица измерения', align: 'center' },
-    { width: 38, label: 'Количество', align: 'center' },
-    { width: 38, label: 'Цена', align: 'center' },
-    { width: 45, label: 'Стоимость поставки', align: 'center' },
-    { width: 23, label: 'Ставка', align: 'center', parent: 'НДС' },
-    { width: 35, label: 'Сумма', align: 'center', parent: 'НДС' },
-    { width: 48, label: 'Стоимость поставки с учетом НДС', align: 'center' },
-    { width: 55, label: 'Происхождение товара', align: 'center' },
+    { width: 22, label: '№', align: 'center' },
+    { width: 100, label: 'Наименование товаров (услуг)', align: 'center' },
+    { width: 105, label: 'Идентификационный код и название по Единому электронному национальному каталогу товаров (услуг)', align: 'center' },
+    { width: 38, label: 'Единица измерения', align: 'center' },
+    { width: 38, label: 'Кол-во', align: 'center' },
+    { width: 42, label: 'Цена', align: 'center' },
+    { width: 48, label: 'Стоимость поставки', align: 'center' },
+    { width: 26, label: 'Ставка', align: 'center', parent: 'НДС' },
+    { width: 40, label: 'Сумма', align: 'center', parent: 'НДС' },
+    { width: 62, label: 'Стоимость поставки с учетом НДС', align: 'center' },
   ]
 
   // Calculate column X positions
@@ -427,7 +440,7 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   })
 
   // Draw table header
-  doc.fontSize(6).font('Arial-Bold')
+  doc.fontSize(6).font('Roboto')
   let headerY = tableTop
 
   // Main headers with text wrapping enabled
@@ -478,7 +491,7 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
   let totalVat = 0
   let grandTotal = 0
 
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(6).font('Roboto')
 
   if (data.items && Array.isArray(data.items)) {
     data.items.forEach((item, index) => {
@@ -499,13 +512,12 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
       doc.text(item.productName, colX[1] + 1, textY, { width: cols[1].width - 2, lineBreak: false })
       doc.text(item.catalogCode || '', colX[2] + 1, textY, { width: cols[2].width - 2, lineBreak: false })
       doc.text('пакет=1 килограмм', colX[3] + 1, textY, { width: cols[3].width - 2, lineBreak: false })
-      doc.text(formatRussianNumber(item.quantity, 6), colX[4] + 1, textY, { width: cols[4].width - 2, align: 'right', lineBreak: false })
+      doc.text(formatRussianNumber(item.quantity, 0), colX[4] + 1, textY, { width: cols[4].width - 2, align: 'right', lineBreak: false })
       doc.text(formatRussianNumber(item.unitPrice, 2), colX[5] + 1, textY, { width: cols[5].width - 2, align: 'right', lineBreak: false })
       doc.text(formatRussianNumber(subtotal, 2), colX[6] + 1, textY, { width: cols[6].width - 2, align: 'right', lineBreak: false })
       doc.text(`${(vatRate * 100).toFixed(0)}%`, colX[7] + 1, textY, { width: cols[7].width - 2, align: 'center', lineBreak: false })
       doc.text(formatRussianNumber(vatAmount, 2), colX[8] + 1, textY, { width: cols[8].width - 2, align: 'right', lineBreak: false })
       doc.text(formatRussianNumber(itemTotal, 2), colX[9] + 1, textY, { width: cols[9].width - 2, align: 'right', lineBreak: false })
-      doc.text('Собственное производство', colX[10] + 1, textY, { width: cols[10].width - 2, lineBreak: false })
 
       // Row border
       doc.rect(margin, y, tableWidth, rowHeight).stroke()
@@ -522,7 +534,7 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
 
   // Totals row
   const totalsHeight = 14
-  doc.fontSize(7).font('Arial-Bold')
+  doc.fontSize(6).font('Roboto')
 
   doc.text('Итого', colX[1] + 1, y + 2, { width: cols[1].width - 2, lineBreak: false })
   doc.text(formatRussianNumber(totalSubtotal, 2), colX[6] + 1, y + 2, { width: cols[6].width - 2, align: 'right', lineBreak: false })
@@ -540,24 +552,26 @@ function renderInvoicePage(doc: any, data: InvoiceData, yOffset: number = 0): vo
 
   // Total in words
   const totalInWords = numberToRussianWords(grandTotal, 'sum')
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto')
   doc.text(`Всего к оплате: ${totalInWords} . в т. ч. НДС: ${formatRussianNumber(totalVat, 2)} .`,
     margin, y, { width: tableWidth, lineBreak: false })
 
   y += 18
 
   // Signatures
-  doc.fontSize(7).font('Arial')
+  doc.fontSize(7).font('Roboto-Bold')
 
-  doc.text('Руководитель: NASRITDINOV ZUXRITDIN ERKINOVICH', margin, y, { width: colWidth - 5, lineBreak: false })
-  doc.text('Руководитель:', margin + colWidth, y, { width: colWidth - 5, lineBreak: false })
+  doc.text('Руководитель: ', margin, y, { width: colWidth - 5, lineBreak: false, continued: true })
+  doc.font('Roboto').text('NASRITDINOV ZUXRITDIN ERKINOVICH', { lineBreak: false })
+  doc.font('Roboto-Bold').text('Руководитель:', margin + colWidth, y, { width: colWidth - 5, lineBreak: false })
   y += 10
 
-  doc.text('Главный бухгалтер: NASRITDINOV ZUXRITDIN ERKINOVICH', margin, y, { width: colWidth - 5, lineBreak: false })
-  doc.text('Главный бухгалтер:', margin + colWidth, y, { width: colWidth - 5, lineBreak: false })
+  doc.font('Roboto-Bold').text('Главный бухгалтер: ', margin, y, { width: colWidth - 5, lineBreak: false, continued: true })
+  doc.font('Roboto').text('NASRITDINOV ZUXRITDIN ERKINOVICH', { lineBreak: false })
+  doc.font('Roboto-Bold').text('Главный бухгалтер:', margin + colWidth, y, { width: colWidth - 5, lineBreak: false })
   y += 12
 
-  doc.text('Товар отпустил:', margin, y, { width: colWidth - 5, lineBreak: false })
+  doc.font('Roboto-Bold').text('Товар отпустил:', margin, y, { width: colWidth - 5, lineBreak: false })
   doc.text('Получил:', margin + colWidth, y, { width: colWidth - 5, lineBreak: false })
 
   // Reset line width to default

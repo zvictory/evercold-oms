@@ -36,20 +36,8 @@ const driverSchema = z.object({
     phone: z.string().optional(), // NOW OPTIONAL - will auto-generate if empty
     telegram: z.string().optional(),
     licenseNumber: z.string().optional(), // NOW OPTIONAL - will auto-generate if empty
-    licenseExpiry: z.preprocess(
-        (val) => {
-            // Handle null, undefined, empty string
-            if (val === null || val === undefined || val === "") return undefined
-            // If it's already a Date object, return it
-            if (val instanceof Date) return val
-            // Try to parse as date
-            const date = new Date(val as string)
-            // Return undefined if invalid date, otherwise return the date
-            return isNaN(date.getTime()) ? undefined : date
-        },
-        z.date().optional()
-    ), // Transform empty/invalid values to undefined
-    status: z.enum(["ACTIVE", "ON_LEAVE", "INACTIVE"]).optional().default("ACTIVE"),
+    licenseExpiry: z.date().optional().nullable(), // Accept Date, undefined, or null
+    status: z.enum(["ACTIVE", "ON_LEAVE", "INACTIVE"]).default("ACTIVE"), // Default to ACTIVE
     photoUrl: z.string().optional(), // Mocking photo upload for now
 })
 
@@ -80,7 +68,7 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
         watch,
         reset,
         formState: { errors, isSubmitting },
-    } = useForm<DriverFormValues>({
+    } = useForm({
         resolver: zodResolver(driverSchema),
         defaultValues
     })
@@ -204,8 +192,8 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
                                 <PopoverContent className="w-auto p-0" align="start">
                                     <Calendar
                                         mode="single"
-                                        selected={watchedExpiry}
-                                        onSelect={(date) => setValue("licenseExpiry", date as Date)}
+                                        selected={watchedExpiry || undefined}
+                                        onSelect={(date) => setValue("licenseExpiry", date || null)}
                                         disabled={(date) =>
                                             date < new Date() || date < new Date("1900-01-01")
                                         }
