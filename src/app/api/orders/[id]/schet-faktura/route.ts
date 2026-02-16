@@ -4,6 +4,7 @@ import { generateSchetFakturaPDF } from '@/lib/pdf/generateSchetFakturaPDF';
 import { InvoiceData } from '@/lib/excel/invoice-types';
 import { INVOICE_CONSTANTS } from '@/lib/excel/invoice-template';
 import { validateInvoiceData } from '@/lib/excel/invoice-validation';
+import { format } from 'date-fns';
 
 export async function GET(
   request: NextRequest,
@@ -54,10 +55,15 @@ export async function GET(
     const branchCode = branch?.branchCode || '00000';
     const branchName = branch?.branchName || 'Unknown Branch';
 
+    // Generate contract info from stored agreement data or use fallback
+    const contractInfo = order.agreementNumber && order.agreementDate
+      ? `к договору № ${order.agreementNumber} от ${format(order.agreementDate, 'dd.MM.yyyy')}`
+      : (order.contractInfo || 'к договору № 1 от 02.01.2022');
+
     const invoiceData: InvoiceData = {
       invoiceNumber: order.invoiceNumber || 0,
       invoiceDate: order.orderDate,
-      contractInfo: order.contractInfo || 'к договору № 1 от 02.01.2022',
+      contractInfo,
       orderId: order.orderNumber,
       branchCode,
       branchName,

@@ -10,6 +10,11 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File
     const customOrderDateStr = formData.get('customOrderDate') as string | null
 
+    // Extract invoice configuration
+    const invoiceStartNumber = parseInt(formData.get('invoiceStartNumber') as string) || 1
+    const agreementNumber = formData.get('agreementNumber') as string || "1"
+    const agreementDateStr = formData.get('agreementDate') as string || new Date().toISOString().split('T')[0]
+
     if (!file) {
       return NextResponse.json({ error: 'No file uploaded' }, { status: 400 })
     }
@@ -39,15 +44,30 @@ export async function POST(request: NextRequest) {
     }
     const parseResult = await parseExcelFile(filepath, receivedDate)
 
+    // Parse agreement date
+    const [year, month, day] = agreementDateStr.split('-').map(Number)
+    const agreementDate = new Date(year, month - 1, day, 12, 0, 0)
+
     let ordersCreated = 0
     let ordersSkipped = 0
     let batchId: string | null = null
+    let currentInvoiceNumber = invoiceStartNumber
 
     if (Array.isArray(parseResult)) {
       for (const parsedOrder of parseResult) {
-        const result = await createOrder(parsedOrder, filename, receivedDate, undefined, customOrderDate)
+        const result = await createOrder(
+          parsedOrder,
+          filename,
+          receivedDate,
+          undefined,
+          customOrderDate,
+          currentInvoiceNumber,
+          agreementNumber,
+          agreementDate
+        )
         if (result.created) {
           ordersCreated++
+          currentInvoiceNumber++
         } else {
           ordersSkipped++
         }
@@ -55,9 +75,19 @@ export async function POST(request: NextRequest) {
     } else {
       batchId = parseResult.batchId
       for (const parsedOrder of parseResult.orders) {
-        const result = await createOrder(parsedOrder, filename, receivedDate, batchId, customOrderDate)
+        const result = await createOrder(
+          parsedOrder,
+          filename,
+          receivedDate,
+          batchId,
+          customOrderDate,
+          currentInvoiceNumber,
+          agreementNumber,
+          agreementDate
+        )
         if (result.created) {
           ordersCreated++
+          currentInvoiceNumber++
         } else {
           ordersSkipped++
         }
@@ -70,6 +100,10 @@ export async function POST(request: NextRequest) {
       ordersCreated,
       ordersSkipped,
       batchId,
+      invoiceRange: ordersCreated > 0 ? {
+        start: invoiceStartNumber,
+        end: invoiceStartNumber + ordersCreated - 1
+      } : undefined,
     })
   } catch (error: any) {
     console.error('Upload error:', error)
@@ -222,7 +256,10 @@ async function createOrder(
   filename: string,
   receivedDate: Date,
   batchId?: string,
-  customOrderDate?: Date | null
+  customOrderDate?: Date | null,
+  invoiceNumber?: number,
+  agreementNumber?: string,
+  agreementDate?: Date
 ): Promise<{ created: boolean; orderId?: string }> {
   // Check if order already exists
   const existingOrder = await prisma.order.findUnique({
@@ -341,6 +378,9 @@ async function createOrder(
       totalAmount: orderTotalAmount,
       emailId: email.id,
       batchId,
+      invoiceNumber,
+      agreementNumber,
+      agreementDate,
     },
   })
 

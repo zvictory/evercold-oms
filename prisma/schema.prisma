@@ -97,29 +97,32 @@ model CustomerProductPrice {
 }
 
 model Order {
-  id            String            @id @default(cuid())
-  orderNumber   String            @unique
-  invoiceNumber Int?              @unique
-  orderDate     DateTime
-  customerId    String
-  contractInfo  String?
-  status        OrderStatus       @default(NEW)
-  subtotal      Float             @default(0)
-  vatAmount     Float             @default(0)
-  totalAmount   Float             @default(0)
-  notes         String?
-  emailId       String?
-  batchId       String?
-  sourceType    SourceType        @default(DETAILED)
-  createdAt     DateTime          @default(now())
-  updatedAt     DateTime          @updatedAt
-  delivery      Delivery?
-  edoSync       EdoDocumentSync[]
-  customer      Customer          @relation(fields: [customerId], references: [id])
-  email         Email?            @relation(fields: [emailId], references: [id])
-  orderItems    OrderItem[]
+  id              String            @id @default(cuid())
+  orderNumber     String            @unique
+  invoiceNumber   Int?              @unique
+  agreementNumber String?
+  agreementDate   DateTime?
+  orderDate       DateTime
+  customerId      String
+  contractInfo    String?
+  status          OrderStatus       @default(NEW)
+  subtotal        Float             @default(0)
+  vatAmount       Float             @default(0)
+  totalAmount     Float             @default(0)
+  notes           String?
+  emailId         String?
+  batchId         String?
+  sourceType      SourceType        @default(DETAILED)
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  delivery        Delivery?
+  edoSync         EdoDocumentSync[]
+  customer        Customer          @relation(fields: [customerId], references: [id])
+  email           Email?            @relation(fields: [emailId], references: [id])
+  orderItems      OrderItem[]
 
   @@index([orderNumber])
+  @@index([invoiceNumber])
   @@index([customerId])
   @@index([orderDate])
   @@index([status])

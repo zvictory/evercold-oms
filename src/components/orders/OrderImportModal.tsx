@@ -10,11 +10,13 @@ import {
     DialogFooter
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Progress } from "@/components/ui/progress"
 import { Collapsible, CollapsibleTrigger, CollapsibleContent } from "@/components/ui/collapsible"
 import { Badge } from "@/components/ui/badge"
-import { FileSpreadsheet, UploadCloud, FileCheck, AlertCircle, ChevronDown, CheckCircle2 } from "lucide-react"
+import { FileSpreadsheet, UploadCloud, FileCheck, AlertCircle, ChevronDown, CheckCircle2, Settings } from "lucide-react"
 import { fetchWithAuth } from "@/lib/utils"
+import { format } from "date-fns"
 enum ImportState {
     IDLE = "idle",
     UPLOADING = "uploading",
@@ -38,8 +40,15 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
         ordersCreated: number
         ordersSkipped: number
         batchId?: string
+        invoiceRange?: { start: number; end: number }
     } | null>(null)
     const [errorMessage, setErrorMessage] = React.useState<string | null>(null)
+    const [invoiceConfig, setInvoiceConfig] = React.useState({
+        startingNumber: 1,
+        agreementNumber: "1",
+        agreementDate: format(new Date(), 'yyyy-MM-dd')
+    })
+    const [suggestedInvoice, setSuggestedInvoice] = React.useState<number | null>(null)
 
     // Translation fallbacks (temporary until i18n is fixed)
     const t = (key: string): string => {
@@ -77,6 +86,30 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
         }
     }, [open])
 
+    // Fetch suggested invoice number when modal opens
+    React.useEffect(() => {
+        async function fetchMaxInvoice() {
+            try {
+                const response = await fetchWithAuth('/api/orders/max-invoice')
+                if (response.ok) {
+                    const { maxInvoice } = await response.json()
+                    const suggested = (maxInvoice || 0) + 1
+                    setSuggestedInvoice(suggested)
+                    setInvoiceConfig(prev => ({ ...prev, startingNumber: suggested }))
+                }
+            } catch (error) {
+                console.error('Failed to fetch max invoice:', error)
+                // Fallback to 1 if fetch fails
+                setSuggestedInvoice(1)
+                setInvoiceConfig(prev => ({ ...prev, startingNumber: 1 }))
+            }
+        }
+
+        if (open) {
+            fetchMaxInvoice()
+        }
+    }, [open])
+
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
@@ -90,6 +123,9 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
         try {
             const formData = new FormData()
             formData.append('file', file)
+            formData.append('invoiceStartNumber', invoiceConfig.startingNumber.toString())
+            formData.append('agreementNumber', invoiceConfig.agreementNumber)
+            formData.append('agreementDate', invoiceConfig.agreementDate)
 
             // Simulate progress during upload
             const progressInterval = setInterval(() => {
@@ -144,6 +180,71 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
                 </DialogHeader>
 
                 <div className="space-y-4 py-4">
+                    {/* Invoice & Agreement Configuration */}
+                    {state === ImportState.IDLE && (
+                        <div className="space-y-4 p-4 bg-slate-50 rounded-lg border border-slate-200">
+                            <div className="flex items-center gap-2">
+                                <Settings className="h-4 w-4 text-slate-600" />
+                                <h3 className="text-sm font-semibold text-slate-900">
+                                    Настройки счета-фактуры
+                                </h3>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-xs font-medium text-slate-700 block mb-1">
+                                        Начальный номер счета-фактуры
+                                    </label>
+                                    <Input
+                                        type="number"
+                                        min="1"
+                                        value={invoiceConfig.startingNumber}
+                                        onChange={(e) => setInvoiceConfig(prev => ({
+                                            ...prev,
+                                            startingNumber: parseInt(e.target.value) || 1
+                                        }))}
+                                        className="bg-white"
+                                    />
+                                    {suggestedInvoice !== null && (
+                                        <p className="text-xs text-slate-500 mt-1">
+                                            💡 Рекомендуется: {suggestedInvoice}
+                                        </p>
+                                    )}
+                                </div>
+
+                                <div>
+                                    <label className="text-xs font-medium text-slate-700 block mb-1">
+                                        Номер договора
+                                    </label>
+                                    <Input
+                                        value={invoiceConfig.agreementNumber}
+                                        onChange={(e) => setInvoiceConfig(prev => ({
+                                            ...prev,
+                                            agreementNumber: e.target.value
+                                        }))}
+                                        placeholder="1"
+                                        className="bg-white"
+                                    />
+                                </div>
+
+                                <div className="col-span-2">
+                                    <label className="text-xs font-medium text-slate-700 block mb-1">
+                                        Дата договора
+                                    </label>
+                                    <Input
+                                        type="date"
+                                        value={invoiceConfig.agreementDate}
+                                        onChange={(e) => setInvoiceConfig(prev => ({
+                                            ...prev,
+                                            agreementDate: e.target.value
+                                        }))}
+                                        className="bg-white"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {/* State: IDLE or UPLOADING */}
                     {(state === ImportState.IDLE || state === ImportState.UPLOADING) && (
                         <div className="group relative border-2 border-dashed border-slate-200 hover:border-sky-400 hover:bg-sky-50 transition-colors rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer">
@@ -228,6 +329,12 @@ export function OrderImportModal({ open, onOpenChange, onImportComplete }: Order
                                     {uploadResult.batchId && (
                                         <div className="mt-3 text-xs text-slate-600">
                                             ID пакета: <code className="bg-slate-100 px-1 rounded">{uploadResult.batchId}</code>
+                                        </div>
+                                    )}
+
+                                    {uploadResult.invoiceRange && (
+                                        <div className="mt-2 text-xs text-slate-600">
+                                            Номера счетов-фактур: <code className="bg-slate-100 px-1 rounded">{uploadResult.invoiceRange.start}</code> - <code className="bg-slate-100 px-1 rounded">{uploadResult.invoiceRange.end}</code>
                                         </div>
                                     )}
                                 </div>
