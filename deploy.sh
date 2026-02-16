@@ -41,6 +41,7 @@ tar -czf evercold-deploy.tar.gz \
   .next \
   public \
   prisma \
+  src \
   package.json \
   package-lock.json \
   next.config.ts \
@@ -107,6 +108,13 @@ ssh -o StrictHostKeyChecking=no "$SERVER" << 'ENDSSH'
     echo "⚠ Migration warning (may already be up-to-date)"
   }
   echo "✓ Database migrations completed"
+
+  # Run pricing system migration
+  echo "→ Running pricing system migration..."
+  npx tsx prisma/migrate-pricing.ts 2>&1 || {
+    echo "⚠ Pricing migration warning (may already be applied)"
+  }
+  echo "✓ Pricing migration completed"
 
   # Generate Prisma client
   echo "→ Generating Prisma client..."
