@@ -41,10 +41,20 @@ import { cn } from "@/lib/utils"
 
 const vehicleSchema = z.object({
     plateNumber: z.string().regex(/^[0-9]{2} [0-9]{3} [A-Z]{3}$/, "Invalid format. Use: 01 123 ABC"),
-    model: z.string().min(1, "Model is required"),
-    type: z.enum(["VAN", "TRUCK", "REFRIGERATED_VAN", "REFRIGERATED_TRUCK"]),
-    status: z.enum(["AVAILABLE", "IN_USE", "MAINTENANCE", "RETIRED"]),
-    capacity: z.number().min(1, "Capacity must be positive"),
+    model: z.string().optional(), // NOW OPTIONAL - will default to "Not Specified"
+    type: z.enum(["VAN", "TRUCK", "REFRIGERATED_VAN", "REFRIGERATED_TRUCK"]).optional().default("VAN"),
+    status: z.enum(["AVAILABLE", "IN_USE", "MAINTENANCE", "RETIRED"]).optional().default("AVAILABLE"),
+    capacity: z.preprocess(
+        (val) => {
+            // Handle empty string, null, undefined
+            if (val === "" || val === null || val === undefined) return undefined
+            // Convert to number if needed
+            const num = typeof val === 'number' ? val : Number(val)
+            // Return undefined if NaN, otherwise return the number
+            return isNaN(num) ? undefined : num
+        },
+        z.number().positive().optional()
+    ), // Transform empty/invalid values to undefined
     driverId: z.string().optional(),
 })
 
@@ -70,8 +80,8 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
         plateNumber: "",
         model: "",
         type: "VAN",
-        status: "AVAILABLE",
-        capacity: 0,
+        status: "AVAILABLE", // Default status
+        capacity: undefined, // Optional field
         driverId: undefined
     }
 
@@ -144,13 +154,13 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label>Model</Label>
+                                <Label>Model (Optional)</Label>
                                 <Select
                                     value={watch("model")}
                                     onValueChange={(val) => setValue("model", val)}
                                 >
                                     <SelectTrigger className={cn(errors.model && "border-red-500 ring-red-500")}>
-                                        <SelectValue placeholder="Select model" />
+                                        <SelectValue placeholder="Select model (defaults to Not Specified)" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -167,7 +177,7 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
                             </div>
 
                             <div className="space-y-2">
-                                <Label>Type</Label>
+                                <Label>Type (Optional, defaults to Van)</Label>
                                 <Select
                                     value={watchedType}
                                     onValueChange={(val: any) => setValue("type", val)}
@@ -195,7 +205,7 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
                         </h3>
 
                         <div className="space-y-2">
-                            <Label>Current Status</Label>
+                            <Label>Current Status (Optional, defaults to Available)</Label>
                             <Select
                                 value={watchedStatus}
                                 onValueChange={(val: any) => setValue("status", val)}
@@ -221,7 +231,7 @@ export function VehicleEditor({ open, onOpenChange, initialData, drivers, onSave
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="capacity">Load Capacity (kg)</Label>
+                            <Label htmlFor="capacity">Load Capacity (kg) (Optional)</Label>
                             <Input
                                 id="capacity"
                                 type="number"

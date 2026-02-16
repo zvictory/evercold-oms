@@ -33,11 +33,23 @@ import { cn } from "@/lib/utils"
 
 const driverSchema = z.object({
     name: z.string().min(2, "Name must be at least 2 characters"),
-    phone: z.string().regex(/^\+998[0-9]{9}$/, "Invalid format. Use: +998901234567"),
+    phone: z.string().optional(), // NOW OPTIONAL - will auto-generate if empty
     telegram: z.string().optional(),
-    licenseNumber: z.string().min(1, "License number is required"),
-    licenseExpiry: z.date().refine((date) => date > new Date(), "Expiry date must be in the future"),
-    status: z.enum(["ACTIVE", "ON_LEAVE", "INACTIVE"]),
+    licenseNumber: z.string().optional(), // NOW OPTIONAL - will auto-generate if empty
+    licenseExpiry: z.preprocess(
+        (val) => {
+            // Handle null, undefined, empty string
+            if (val === null || val === undefined || val === "") return undefined
+            // If it's already a Date object, return it
+            if (val instanceof Date) return val
+            // Try to parse as date
+            const date = new Date(val as string)
+            // Return undefined if invalid date, otherwise return the date
+            return isNaN(date.getTime()) ? undefined : date
+        },
+        z.date().optional()
+    ), // Transform empty/invalid values to undefined
+    status: z.enum(["ACTIVE", "ON_LEAVE", "INACTIVE"]).optional().default("ACTIVE"),
     photoUrl: z.string().optional(), // Mocking photo upload for now
 })
 
@@ -56,8 +68,8 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
         phone: "+998",
         telegram: "",
         licenseNumber: "",
-        licenseExpiry: undefined as unknown as Date,
-        status: "ACTIVE",
+        licenseExpiry: undefined, // Optional field
+        status: "ACTIVE", // Default status
         photoUrl: ""
     }
 
@@ -130,10 +142,10 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
 
                         <div className="grid grid-cols-2 gap-4">
                             <div className="space-y-2">
-                                <Label htmlFor="phone">Phone Number</Label>
+                                <Label htmlFor="phone">Phone Number (Optional)</Label>
                                 <Input
                                     id="phone"
-                                    placeholder="+998..."
+                                    placeholder="+998... (auto-generated if empty)"
                                     {...register("phone")}
                                     className={cn(errors.phone && "border-red-500 focus-visible:ring-red-500")}
                                 />
@@ -159,18 +171,18 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
                         </h3>
 
                         <div className="space-y-2">
-                            <Label htmlFor="license">License Number</Label>
+                            <Label htmlFor="license">License Number (Optional)</Label>
                             <Input
                                 id="license"
                                 className="font-mono uppercase"
-                                placeholder="AA 1234567"
+                                placeholder="AA 1234567 (auto-generated if empty)"
                                 {...register("licenseNumber")}
                             />
                             {errors.licenseNumber && <p className="text-xs text-red-500">{errors.licenseNumber.message}</p>}
                         </div>
 
                         <div className="space-y-2 flex flex-col">
-                            <Label>Expiry Date</Label>
+                            <Label>Expiry Date (Optional)</Label>
                             <Popover>
                                 <PopoverTrigger asChild>
                                     <Button
@@ -222,7 +234,7 @@ export function DriverEditor({ open, onOpenChange, initialData, onSave }: Driver
 
                     {/* Status Group */}
                     <div className="space-y-4">
-                        <Label>Employment Status</Label>
+                        <Label>Employment Status (Optional, defaults to Active)</Label>
                         <RadioGroup
                             defaultValue="ACTIVE"
                             value={watchedStatus}

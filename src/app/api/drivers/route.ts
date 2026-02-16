@@ -51,12 +51,22 @@ export async function POST(request: NextRequest) {
       hashedPin = await hashPin(body.phonePin)
     }
 
+    // Auto-generate phone if not provided (must be unique)
+    const phone = body.phone && body.phone.trim()
+      ? body.phone
+      : `+99800${Date.now().toString().slice(-7)}` // Generate unique phone
+
+    // Auto-generate license number if not provided (must be unique)
+    const licenseNumber = body.licenseNumber && body.licenseNumber.trim()
+      ? body.licenseNumber
+      : `PENDING-${Date.now()}-${Math.random().toString(36).slice(2, 6).toUpperCase()}` // Generate unique license
+
     const driver = await prisma.driver.create({
       data: {
         name: body.name,
-        phone: body.phone,
+        phone,
         email: body.email || null,
-        licenseNumber: body.licenseNumber,
+        licenseNumber,
         licenseExpiry: body.licenseExpiry ? new Date(body.licenseExpiry) : null,
         status: body.status || 'ACTIVE',
         notes: body.notes || null,

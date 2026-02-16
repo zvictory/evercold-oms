@@ -46,10 +46,15 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json()
 
+    // Auto-generate model if not provided
+    const model = body.model && body.model.trim()
+      ? body.model
+      : 'Not Specified' // Default model
+
     const vehicle = await prisma.vehicle.create({
       data: {
         plateNumber: body.plateNumber,
-        model: body.model,
+        model,
         type: body.type || 'VAN',
         capacity: body.capacity ? parseFloat(body.capacity) : null,
         status: body.status || 'AVAILABLE',
